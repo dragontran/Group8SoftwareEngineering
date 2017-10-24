@@ -3,4 +3,7 @@ The Bridge design pattern allows you to vary both the implementation and the abs
 
 An example of when it would be used is having different image or window formats on different operating systems, allowing the implementation of each operator separately. 
 
+Useful links:
+
+https://sourcemaking.com/design_patterns/bridge
 https://dzone.com/articles/design-patterns-bridge
