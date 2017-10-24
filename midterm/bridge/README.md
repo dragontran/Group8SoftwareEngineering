@@ -6,4 +6,5 @@ An example of when it would be used is having different image or window formats 
 Useful links:
 
 https://sourcemaking.com/design_patterns/bridge
+
 https://dzone.com/articles/design-patterns-bridge
