@@ -173,22 +173,22 @@ namespace bridge
             }
             while (!stacks[0].isEmpty())
             {
-                Console.WriteLine(stacks[0].pop() + " ");
+                Console.Write(stacks[0].pop() + " ");
             }
             Console.WriteLine();
             while (!stackList.isEmpty())
             {
-                Console.WriteLine(stackList.pop() + " ");
+                Console.Write(stackList.pop() + " ");
             }
             Console.WriteLine();
             while (!stacks[1].isEmpty())
             {
-                Console.WriteLine(stacks[1].pop() + " ");
+                Console.Write(stacks[1].pop() + " ");
             }
             Console.WriteLine();
             while (!stacks[2].isEmpty())
             {
-                Console.WriteLine(stacks[2].pop() + " ");
+                Console.Write(stacks[2].pop() + " ");
             }
             Console.WriteLine();
             Console.WriteLine("total rejected is " + ((StackHanoi) stacks[2]).reportRejected());
