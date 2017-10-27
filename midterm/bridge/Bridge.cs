@@ -35,7 +35,13 @@ namespace DesignPatterns
 
         public StackArray(int cells)
         {
-            this.items = new int[cells];
+            if (cells <= 0)
+            {
+                Console.WriteLine("A number of 0 or less was provided for the number of cells, using the default length instead");
+                this.items = new int[12];
+            } else {
+                this.items = new int[cells];
+            }
         }
 
         // c# distinction
@@ -44,6 +50,10 @@ namespace DesignPatterns
         {
             if(!isFull())
             {
+                if (i < 0){
+                    Console.WriteLine("A negative number was provided, converting to a positive number");
+                    i *= -1;
+                }
                 items[++size] = i;
             }
         }
@@ -89,6 +99,12 @@ namespace DesignPatterns
         
         public void push(int i)
         {
+            // don't accept negative numbers to preserve isEmpty and pop functionality
+            if (i < 0)
+            {
+                    Console.WriteLine("A negative number was provided, converting to a positive number");
+                    i *= -1;
+            }
             if (last == null)
             {
                 last = new Node(i);
