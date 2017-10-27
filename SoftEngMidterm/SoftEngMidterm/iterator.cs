@@ -8,13 +8,13 @@ namespace SoftEngMidterm
 
         public class Iterator
         {
-            public IteratorSet<T> set { get; set; }
-            public IEnumerator<T> e { get; set; }
-            public T currentValue { get; set; }
+            private IteratorSet<T> set { get; set; }
+            private IEnumerator<T> e { get; set; }
+            public T currentValue { get; private set; }
             public bool isDone { get; private set; }
             //  Added a current position variable since c# list refuses to throw an exception and instead once it
             //  reaches the end of the list it simply returns 0
-            public int curPos { get; private set; }
+            private int curPos { get; set; }
 
             public Iterator(IteratorSet<T> inSet)
             {
