@@ -1,7 +1,11 @@
 ﻿using System;
 
+//time taken to convert java to c# 40 mins (initially)
+//time taken to comment/fix errors/understand 40 mins
 namespace bridge
 {
+    //A simple node class
+    //Contains an int value and the previous/next nodes
     class Node
     {
         public int value;
@@ -13,6 +17,8 @@ namespace bridge
         }
     }
 
+    // A stack implementation of an array containing int values
+    // Used to encapsulate the interfaces between StackFIFO and StackHanoi
     class StackArray
     {
         private int[] items;
@@ -28,7 +34,9 @@ namespace bridge
             this.items = new int[cells];
         }
 
-        public void push(int i)
+        // c# distinction
+        // virtual to allow children classes to override 
+        public virtual void push(int i)
         {
             if(!isFull())
             {
@@ -46,25 +54,31 @@ namespace bridge
             return size == items.Length - 1;
         }
 
-        public int top()
+        public int peek()
         {
             if (isEmpty())
             {
                 return -1;
             }
+
             return items[size];
         }
 
-        public int pop()
+        // c# distinction
+        // virtual to allow children classes to override
+        public virtual int pop()
         {
             if (isEmpty())
             {
                 return -1;
             }
+
             return items[size--];
         }
     }
 
+    // A stack implementation of a list containing nodes with int values
+    // Independent implementation
     class StackList
     {
         private Node last;
@@ -74,8 +88,7 @@ namespace bridge
             if (last == null)
             {
                 last = new Node(i);
-            } else
-            {
+            } else {
                 last.next = new Node(i);
                 last.next.prev = last;
                 last = last.next;
@@ -92,12 +105,13 @@ namespace bridge
             return false;
         }
 
-        public int top()
+        public int peek()
         {
             if (isEmpty())
             {
                 return -1;
             }
+
             return last.value;
         }
 
@@ -107,31 +121,46 @@ namespace bridge
             {
                 return -1;
             }
+
             int ret = last.value;
             last = last.prev;
+
             return ret;
         }
     }
 
+    // FIFO Stack (queue) that inherits StackArray methods but using a different implementation
+    // c# distinction
+    // extends replaced with : to allow for inheritance
     class StackFIFO : StackArray
     {
         private StackArray stackArray = new StackArray();
         
-        public int pop()
+        // c# distinction
+        // override keyword required to replace virtual pop method from StackArray
+        public override int pop()
         {
             while(!isEmpty())
             {
+                // c# distinction
+                // super repalced by base to call parent class method
                 stackArray.push(base.pop());
             }
+
             int ret = stackArray.pop();
+
             while (!stackArray.isEmpty())
             {
                 push(stackArray.pop());
             }
+
             return ret;
         }
     }
 
+    // Hanoi stack that inherits StackArray methods but uses a different impementation
+    // c# distinction
+    // extends replaced with : to allow for inheritance
     class StackHanoi : StackArray
     {
         private int totalRejected = 0;
@@ -141,13 +170,17 @@ namespace bridge
             return totalRejected;
         }
 
-        public void push(int i)
+        // c# distinction
+        // override keyword required to replace virtual push method from StackArray
+        public override void push(int i)
         {
-            if (!isEmpty() && i > top())
+            //don't add a value if it is greater than the top value
+            if (!isEmpty() && i > peek())
             {
                 totalRejected++;
-            } else 
-            {
+            } else {
+                // c# distinction
+                // super repalced by base to call parent class method
                 base.push(i);
             }
         }
@@ -157,41 +190,65 @@ namespace bridge
     {
         static void Main(String[] args)
         {
+            // Create an array of type StackArray, StackFIFO and StackHanoi are specific implementations of 
+            // Stack arrays with different functionality but are still considered StackArrays due to implementation abstraction
+            // being decoupled from interface abstraction (aka Bridge)
             StackArray[] stacks = {new StackArray(), new StackFIFO(), new StackHanoi()};
             StackList stackList = new StackList();
+
+            const int STACK_ARRAY_INDEX = 0;
+            const int STACK_FIFO_INDEX = 1;
+            const int STACK_HANOI_INDEX = 2;
+
+            // add the values 1 to 14 to the stack array, stack list, and stack fifo
+            // note the StackArray was created without a specified size, thus the max size is 12
             for (int i = 1; i < 15; i++)
             {
-                stacks[0].push(i);
+                stacks[STACK_ARRAY_INDEX].push(i);
                 stackList.push(i);
-                stacks[1].push(i);
+                stacks[STACK_FIFO_INDEX].push(i);
             }
 
+            // randomly (try to) add 14 values in range [0,19] to the stack hanoi
+            // values are not added if they are greater than the top value
             Random random = new Random();
             for (int i = 1; i < 15; i++)
             {
-                stacks[2].push(random.Next(0,20));
+                stacks[STACK_HANOI_INDEX].push(random.Next(0,20));
             }
-            while (!stacks[0].isEmpty())
+
+            // pop everything off the stack array and print it
+            Console.WriteLine("Stack Array contents");
+            while (!stacks[STACK_ARRAY_INDEX].isEmpty())
             {
-                Console.Write(stacks[0].pop() + " ");
+                Console.Write(stacks[STACK_ARRAY_INDEX].pop() + " ");
             }
             Console.WriteLine();
+            
+            // pop everything off the stack list and print it
+            Console.WriteLine("Stack List contents");
             while (!stackList.isEmpty())
             {
                 Console.Write(stackList.pop() + " ");
             }
             Console.WriteLine();
-            while (!stacks[1].isEmpty())
+
+            // pop everything off the stack fifo and print it
+            Console.WriteLine("Stack FIFO contents");
+            while (!stacks[STACK_FIFO_INDEX].isEmpty())
             {
-                Console.Write(stacks[1].pop() + " ");
+                Console.Write(stacks[STACK_FIFO_INDEX].pop() + " ");
             }
             Console.WriteLine();
-            while (!stacks[2].isEmpty())
+
+            // pop everything off the stack hanoi and print it, then report the number of values rejected
+            Console.WriteLine("Stack Hanoi contents");
+            while (!stacks[STACK_HANOI_INDEX].isEmpty())
             {
-                Console.Write(stacks[2].pop() + " ");
+                Console.Write(stacks[STACK_HANOI_INDEX].pop() + " ");
             }
             Console.WriteLine();
-            Console.WriteLine("total rejected is " + ((StackHanoi) stacks[2]).reportRejected());
+            Console.WriteLine("total rejected is " + ((StackHanoi) stacks[STACK_HANOI_INDEX]).reportRejected());
         }
     }
 }
