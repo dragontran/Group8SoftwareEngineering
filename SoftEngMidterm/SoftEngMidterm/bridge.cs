@@ -8,7 +8,7 @@ namespace SoftEngMidterm
 {
     class Bridge
     {
-        class Node
+        public class Node
         {
             public int value;
             public Node prev, next;
@@ -19,7 +19,7 @@ namespace SoftEngMidterm
             }
         }
 
-        class StackArray
+        public class StackArray
         {
             private int[] items;
             private int size = -1;
@@ -71,7 +71,7 @@ namespace SoftEngMidterm
             }
         }
 
-        class StackList
+        public class StackList
         {
             private Node last;
 
@@ -120,7 +120,7 @@ namespace SoftEngMidterm
             }
         }
 
-        class StackFIFO : StackArray
+        public class StackFIFO : StackArray
         {
             private StackArray stackArray = new StackArray();
 
@@ -139,7 +139,7 @@ namespace SoftEngMidterm
             }
         }
 
-        class StackHanoi : StackArray
+        public class StackHanoi : StackArray
         {
             private int totalRejected = 0;
 
