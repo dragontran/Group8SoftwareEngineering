@@ -2,22 +2,23 @@
 
 namespace SoftEngMidterm
 {
-    class IntSet
+    public class IteratorSet<T>
     {
-        private List<int> list = new List<int>();
+        public List<T> list { get; private set; }
 
         public class Iterator
         {
-            private IntSet set;
-            private IEnumerator<int> e;
-            private int current;
-
+            public IteratorSet<T> set { get; set; }
+            public IEnumerator<T> e { get; set; }
+            public T currentValue { get; set; }
+            public bool isDone { get; private set; }
             //  Added a current position variable since c# list refuses to throw an exception and instead once it
             //  reaches the end of the list it simply returns 0
-            private int curPos;
+            public int curPos { get; private set; }
 
-            public Iterator(IntSet inSet)
+            public Iterator(IteratorSet<T> inSet)
             {
+                isDone = false;
                 set = inSet;                
             }
 
@@ -31,42 +32,36 @@ namespace SoftEngMidterm
                 next();
             }
 
-            public bool isDone()
-            {
-                return current == -1;
-            }
-
-            public int currentValue()
-            {
-                return current;
-            }
-
             public void next()
             {
                 //  Instead of try catch since List won't break we instead check if current position
                 //  has reached the end of the list and if so set current = -1
                 if (curPos == set.list.Count)
-                    current = -1;
+                    isDone = true;
                 else
                 {
                     //  Move Enumerator first and then set current to the value at the new position
                     e.MoveNext();
-                    current = e.Current;
+                    currentValue = e.Current;
                     curPos++;
                 }
             }
         }
-        public void add(int num)
+        public IteratorSet()
         {
-            list.Add(num);
+            list = new List<T>();
+        }
+        public void add(T value)
+        {
+            list.Add(value);
         }
 
-        public bool isMember(int i)
+        public bool isMember(T value)
         {
-            return list.Contains(i);
+            return list.Contains(value);
         }
 
-        public List<int> getList()
+        public List<T> getList()
         {
             return list;
         }
