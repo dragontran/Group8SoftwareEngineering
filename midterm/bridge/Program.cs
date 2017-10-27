@@ -1,8 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 //time taken to convert java to c# 40 mins (initially)
 //time taken to comment/fix errors/understand 40 mins
-namespace bridge
+namespace Midterm
 {
     //A simple node class
     //Contains an int value and the previous/next nodes
