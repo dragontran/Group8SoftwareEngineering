@@ -163,6 +163,7 @@ namespace Midterm
     }
 
     // Hanoi stack that inherits StackArray methods but uses a different impementation
+    // Hanoi because it will not push a value unless it is greater than the top of the stack
     // c# distinction
     // extends replaced with : to allow for inheritance
     class StackHanoi : StackArray
