@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 // time taken to convert java to c# 40 mins (initially)
 // time taken to comment/fix errors/understand 40 mins
-namespace SoftEngMidTerm
+namespace SoftEngMidterm
 {
     // A simple node class
     // Contains an int value and the previous/next nodes
@@ -88,6 +88,16 @@ namespace SoftEngMidTerm
             }
 
             return items[size--];
+        }
+
+        public int GetSize()
+        {
+            return size;
+        }
+
+        public int GetItemLength()
+        {
+            return items.Length;
         }
     }
 
