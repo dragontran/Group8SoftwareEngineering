@@ -46,6 +46,7 @@
   <ItemGroup>
     <Compile Include="bridge.cs" />
     <Compile Include="factory.cs" />
+    <Compile Include="factoryTest.cs" />
     <Compile Include="iterator.cs" />
     <Compile Include="iteratorTest.cs" />
     <Compile Include="Program.cs" />
