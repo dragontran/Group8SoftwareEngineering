@@ -2,271 +2,57 @@
 
 namespace SoftEngMidterm
 {
-    class NodeTwo
-    {
-        public int value;
-        public NodeTwo prev, next;
 
-        public NodeTwo(int value)
+    // dragon dev time for factory 45 minutes
+    interface stackFactory {
+        StackArray getStackObject();
+    }
+
+    class stack : stackFactory
+    {
+        private StackArray stackObject;
+
+        public stack()
         {
-            this.value = value;
+            this.stackObject = new StackArray();
+        }
+
+        public StackArray getStackObject()
+        {
+            return stackObject;
         }
     }
 
-    public interface stackObjects
+    class fifoStack : stackFactory
     {
-        int returnValue();
-        StackArrayTwo returnStackArray();
-    }
+        private StackArray stackObject;
 
-    public class StackArrayTwo
-    {
-        private int[] items;
-        private int size = -1;
-
-        public StackArrayTwo()
-        {
-            this.items = new int[12];
+        public fifoStack() {
+            this.stackObject = new StackFIFO();
         }
 
-        public StackArrayTwo(int cells)
-        {
-            this.items = new int[cells];
-        }
 
-        public void push(int i)
+        public StackArray getStackObject()
         {
-            if (!isFull())
-            {
-                items[++size] = i;
-            }
-        }
-
-        public bool isEmpty()
-        {
-            return size == -1;
-        }
-
-        public bool isFull()
-        {
-            return size == items.Length - 1;
-        }
-
-        public int top()
-        {
-            if (isEmpty())
-            {
-                return -1;
-            }
-            return items[size];
-        }
-
-        public int pop()
-        {
-            if (isEmpty())
-            {
-                return -1;
-            }
-            return items[size--];
+            return stackObject;
         }
     }
 
-    public class StackFIFOTwo : stackObjects
+    class hanoiStack : stackFactory
     {
-        private StackArrayTwo stackArray;
+        private StackArray stackObject;
 
-        private int[] items;
-        private int size = -1;
-
-        public StackFIFOTwo()
+        public hanoiStack()
         {
-            this.stackArray = new StackArrayTwo();
+            this.stackObject = new StackHanoi();
         }
 
-        public StackFIFOTwo(int cells)
+        public StackArray getStackObject()
         {
-            this.stackArray = new StackArrayTwo(cells);
-        }
-
-        public void push(int i)
-        {
-            if (!isFull())
-            {
-                items[++size] = i;
-            }
-        }
-
-        public bool isEmpty()
-        {
-            return size == -1;
-        }
-
-        public bool isFull()
-        {
-            return size == items.Length - 1;
-        }
-
-        public int top()
-        {
-            if (isEmpty())
-            {
-                return -1;
-            }
-            return items[size];
-        }
-
-        public int pop()
-        {
-            while (!isEmpty())
-            {
-                // Please check this out if needed
-                // was previously base.pop()
-                stackArray.push(stackArray.pop());
-            }
-            int ret = stackArray.pop();
-            while (!stackArray.isEmpty())
-            {
-                push(stackArray.pop());
-            }
-            return ret;
-        }
-
-        public int returnValue()
-        {
-            throw new NotImplementedException();
-        }
-
-        public StackArrayTwo returnStackArray()
-        {
-            return stackArray;
+            return stackObject;
         }
     }
 
-    public class StackHanoiTwo : stackObjects
-    {
-        private StackArrayTwo stackArray;
-
-        private int[] items;
-        private int size = -1;
-
-        public StackHanoiTwo()
-        {
-            this.stackArray = new StackArrayTwo();
-        }
-
-        public StackHanoiTwo(int cells)
-        {
-            this.stackArray = new StackArrayTwo(cells);
-        }
-
-        private int totalRejected = 0;
-
-        public int reportRejected()
-        {
-            return totalRejected;
-        }
-
-        public bool isEmpty()
-        {
-            return size == -1;
-        }
-
-        public bool isFull()
-        {
-            return size == items.Length - 1;
-        }
-
-        public int top()
-        {
-            if (isEmpty())
-            {
-                return -1;
-            }
-            return items[size];
-        }
-
-        public int pop()
-        {
-            if (isEmpty())
-            {
-                return -1;
-            }
-            return items[size--];
-        }
-
-        public void push(int i)
-        {
-            if (!isEmpty() && i > top())
-            {
-                totalRejected++;
-            }
-            else
-            {
-                // Again.. this part had base
-                // base.push(i);
-                stackArray.push(i);
-            }
-        }
-
-        public StackArrayTwo returnStackArray()
-        {
-            return stackArray;
-        }
-
-        public int returnValue()
-        {
-            throw new NotImplementedException();
-        }
-    }
-
-    class StackListTwo
-    {
-        private NodeTwo last;
-
-        public void push(int i)
-        {
-            if (last == null)
-            {
-                last = new NodeTwo(i);
-            }
-            else
-            {
-                last.next = new NodeTwo(i);
-                last.next.prev = last;
-                last = last.next;
-            }
-        }
-
-        public bool isEmpty()
-        {
-            return last == null;
-        }
-
-        public bool isFull()
-        {
-            return false;
-        }
-
-        public int top()
-        {
-            if (isEmpty())
-            {
-                return -1;
-            }
-            return last.value;
-        }
-
-        public int pop()
-        {
-            if (isEmpty())
-            {
-                return -1;
-            }
-            int ret = last.value;
-            last = last.prev;
-            return ret;
-        }
-    }
     /*class Program
     {
         static void Main(string[] args)
