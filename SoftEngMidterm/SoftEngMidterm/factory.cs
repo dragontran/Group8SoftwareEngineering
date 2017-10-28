@@ -2,12 +2,12 @@
 
 namespace SoftEngMidterm
 {
-    class Node
+    class NodeTwo
     {
         public int value;
-        public Node prev, next;
+        public NodeTwo prev, next;
 
-        public Node(int value)
+        public NodeTwo(int value)
         {
             this.value = value;
         }
@@ -16,20 +16,20 @@ namespace SoftEngMidterm
     public interface stackObjects
     {
         int returnValue();
-        StackArray returnStackArray();
+        StackArrayTwo returnStackArray();
     }
 
-    public class StackArray
+    public class StackArrayTwo
     {
         private int[] items;
         private int size = -1;
 
-        public StackArray()
+        public StackArrayTwo()
         {
             this.items = new int[12];
         }
 
-        public StackArray(int cells)
+        public StackArrayTwo(int cells)
         {
             this.items = new int[cells];
         }
@@ -71,21 +71,21 @@ namespace SoftEngMidterm
         }
     }
 
-    public class StackFIFO : stackObjects
+    public class StackFIFOTwo : stackObjects
     {
-        private StackArray stackArray;
+        private StackArrayTwo stackArray;
 
         private int[] items;
         private int size = -1;
 
-        public StackFIFO()
+        public StackFIFOTwo()
         {
-            this.stackArray = new StackArray();
+            this.stackArray = new StackArrayTwo();
         }
 
-        public StackFIFO(int cells)
+        public StackFIFOTwo(int cells)
         {
-            this.stackArray = new StackArray(cells);
+            this.stackArray = new StackArrayTwo(cells);
         }
 
         public void push(int i)
@@ -136,27 +136,27 @@ namespace SoftEngMidterm
             throw new NotImplementedException();
         }
 
-        public StackArray returnStackArray()
+        public StackArrayTwo returnStackArray()
         {
             return stackArray;
         }
     }
 
-    public class StackHanoi : stackObjects
+    public class StackHanoiTwo : stackObjects
     {
-        private StackArray stackArray;
+        private StackArrayTwo stackArray;
 
         private int[] items;
         private int size = -1;
 
-        public StackHanoi()
+        public StackHanoiTwo()
         {
-            this.stackArray = new StackArray();
+            this.stackArray = new StackArrayTwo();
         }
 
-        public StackHanoi(int cells)
+        public StackHanoiTwo(int cells)
         {
-            this.stackArray = new StackArray(cells);
+            this.stackArray = new StackArrayTwo(cells);
         }
 
         private int totalRejected = 0;
@@ -208,7 +208,7 @@ namespace SoftEngMidterm
             }
         }
 
-        public StackArray returnStackArray()
+        public StackArrayTwo returnStackArray()
         {
             return stackArray;
         }
@@ -219,19 +219,19 @@ namespace SoftEngMidterm
         }
     }
 
-    class StackList
+    class StackListTwo
     {
-        private Node last;
+        private NodeTwo last;
 
         public void push(int i)
         {
             if (last == null)
             {
-                last = new Node(i);
+                last = new NodeTwo(i);
             }
             else
             {
-                last.next = new Node(i);
+                last.next = new NodeTwo(i);
                 last.next.prev = last;
                 last = last.next;
             }
