@@ -10,18 +10,18 @@ namespace SoftEngMidterm
     [TestClass]
     public class TestBridge
     {
-        [TestMethod]
-        public void TestNodeCreation()
-        {
-            int value = 1;
-            Node node = new Node(1);
+        //[TestMethod]
+        //public void TestNodeCreation()
+        //{
+        //    int value = 1;
+        //    Node node = new Node(1);
 
-            // Newly created node should contain the value provided
-            // and its previous and next nodes should be null
-            Assert.AreEqual(node.value, value);
-            Assert.AreEqual(node.prev, null);
-            Assert.AreEqual(node.next, null);
-        }
+        //    // Newly created node should contain the value provided
+        //    // and its previous and next nodes should be null
+        //    Assert.AreEqual(node.value, value);
+        //    Assert.AreEqual(node.prev, null);
+        //    Assert.AreEqual(node.next, null);
+        //}
 
         [TestMethod]
         public void TestDefaultStackArrayCreation()
@@ -165,86 +165,86 @@ namespace SoftEngMidterm
             Assert.AreEqual(2, stackArray.pop());
         }
 
-        [TestMethod]
-        public void TestStackListPush()
-        {
-            StackList stackList = new StackList();
+        //[TestMethod]
+        //public void TestStackListPush()
+        //{
+        //    StackList stackList = new StackList();
 
-            stackList.push(1);
+        //    stackList.push(1);
 
-            // peek returns the top of the stack (aka the value pushed)
-            Assert.AreEqual(stackList.peek(), 1);
+        //    // peek returns the top of the stack (aka the value pushed)
+        //    Assert.AreEqual(stackList.peek(), 1);
 
-            stackList.push(2);
+        //    stackList.push(2);
 
-            // ensure pushing updated properly
-            Assert.AreEqual(stackList.peek(), 2);
-           // Assert.AreEqual(stackList.last.prev.value, 1);
-        }
+        //    // ensure pushing updated properly
+        //    Assert.AreEqual(stackList.peek(), 2);
+        //   // Assert.AreEqual(stackList.last.prev.value, 1);
+        //}
 
-        [TestMethod]
-        public void TestStackListIsEmpty()
-        {
-            StackList stackList = new StackList();
+        //[TestMethod]
+        //public void TestStackListIsEmpty()
+        //{
+        //    StackList stackList = new StackList();
 
-            // nothing added, should return true
-            Assert.AreEqual(stackList.isEmpty(), true);
+        //    // nothing added, should return true
+        //    Assert.AreEqual(stackList.isEmpty(), true);
 
-            stackList.push(1);
+        //    stackList.push(1);
 
-            // something added, should return false
-            Assert.AreEqual(stackList.isEmpty(), false);
-        }
+        //    // something added, should return false
+        //    Assert.AreEqual(stackList.isEmpty(), false);
+        //}
 
-        [TestMethod]
-        public void TestStackListIsFull()
-        {
-            StackList stackList = new StackList();
+        //[TestMethod]
+        //public void TestStackListIsFull()
+        //{
+        //    StackList stackList = new StackList();
 
-            // always returns false, no max size for a stack list
-            Assert.AreEqual(stackList.isFull(), false);
-        }
+        //    // always returns false, no max size for a stack list
+        //    Assert.AreEqual(stackList.isFull(), false);
+        //}
 
-        [TestMethod]
-        public void TestStackListPeek()
-        {
-            StackList stackList = new StackList();
+        //[TestMethod]
+        //public void TestStackListPeek()
+        //{
+        //    StackList stackList = new StackList();
 
-            // peek returns -1 on empty lists
-            Assert.AreEqual(stackList.peek(), -1);
+        //    // peek returns -1 on empty lists
+        //    Assert.AreEqual(stackList.peek(), -1);
 
-            stackList.push(1);
+        //    stackList.push(1);
 
-            // peek returns the top of the stack (aka the value pushed)
-            Assert.AreEqual(stackList.peek(), 1);
-        }
+        //    // peek returns the top of the stack (aka the value pushed)
+        //    Assert.AreEqual(stackList.peek(), 1);
+        //}
 
-        [TestMethod]
-        public void TestStackListPop()
-        {
-            StackList stackList = new StackList();
+        //[TestMethod]
+        //public void TestStackListPop()
+        //{
+        //    StackList stackList = new StackList();
 
-            // pop returns -1 on empty lists
-            Assert.AreEqual(stackList.pop(), -1);
+        //    // pop returns -1 on empty lists
+        //    Assert.AreEqual(stackList.pop(), -1);
 
-            stackList.push(1);
-            stackList.push(2);
+        //    stackList.push(1);
+        //    stackList.push(2);
 
-            // pop returns the top of the stack (aka the last value pushed)
-            // and removes it from the stack 
-            Assert.AreEqual(stackList.pop(), 2);
-            Assert.AreEqual(stackList.peek(), 1);
-        }
+        //    // pop returns the top of the stack (aka the last value pushed)
+        //    // and removes it from the stack 
+        //    Assert.AreEqual(stackList.pop(), 2);
+        //    Assert.AreEqual(stackList.peek(), 1);
+        //}
 
-        [TestMethod]
-        public void TestStackListPushNegative()
-        {
-            StackList stackList = new StackList();
+        //[TestMethod]
+        //public void TestStackListPushNegative()
+        //{
+        //    StackList stackList = new StackList();
 
-            stackList.push(-2);
+        //    stackList.push(-2);
 
-            Assert.AreEqual(2, stackList.pop());
-        }
+        //    Assert.AreEqual(2, stackList.pop());
+        //}
 
 
 
