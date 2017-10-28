@@ -8,22 +8,9 @@ using System.Threading.Tasks;
 // time taken to comment/fix errors/understand 40 mins
 namespace SoftEngMidterm
 {
-    // A simple node class
-    // Contains an int value and the previous/next nodes
-    public class Node
-    {
-        public int value;
-        public Node prev, next;
-
-        public Node(int value)
-        {
-            this.value = value;
-        }
-    }
-
     // A stack implementation of an array containing int values
     // Used to encapsulate the interfaces between StackFIFO and StackHanoi
-    class StackArray
+    public class StackArray
     {
         private int[] items;
         private int size = -1;
@@ -101,63 +88,6 @@ namespace SoftEngMidterm
         }
     }
 
-    // A stack implementation of a list containing nodes with int values
-    // Independent implementation
-    class StackList
-    {
-        private Node last;
-        
-        public void push(int i)
-        {
-            // don't accept negative numbers to preserve isEmpty and pop functionality
-            if (i < 0)
-            {
-                    Console.WriteLine("A negative number was provided, converting to a positive number");
-                    i *= -1;
-            }
-            if (last == null)
-            {
-                last = new Node(i);
-            } else {
-                last.next = new Node(i);
-                last.next.prev = last;
-                last = last.next;
-            }
-        }
-
-        public bool isEmpty()
-        {
-            return last == null;
-        }
-
-        public bool isFull()
-        {
-            return false;
-        }
-
-        public int peek()
-        {
-            if (isEmpty())
-            {
-                return -1;
-            }
-
-            return last.value;
-        }
-
-        public int pop()
-        {
-            if (isEmpty())
-            {
-                return -1;
-            }
-
-            int ret = last.value;
-            last = last.prev;
-
-            return ret;
-        }
-    }
 
     // FIFO Stack (queue) that inherits StackArray methods but using a different implementation
     // c# distinction
