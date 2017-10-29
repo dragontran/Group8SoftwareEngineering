@@ -13,15 +13,17 @@ namespace SoftEngMidterm
     public class StackArray
     {
         private int[] items;
-        private int size = -1;
+        public int size { get; private set; }
 
         public StackArray()
         {
+            size = -1;
             this.items = new int[12];
         }
 
         public StackArray(int cells)
         {
+            size = -1;
             if (cells <= 0)
             {
                 Console.WriteLine("A number of 0 or less was provided for the number of cells, using the default length instead");
@@ -35,9 +37,9 @@ namespace SoftEngMidterm
         // virtual to allow children classes to override 
         public virtual void push(int i)
         {
-            if(!isFull())
+            if (!isFull)
             {
-                if (i < 0){
+                if (i < 0) {
                     Console.WriteLine("A negative number was provided, converting to a positive number");
                     i *= -1;
                 }
@@ -45,19 +47,13 @@ namespace SoftEngMidterm
             }
         }
 
-        public bool isEmpty()
-        {
-            return size == -1;
-        }
+        public bool isEmpty { get { return size == -1; } }
 
-        public bool isFull()
-        {
-            return size == items.Length - 1;
-        }
+        public bool isFull { get { return size == items.Length -1; } }
 
         public int peek()
         {
-            if (isEmpty())
+            if (isEmpty)
             {
                 return -1;
             }
@@ -69,17 +65,12 @@ namespace SoftEngMidterm
         // virtual to allow children classes to override
         public virtual int pop()
         {
-            if (isEmpty())
+            if (isEmpty)
             {
                 return -1;
             }
 
             return items[size--];
-        }
-
-        public int GetSize()
-        {
-            return size;
         }
 
         public int GetItemLength()
@@ -100,7 +91,7 @@ namespace SoftEngMidterm
         // override keyword required to replace virtual pop method from StackArray
         public override int pop()
         {
-            while(!isEmpty())
+            while(!isEmpty)
             {
                 // c# distinction
                 // super repalced by base to call parent class method
@@ -109,7 +100,7 @@ namespace SoftEngMidterm
 
             int ret = stackArray.pop();
 
-            while (!stackArray.isEmpty())
+            while (!stackArray.isEmpty)
             {
                 push(stackArray.pop());
             }
@@ -136,7 +127,7 @@ namespace SoftEngMidterm
         public override void push(int i)
         {
             //don't add a value if it is greater than the top value
-            if (!isEmpty() && i > peek())
+            if (!isEmpty && i > peek())
             {
                 totalRejected++;
             } else {
