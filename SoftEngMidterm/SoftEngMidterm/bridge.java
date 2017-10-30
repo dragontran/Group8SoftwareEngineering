@@ -2,7 +2,7 @@
 The following code can be found here:
 	https://sourcemaking.com/design_patterns/bridge/java/1
 It was used as a basis for translation to c# and has been
-provided for tracaibility
+provided for traceability
 */
 
 class Node {
