@@ -17,7 +17,7 @@ namespace DesignPatterns
             stackFactory stackArray = new stack();
 
             Assert.AreEqual((stackArray).getStackObject().GetItemLength(), new int[12].Length);
-            Assert.AreEqual((stackArray).getStackObject().GetSize(), -1);
+            Assert.AreEqual((stackArray).getStackObject().size, -1);
         }
 
         [TestMethod]

@@ -31,7 +31,7 @@ namespace SoftEngMidterm
             // A default stack array should have length 12 and it's
             // size should be set to -1
             Assert.AreEqual(stackArray.GetItemLength(), new int[12].Length);
-            Assert.AreEqual(stackArray.GetSize(), -1);
+            Assert.AreEqual(stackArray.size, -1);
         }
 
         [TestMethod]
@@ -43,7 +43,7 @@ namespace SoftEngMidterm
             // A stack array should have length the provided length of cells 
             // and it's size should be set to -1
             Assert.AreEqual(stackArray.GetItemLength(), new int[cells].Length);
-            Assert.AreEqual(stackArray.GetSize(), -1);
+            Assert.AreEqual(stackArray.size, -1);
 
             cells = -1;
             stackArray = new StackArray(cells);
@@ -51,7 +51,7 @@ namespace SoftEngMidterm
             // A stack array with cells input of 0 or below should have length 12 
             // and it's size should be set to -1
             Assert.AreEqual(stackArray.GetItemLength(), new int[12].Length);
-            Assert.AreEqual(stackArray.GetSize(), -1);
+            Assert.AreEqual(stackArray.size, -1);
         }
 
         [TestMethod]
@@ -64,7 +64,7 @@ namespace SoftEngMidterm
             // the first element of the stack array should be the first value pushed 
             // and size should be increased to 0 (from -1)
             Assert.AreEqual(stackArray.peek(), 1);
-            Assert.AreEqual(stackArray.GetSize(), 0);
+            Assert.AreEqual(stackArray.size, 0);
 
             stackArray.push(2);
 
@@ -72,13 +72,13 @@ namespace SoftEngMidterm
             // and size should be increased to 1 (from 0), 
             // and the stack array should now be full
             Assert.AreEqual(stackArray.peek(), 2);
-            Assert.AreEqual(stackArray.GetSize(), 1);
-            Assert.AreEqual(stackArray.isFull(), true);
+            Assert.AreEqual(stackArray.size, 1);
+            Assert.AreEqual(stackArray.isFull, true);
 
             stackArray.push(3);
 
             // the third value should not have been pushed because the stack is full
-            Assert.AreEqual(stackArray.GetSize(), 1);
+            Assert.AreEqual(stackArray.size, 1);
         }
 
         [TestMethod]
@@ -87,12 +87,12 @@ namespace SoftEngMidterm
             StackArray stackArray = new StackArray();
 
             // isEmpty should report true if nothing has been added
-            Assert.AreEqual(stackArray.isEmpty(), true);
+            Assert.AreEqual(stackArray.isEmpty, true);
 
             stackArray.push(1);
 
             // isEmpty should report false if something has been added
-            Assert.AreEqual(stackArray.isEmpty(), false);
+            Assert.AreEqual(stackArray.isEmpty, false);
         }
 
         [TestMethod]
@@ -102,17 +102,17 @@ namespace SoftEngMidterm
             StackArray stackArray = new StackArray(2);
 
             // Initially the stack array should not be full
-            Assert.AreEqual(stackArray.isFull(), false);
+            Assert.AreEqual(stackArray.isFull, false);
 
             stackArray.push(1);
 
             // After pushing one element the stackArray should still not be full
-            Assert.AreEqual(stackArray.isFull(), false);
+            Assert.AreEqual(stackArray.isFull, false);
 
             stackArray.push(1);
 
             // After adding two elements the stack array should be full
-            Assert.AreEqual(stackArray.isFull(), true);
+            Assert.AreEqual(stackArray.isFull, true);
         }
 
         [TestMethod]
@@ -131,7 +131,7 @@ namespace SoftEngMidterm
             // peeking on a stack array retuns the element at top of the stack
             // Size should be 1 peeking (because it is not changed)
             Assert.AreEqual(stackArray.peek(), 2);
-            Assert.AreEqual(stackArray.GetSize(), 1);
+            Assert.AreEqual(stackArray.size, 1);
 
         }
 
@@ -151,7 +151,7 @@ namespace SoftEngMidterm
             // popping on a stack array retuns the element at top of the stack after "removal"
             // Size should be 0 after popping (decremented from 1 after the 2 pushes)
             Assert.AreEqual(stackArray.pop(), 2);
-            Assert.AreEqual(stackArray.GetSize(), 0);
+            Assert.AreEqual(stackArray.size, 0);
 
         }
 
