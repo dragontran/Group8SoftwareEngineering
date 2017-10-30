@@ -82,6 +82,17 @@ namespace SoftEngMidterm
         }
 
         [TestMethod]
+        public void TestStackArrayPushNegative()
+        {
+            StackArray stackArray = new StackArray();
+
+            stackArray.push(-2);
+
+            // negative values should be converted to positive values when being pushed
+            Assert.AreEqual(2, stackArray.pop());
+        }
+
+        [TestMethod]
         public void TestStackArrayIsEmpty()
         {
             StackArray stackArray = new StackArray();
@@ -155,15 +166,6 @@ namespace SoftEngMidterm
 
         }
 
-        [TestMethod]
-        public void TestStackArrayushNegative()
-        {
-            StackArray stackArray = new StackArray();
-
-            stackArray.push(-2);
-
-            Assert.AreEqual(2, stackArray.pop());
-        }
 
         //[TestMethod]
         //public void TestStackListPush()
@@ -247,16 +249,6 @@ namespace SoftEngMidterm
         //}
 
 
-
-        [TestMethod]
-        public void TestStackHanoiReportRejected()
-        {
-            StackHanoi stackHanoi = new StackHanoi();
-
-            // initially 0 are rejected
-            Assert.AreEqual(stackHanoi.reportRejected(), 0);
-        }
-
         [TestMethod]
         public void TestStackFIFOPop()
         {
@@ -275,6 +267,15 @@ namespace SoftEngMidterm
             Assert.AreEqual(stackFIFO.pop(), 3);
         }
 
+
+        [TestMethod]
+        public void TestStackHanoiReportRejected()
+        {
+            StackHanoi stackHanoi = new StackHanoi();
+
+            // initially 0 are rejected
+            Assert.AreEqual(stackHanoi.reportRejected(), 0);
+        }
 
         [TestMethod]
         public void TestStackHanoiPush()
