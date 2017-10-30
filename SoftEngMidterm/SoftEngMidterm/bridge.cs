@@ -4,8 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-// time taken to convert java to c# 40 mins (initially)
-// time taken to comment/fix errors/understand 40 mins
+// Student 5: Convert java to c# 1 hour 15 mins of dev time
+// Student 5: Comment code to show c# distinctions 30 mins of dev time
+// Student 5: Modify class to satisfy tests 1 hour of dev time
 namespace SoftEngMidterm
 {
     // A stack implementation of an array containing int values

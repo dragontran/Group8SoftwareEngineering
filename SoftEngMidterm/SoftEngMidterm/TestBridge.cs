@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace SoftEngMidterm
 {
+    // Student 5: Write/comment all initial tests 2 hours 15 mins of dev time
     // Student 3: 45 minutes of dev time
     [TestClass]
     public class TestBridge
