@@ -3,7 +3,8 @@
 namespace SoftEngMidterm
 {
 
-    // dragon dev time for factory 45 minutes
+    // student 1 dev time for factory 45 minutes
+    // student 3 dev time for factory 15 minutes
     interface stackFactory {
         StackArray getStackObject();
     }

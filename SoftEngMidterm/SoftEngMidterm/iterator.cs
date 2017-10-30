@@ -2,6 +2,7 @@
 
 namespace SoftEngMidterm
 {
+    // Student 3 cleaned up code and modified to support a generic type: took 1 hour of development time
     public class IteratorSet<T>
     {
         public List<T> list { get; private set; }
