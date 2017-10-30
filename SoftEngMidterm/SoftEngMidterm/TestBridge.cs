@@ -5,10 +5,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+// Student 5: Write/comment all initial tests 2 hours 15 mins of dev time
+// Student 3: 45 minutes of dev time    
 namespace SoftEngMidterm
 {
-    // Student 5: Write/comment all initial tests 2 hours 15 mins of dev time
-    // Student 3: 45 minutes of dev time
     [TestClass]
     public class TestBridge
     {
@@ -25,6 +25,7 @@ namespace SoftEngMidterm
         //    Assert.AreEqual(node.next, null);
         //}
 
+        // T1
         [TestMethod]
         public void TestDefaultStackArrayCreation()
         {
@@ -36,6 +37,7 @@ namespace SoftEngMidterm
             Assert.AreEqual(stackArray.size, -1);
         }
 
+        // T2
         [TestMethod]
         public void TestStackArrayWithProvidedNumberOfCells()
         {
@@ -56,6 +58,7 @@ namespace SoftEngMidterm
             Assert.AreEqual(stackArray.size, -1);
         }
 
+        // T3
         [TestMethod]
         public void TestStackArrayPush()
         {
@@ -83,6 +86,7 @@ namespace SoftEngMidterm
             Assert.AreEqual(stackArray.size, 1);
         }
 
+        // T4
         [TestMethod]
         public void TestStackArrayPushNegative()
         {
@@ -94,6 +98,7 @@ namespace SoftEngMidterm
             Assert.AreEqual(2, stackArray.pop());
         }
 
+        // T5
         [TestMethod]
         public void TestStackArrayIsEmpty()
         {
@@ -108,6 +113,7 @@ namespace SoftEngMidterm
             Assert.AreEqual(stackArray.isEmpty, false);
         }
 
+        // T6
         [TestMethod]
         public void TestStackArrayIsFull()
         {
@@ -128,6 +134,7 @@ namespace SoftEngMidterm
             Assert.AreEqual(stackArray.isFull, true);
         }
 
+        // T7
         [TestMethod]
         public void TestStackArrayPeek()
         {
@@ -148,6 +155,7 @@ namespace SoftEngMidterm
 
         }
 
+        // T8
         [TestMethod]
         public void TestStackArrayPop()
         {
@@ -250,7 +258,7 @@ namespace SoftEngMidterm
         //    Assert.AreEqual(2, stackList.pop());
         //}
 
-
+        // T9
         [TestMethod]
         public void TestStackFIFOPop()
         {
@@ -269,7 +277,7 @@ namespace SoftEngMidterm
             Assert.AreEqual(stackFIFO.pop(), 3);
         }
 
-
+        // T10
         [TestMethod]
         public void TestStackHanoiReportRejected()
         {
@@ -279,6 +287,7 @@ namespace SoftEngMidterm
             Assert.AreEqual(stackHanoi.reportRejected(), 0);
         }
 
+        // T11
         [TestMethod]
         public void TestStackHanoiPush()
         {
