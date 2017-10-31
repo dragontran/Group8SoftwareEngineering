@@ -5,6 +5,7 @@ using SoftEngMidterm;
 
 namespace DesignPatterns
 {
+    // student 1 dev time for factory tests 30 minutes
     [TestClass]
     public class TestFactoryStackArray
     {
