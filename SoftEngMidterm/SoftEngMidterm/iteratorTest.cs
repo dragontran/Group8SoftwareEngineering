@@ -4,9 +4,13 @@ using SoftEngMidterm;
 
 namespace DesignPatterns
 {
+
+    //  Student 2 dev time for Iterator tests 30 mins
+
     [TestClass]
     public class TestIntSet
     {
+        // T14
         [TestMethod]
         public void TestIterationFirstWithOneElement()
         {
@@ -20,6 +24,7 @@ namespace DesignPatterns
             Assert.AreEqual(it1.currentValue, 2);
         }
 
+        // T15
         [TestMethod]
         public void TestIterationFirstWithMoreThanOneElement()
         {
@@ -34,6 +39,7 @@ namespace DesignPatterns
             Assert.AreEqual(it1.currentValue, 2);
         }
 
+        // T16
         [TestMethod]
         public void TestIterationIsDoneWithOneElement()
         {
@@ -57,6 +63,7 @@ namespace DesignPatterns
 
         }
 
+        // T17
         [TestMethod]
         public void TestIterationNextAndIsDoneWithTwoElement()
         {
@@ -84,6 +91,7 @@ namespace DesignPatterns
 
         }
 
+        // T18
         [TestMethod]
         public void TestIntSetGetListFromSet()
         {
@@ -95,6 +103,7 @@ namespace DesignPatterns
             Assert.AreEqual(l, set.getList());
         }
 
+        // T19
         [TestMethod]
         public void TestIntSetIsMember()
         {

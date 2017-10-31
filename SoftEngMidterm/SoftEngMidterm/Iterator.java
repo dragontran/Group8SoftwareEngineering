@@ -1,29 +1,37 @@
+// J17
 class IntSet {
+    // J18
     private Hashtable ht = new Hashtable();
 
     // 1. Design an internal "iterator" class for the "collection" class
+    // J19
     public static class Iterator {
         private IntSet set;
         private Enumeration e;
         private Integer current;
-
+        
+        // J20
         public Iterator(IntSet in) {
             set = in;
         }
 
+        // J21
         public void first() {
             e = set.ht.keys();
             next();
         }
 
+        // J22
         public boolean isDone() {
             return current == null;
         }
 
+        // J23
         public int currentItem() {
             return current;
         }
 
+        // J24
         public void  next() {
             try {
                 current = (Integer)e.nextElement();
@@ -33,19 +41,23 @@ class IntSet {
         }
     }
 
+    // J25
     public void add(int in) {
         ht.put(in, "null");
     }
 
+    // J26
     public boolean isMember(int i) {
         return ht.containsKey(i);
     }
 
+    // J27
     public Hashtable getHashtable() {
         return ht;
     }
 
     // 2. Add a createIterator() member to the collection class
+    // J28
     public Iterator createIterator()  {
         return new Iterator(this);
     }
