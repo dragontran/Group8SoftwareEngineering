@@ -1,13 +1,10 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using SoftEngMidterm;
+
 
 // Student 5: Write/comment all initial tests 2 hours 15 mins of dev time
 // Student 3: 45 minutes of dev time    
-namespace SoftEngMidterm
+namespace DesignPatterns
 {
     [TestClass]
     public class TestBridge

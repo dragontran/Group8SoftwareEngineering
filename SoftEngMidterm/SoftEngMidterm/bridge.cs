@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 // Student 5: Convert java to c# 1 hour 15 mins of dev time
 // Student 5: Comment code to show c# distinctions 30 mins of dev time

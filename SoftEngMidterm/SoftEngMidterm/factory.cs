@@ -1,11 +1,9 @@
-﻿using System;
+﻿// student 1 dev time for factory 45 minutes
+// student 3 dev time for factory 15 minutes
 
 namespace SoftEngMidterm
 {
 
-    // student 1 dev time for factory 45 minutes
-    // student 3 dev time for factory 15 minutes
-    
     // interface for factory method 
     // C14
     interface stackFactory {
