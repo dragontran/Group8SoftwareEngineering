@@ -1,13 +1,9 @@
 ﻿// student 1 dev time for factory 45 minutes
+// student 4 dev time for factory 45 minutes
 // student 3 dev time for factory 15 minutes
 
 namespace SoftEngMidterm
 {
-
-    // student 1 dev time for factory 45 minutes
-    // student 4 dev time for factory 45 minutes
-    // student 3 dev time for factory 15 minutes
-
     // interface will showcase factory design pattern principles.
     // will allow the creation of StackArray objects without calling on "new".
     // interface for factory method 
