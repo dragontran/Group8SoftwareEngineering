@@ -1,3 +1,4 @@
+// C14
 interface ImageReader {
     DecodedImage getDecodeImage();
 }
@@ -15,6 +16,7 @@ class DecodedImage {
     }
 }
 
+// c16 ???
 class GifReader implements ImageReader {
     private DecodedImage decodedImage;
 
@@ -28,6 +30,7 @@ class GifReader implements ImageReader {
     }
 }
 
+// c17
 class JpegReader implements ImageReader {
     private DecodedImage decodedImage;
 
