@@ -11,17 +11,20 @@ namespace SoftEngMidterm
 {
     // A stack implementation of an array containing int values
     // Used to encapsulate the interfaces between StackFIFO and StackHanoi
+    // C1
     public class StackArray
     {
         private int[] items;
         public int size { get; private set; }
 
+        // C2
         public StackArray()
         {
             size = -1;
             this.items = new int[12];
         }
 
+        // C3
         public StackArray(int cells)
         {
             size = -1;
@@ -36,6 +39,7 @@ namespace SoftEngMidterm
 
         // c# distinction
         // virtual to allow children classes to override 
+        // C4
         public virtual void push(int i)
         {
             if (!isFull)
@@ -48,10 +52,13 @@ namespace SoftEngMidterm
             }
         }
 
+        // C5
         public bool isEmpty { get { return size == -1; } }
 
+        // C6
         public bool isFull { get { return size == items.Length -1; } }
 
+        // C7
         public int peek()
         {
             if (isEmpty)
@@ -64,6 +71,7 @@ namespace SoftEngMidterm
 
         // c# distinction
         // virtual to allow children classes to override
+        // C8
         public virtual int pop()
         {
             if (isEmpty)
@@ -84,12 +92,14 @@ namespace SoftEngMidterm
     // FIFO Stack (queue) that inherits StackArray methods but using a different implementation
     // c# distinction
     // extends replaced with : to allow for inheritance
+    // C9
     class StackFIFO : StackArray
     {
         private StackArray stackArray = new StackArray();
         
         // c# distinction
         // override keyword required to replace virtual pop method from StackArray
+        // C10
         public override int pop()
         {
             while(!isEmpty)
@@ -114,10 +124,12 @@ namespace SoftEngMidterm
     // that inherits StackArray methods but uses a different impementation
     // c# distinction
     // extends replaced with : to allow for inheritance
+    // C11
     class StackHanoi : StackArray
     {
         private int totalRejected = 0;
         
+        // C12
         public int reportRejected()
         {
             return totalRejected;
@@ -125,6 +137,7 @@ namespace SoftEngMidterm
 
         // c# distinction
         // override keyword required to replace virtual push method from StackArray
+        // C13
         public override void push(int i)
         {
             //don't add a value if it is greater than the top value

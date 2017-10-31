@@ -5,6 +5,7 @@ It was used as a basis for translation to c# and has been
 provided for traceability
 */
 
+// Student 5: Copy/paste code from sourcemaking.com and label for tracability 5 min of dev time
 class Node {
     public int value;
     public Node prev, next;
@@ -14,32 +15,39 @@ class Node {
     }
 }
 
+// J1
 class StackArray {
     private int[] items;
     private int size = -1;
 
+    // J2
     public StackArray() {
         this.items = new int[12];
     }
 
+    // J3
     public StackArray(int cells) {
         this.items = new int[cells];
     }
 
+    // J4
     public void push(int i) {
         if (!isFull()) {
             items[++size] = i;
         }
     }
 
+    // J5
     public boolean isEmpty() {
         return size == -1;
     }
 
+    // J6
     public boolean isFull() {
         return size == items.length - 1;
     }
 
+    // J7
     public int top() {
         if (isEmpty()) {
             return -1;
@@ -47,6 +55,7 @@ class StackArray {
         return items[size];
     }
 
+    // J8
     public int pop() {
         if (isEmpty()) {
             return -1;
@@ -88,8 +97,10 @@ class StackList {
     }
 }
 
+// J9
 class StackFIFO extends StackArray {
     private StackArray stackArray = new StackArray();
+    // J10
     public int pop() {
         while (!isEmpty()) {
             stackArray.push(super.pop());
@@ -102,11 +113,14 @@ class StackFIFO extends StackArray {
     }
 }
 
+// J11
 class StackHanoi extends StackArray {
     private int totalRejected = 0;
+    // J12
     public int reportRejected() {
         return totalRejected;
     }
+    // J13
     public void push(int in) {
         if (!isEmpty() && in > top()) {
             totalRejected++;
