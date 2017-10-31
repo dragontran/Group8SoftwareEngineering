@@ -5,11 +5,11 @@ using SoftEngMidterm;
 
 namespace DesignPatterns
 {
-
     [TestClass]
     public class TestFactoryStackArray
     {
 
+        // T1
         [TestMethod]
         public void TestFactoryStackArrayCreation()
         {
@@ -20,6 +20,7 @@ namespace DesignPatterns
             Assert.AreEqual((stackArray).getStackObject().size, -1);
         }
 
+        // T2 
         [TestMethod]
         public void TestGetStackObject()
         {
