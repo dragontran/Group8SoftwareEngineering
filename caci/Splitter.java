@@ -7,7 +7,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 public class Splitter {	
-	private static byte PART_SIZE = 100;
+	private static long PART_SIZE = 1024*100; // Read in 100kb  sections
 	
 	public static void split(String filename){
 		try {
@@ -18,8 +18,10 @@ public class Splitter {
 			int fileSize = (int) inputFile.length();
 			int nChunks = 0;
 			int read = 0; 
-			int readLength = PART_SIZE;
+			int readLength = (int)PART_SIZE;
 			byte[] byteChunkPart;
+			
+			System.out.println(filename + " is " + inputFile.length() + " bytes long");
 			
 			fis = new FileInputStream(inputFile);
 			while (fileSize > 0) {
