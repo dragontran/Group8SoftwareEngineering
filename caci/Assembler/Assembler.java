@@ -1,15 +1,17 @@
-package caci;
+package Assembler;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Assembler {
 
 	public static void assemble(String filename, String newfile, int numparts){
-
+		Instant start = Instant.now();
 		File ofile = new File(newfile);
 		FileOutputStream fos;
 		FileInputStream fis;
@@ -39,8 +41,11 @@ public class Assembler {
 				fis.close();
 				fis = null;
 			}
+			Instant end = Instant.now();
 			System.out.println("Files combined successfully");
 			System.out.println("Combined file saved as "+ofile.getName());
+			Duration diff = Duration.between(start, end);
+			System.out.println("Time elapsed: " + diff.toMillis() + " ms");
 			fos.close();
 			fos = null;
 		}catch (Exception e){

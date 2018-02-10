@@ -1,4 +1,4 @@
-package caci;
+package Splitter;
 
 import java.io.File;
 import java.io.FileInputStream;

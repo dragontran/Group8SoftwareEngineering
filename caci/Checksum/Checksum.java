@@ -1,4 +1,4 @@
-package caci.Checksum;
+package Checksum;
 
 import java.io.File;
 import java.io.FileInputStream;
