@@ -8,6 +8,8 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
+import Checksum.Checksum;
+
 public class Assembler {
 
 	public static void assemble(String filename, String newfile, int numparts){
@@ -46,6 +48,8 @@ public class Assembler {
 			System.out.println("Combined file saved as "+ofile.getName());
 			Duration diff = Duration.between(start, end);
 			System.out.println("Time elapsed: " + diff.toMillis() + " ms");
+			Checksum checksum = new Checksum(ofile);
+			System.out.println(newfile + " checksum: " + checksum.getCheckSum());
 			fos.close();
 			fos = null;
 		}catch (Exception e){
