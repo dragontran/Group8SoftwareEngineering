@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
 
+import Checksum.Checksum;
+
 public class Splitter {	
 
 	final static int MAX_SPLIT = 500000000;
@@ -26,9 +28,10 @@ public class Splitter {
 			int read = 0; 
 			int readLength = (int)splitSize;
 			byte[] byteChunkPart;
-
+			
+			Checksum inputChecksum = new Checksum(inputFile);
+			System.out.println(filename + " checksum: " + inputChecksum.getCheckSum());
 			System.out.println(filename + " is " + inputFile.length() + " bytes long");
-
 
 			fis = new FileInputStream(inputFile);
 			while (fileSize > 0) {
@@ -45,6 +48,10 @@ public class Splitter {
 				filePart.write(byteChunkPart);
 				filePart.flush();
 				filePart.close();
+				
+				Checksum checksum = new Checksum(byteChunkPart);
+				System.out.println(newFileName + " checksum: " + checksum.getCheckSum());
+				
 				byteChunkPart = null;
 				filePart = null;
 				nChunks++;
