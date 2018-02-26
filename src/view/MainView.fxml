@@ -9,13 +9,13 @@
       <TabPane fx:id="tabPane" layoutX="158.0" layoutY="45.0" prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" tabMinHeight="20.0" tabMinWidth="55.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <tabs>
         <Tab fx:id="splitTab" closable="false" text="Split">
-          <fx:include fx:id="splitTabPage" source="SplitTabView.fxml" />
+          <fx:include fx:id="splitTab" source="SplitTabView.fxml" />
         </Tab>
         <Tab fx:id="assembleTab" text="Join">
-          <fx:include fx:id="assembleTabPage" source="AssembleTabView.fxml" />
+          <fx:include fx:id="assembleTab" source="AssembleTabView.fxml" />
         </Tab>
         <Tab text="Help">
-          <fx:include fx:id="helpTabPage" source="HelpTabView.fxml" />
+          <fx:include fx:id="helpTab" source="HelpTabView.fxml" />
         </Tab>
         </tabs>
       </TabPane>

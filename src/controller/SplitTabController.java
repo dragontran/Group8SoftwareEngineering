@@ -1,8 +1,8 @@
 package controller;
 
-
 import java.io.File;
-
+import java.util.Observable;
+import java.util.Observer;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -14,7 +14,7 @@ import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 
 
-public class SplitTabController {
+public class SplitTabController implements Observer{
 
     @FXML
     private TextField srcTextField;
@@ -48,60 +48,24 @@ public class SplitTabController {
 
     @FXML
     private Button splitBtn;
+    
+	private MainController mainController;
 
     @FXML
     void getOutDirectory(ActionEvent event) {
+    	
     	// open directory chooser 
     	DirectoryChooser dirChooser = new DirectoryChooser();
     	dirChooser.setTitle("Select Output Directory");
     	
     	// set local path as default path
-    	File defaultDirectory = new File(System.getProperty("user.dir"));
-    	dirChooser.setInitialDirectory(defaultDirectory);
-    	
-    	// show chooser
-    	File file = dirChooser.showDialog(null);
-    	if(file != null) {
-    		System.out.println(file.getAbsolutePath());
-    	}
-    }
-    
- 
-    @FXML
-    void getSrcFile(ActionEvent event) {
-    	// open file chooser
-    	FileChooser fileChooser = new FileChooser();
-    	fileChooser.setTitle("Select File");
-    	
-    	// set local path as default path
-    	File defaultDirectory = new File(System.getProperty("user.dir"));
-    	fileChooser.setInitialDirectory(defaultDirectory);
-    	
-    	// show chooser
-    	File file = fileChooser.showOpenDialog(null);
-    	if(file != null) {
-    		System.out.println(file.getAbsolutePath());
-    	}
-    }
-    
-    @FXML
-    void splitFile(ActionEvent event) {
-
-    }
-    
-    @FXML
-    public void initialize() {
-    	bytesSizeComboBox.getItems().clear();
-    	bytesSizeComboBox.getItems().addAll("bytes","kilobytes" ,"megabytes", "gigabytes");
-    	bytesSizeComboBox.getSelectionModel().select("megabytes");
-    }
-
-		// set local path as default path
 		File defaultDirectory = new File(System.getProperty("user.dir"));
 		dirChooser.setInitialDirectory(defaultDirectory);
 
 		// show chooser
 		File file = dirChooser.showDialog(null);
+		
+		// TODO: error handling
 		if (file != null) {
 			// update split output directory path in model
 			mainController.model().setSplitOutputPath(file.getAbsolutePath());
@@ -162,4 +126,10 @@ public class SplitTabController {
 
 	}
 
+	// set main controller
+	public void injectMainController(MainController mainController) {
+		this.mainController = mainController;
+	}
+
 }
+

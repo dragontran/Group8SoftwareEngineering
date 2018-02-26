@@ -1,24 +1,21 @@
 package application;
-
 import java.io.IOException;
-import java.net.URL;
-
+import controller.MainController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import model.Model;
 
 public class Main extends Application {
 
 	@Override
 	public void start(Stage primaryStage) throws IOException {
 		// load main tab pane view
-		Parent root = FXMLLoader.load(getClass().getResource("/view/MainView.fxml"));
+		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/MainView.fxml"));
 		
 		// create new scene with view
-		Scene scene = new Scene(root);
+		Scene scene = new Scene(fxmlLoader.load());
 
 		// set stage & options	
 		primaryStage.setScene(scene);
@@ -26,6 +23,11 @@ public class Main extends Application {
 		primaryStage.setTitle("I hate this");
 		
 		// set model
+		MainController mainController = (MainController) fxmlLoader.getController();
+		mainController.setModel(new Model());
+		
+		
+		// show stage
 		primaryStage.show();
 
 	}
