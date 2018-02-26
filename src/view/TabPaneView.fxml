@@ -11,6 +11,9 @@
         <Tab fx:id="splitTab" closable="false" text="Split">
           <fx:include fx:id="splitTabPage" source="SplitTabView.fxml" />
         </Tab>
+        <Tab fx:id="assembleTab" text="Join">
+          <fx:include fx:id="assembleTabPage" source="AssembleTabView.fxml" />
+        </Tab>
         <Tab text="Help" >
           <fx:include fx:id="helpTabPage" source="HelpTabView.fxml" />
         </Tab>
