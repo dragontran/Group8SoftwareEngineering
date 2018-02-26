@@ -14,14 +14,18 @@ public class Main extends Application {
 
 	@Override
 	public void start(Stage primaryStage) throws IOException {
-		Parent root = FXMLLoader.load(getClass().getResource("/view/TabPaneView.fxml"));
+		// load main tab pane view
+		Parent root = FXMLLoader.load(getClass().getResource("/view/MainView.fxml"));
+		
+		// create new scene with view
 		Scene scene = new Scene(root);
 
-		// setting the stage
-		
+		// set stage & options	
 		primaryStage.setScene(scene);
 		primaryStage.setResizable(false);
 		primaryStage.setTitle("I hate this");
+		
+		// set model
 		primaryStage.show();
 
 	}
