@@ -1,8 +1,8 @@
-package controller;
+package main.java.com.caci.controller;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.TabPane;
-import model.Model;
+import main.java.com.caci.model.Model;
 
 public class MainController {
 

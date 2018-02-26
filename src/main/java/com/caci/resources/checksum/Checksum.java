@@ -1,4 +1,4 @@
-package resources.checksum;
+package main.java.com.caci.resources.checksum;
 
 import java.io.File;
 import java.io.FileInputStream;

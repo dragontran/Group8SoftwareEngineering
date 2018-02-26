@@ -1,4 +1,4 @@
-package model;
+package main.java.com.caci.model;
 
 import java.util.Observable;
 

@@ -1,8 +1,11 @@
-package resources.checksum;
+package test.java.com.caci.resources.checksum;
 
-import org.junit.jupiter.api.*;
+
+//import org.junit.jupiter.api.*;
+import org.junit.*;
 import java.io.File;
 import java.io.IOException;
+import main.java.com.caci.resources.checksum.*;
 
 public class ChecksumTest {
 

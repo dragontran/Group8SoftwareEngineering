@@ -1,4 +1,4 @@
-package resources.splitter;
+package main.java.com.caci.resources.splitter;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -9,7 +9,7 @@ import java.io.PrintWriter;
 import java.time.Duration;
 import java.time.Instant;
 
-import resources.checksum.Checksum;
+import main.java.com.caci.resources.checksum.*;
 
 public class Splitter {	
 

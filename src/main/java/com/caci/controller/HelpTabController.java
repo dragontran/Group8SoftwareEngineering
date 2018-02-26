@@ -2,7 +2,7 @@
  * Sample Skeleton for 'HelpTabView.fxml' Controller Class
  */
 
-package controller;
+package main.java.com.caci.controller;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;

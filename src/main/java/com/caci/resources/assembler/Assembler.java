@@ -1,4 +1,4 @@
-package resources.assembler;
+package main.java.com.caci.resources.assembler;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -12,7 +12,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
-import resources.checksum.Checksum;
+import main.java.com.caci.resources.checksum.*;
 
 public class Assembler {
 

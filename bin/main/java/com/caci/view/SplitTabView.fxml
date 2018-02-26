@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="373.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/9.0.1" fx:controller="controller.SplitTabController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="373.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/9.0.1" fx:controller="main.java.com.caci.controller.SplitTabController">
   <children>
     <Text layoutX="31.0" layoutY="41.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Source File:" AnchorPane.leftAnchor="35.0" AnchorPane.topAnchor="20.0" />
     <TextField fx:id="srcTextField" editable="false" layoutX="35.0" layoutY="60.0" prefHeight="25.0" prefWidth="465.0" AnchorPane.leftAnchor="25.0" AnchorPane.rightAnchor="110.0" AnchorPane.topAnchor="40.0" />
