@@ -1,3 +1,5 @@
+package main.java.com.caci.resources.splitter;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -22,13 +24,13 @@ import java.time.Instant;
 
 public class FastSplit {
 	// File channels do get closed ... maybe
-	public static void main(String[] args) throws IOException {
-
-		System.out.println("Hey");
-		split("C:\\Users\\Dragon\\Desktop\\test\\game.iso");
-		// calculateChecksums("hey", "C:\\Users\\Dragon\\Desktop\\test\\");
-
-	}
+	// public static void main(String[] args) throws IOException {
+	//
+	// System.out.println("Hey");
+	// split("C:\\Users\\Dragon\\Desktop\\test\\game.iso");
+	// // calculateChecksums("hey", "C:\\Users\\Dragon\\Desktop\\test\\");
+	//
+	// }
 
 	private static void closeChannel(FileChannel channel) {
 		if (channel != null) {
