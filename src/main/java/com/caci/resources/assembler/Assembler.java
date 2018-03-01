@@ -43,9 +43,9 @@ public class Assembler {
 			br.close();
 			fr.close();
 		} catch (FileNotFoundException e){
-			e.printStackTrace();
+			System.out.println(filename + ".checksums.csv" + " not found :(");
 		} catch (IOException e){
-			e.printStackTrace();
+			System.out.println("IOException :(");
 		}
 
 		System.out.println("Combining files: "+filename+".part0 to "+filename+".part"+numparts);
@@ -53,6 +53,7 @@ public class Assembler {
 		try {
 			fos = new FileOutputStream(ofile,true);
 
+			int i = 0;
 			for (File file : list) {
 				fis = new FileInputStream(file);
 				fileBytes = new byte[(int) file.length()];
@@ -61,9 +62,20 @@ public class Assembler {
 				assert(bytesRead == (int) file.length());
 				fos.write(fileBytes);
 				fos.flush();
-				fileBytes = null;
 				fis.close();
+				
+				// Ensure checksums match
+				Checksum checksum = new Checksum(fileBytes);
+				if (checksum.getCheckSum() != checksums.get(i+1)){
+					System.out.println("Part " + i + " checksum does not match saved checksum from split");
+					System.out.println("Part " + i + " current checksum: " + checksum.getCheckSum());
+					System.out.println("Part " + i + " saved checksum: " + checksums.get(i+1));
+					// probably exit
+				}
+				
+				fileBytes = null;
 				fis = null;
+				i++;
 			}
 			Instant end = Instant.now();
 			System.out.println("Files combined successfully");
@@ -79,8 +91,10 @@ public class Assembler {
 			
 			fos.close();
 			fos = null;
-		}catch (Exception e){
-			e.printStackTrace();
+		} catch (FileNotFoundException e){
+			System.out.println(filename + " part not found :(");
+		} catch (IOException e){
+			System.out.println("IOException");
 		}
 	}
 }

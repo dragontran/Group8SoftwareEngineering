@@ -66,13 +66,13 @@ public class Splitter {
 			System.out.println(inputFile.getName() + " was split into " + (nChunks-1) + " parts");
 			Duration diff = Duration.between(start, end);
 			System.out.println("Time elapsed: " + diff.toMillis() + " ms");
-			
+
 			pw.close();
 			fis.close();
 		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+			System.out.println("File " + filename + " not found :(");
 		} catch (IOException e) {
-			e.printStackTrace();
+			System.out.println("IOException during split");
 		}
 	}
 
