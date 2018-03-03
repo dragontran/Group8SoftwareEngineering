@@ -32,8 +32,9 @@ public class MainController {
 
 	@FXML
 	void initialize() {
+		// inject main controller into subtab controllers
 		splitTabController.injectMainController(this);
-		// assembleTabController.setParentController(this);
-		// helpTabController.setParentController(this);
+		// assembleTabController.injectMainController(this);
+		// helpTabController.injectMainController(this);
 	}
 }

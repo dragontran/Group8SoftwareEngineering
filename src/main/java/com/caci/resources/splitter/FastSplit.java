@@ -10,8 +10,8 @@ import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.Duration;
-import java.time.Instant;
+
+import main.java.com.caci.resources.checksum.Checksum;
 
 // TODO: adapt / generalize to split class
 

@@ -13,6 +13,11 @@ import javafx.scene.control.TextField;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 
+/*
+ * TODO: 
+ * 	disable main window access when file/directory chooser is open
+ * */
+
 
 public class SplitTabController implements Observer{
 
@@ -70,7 +75,6 @@ public class SplitTabController implements Observer{
 			// update split output directory path in model
 			mainController.model().setSplitOutputPath(file.getAbsolutePath());
 		}
-
 	}
 
 	@FXML
