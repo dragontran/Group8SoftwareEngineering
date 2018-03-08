@@ -13,6 +13,7 @@ import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import main.java.com.caci.model.Model;
 import main.java.com.caci.resources.checksum.Checksum;
 
 // TODO: adapt / generalize to split class
@@ -44,8 +45,9 @@ public class FastSplit {
 		}
 	}
 
-	public static void split(File splitInputFile, File splitOutputDir, long inputSize, boolean parts)
+	public static void split(File splitInputFile, File splitOutputDir, long inputSplitSize, boolean parts, Model model)
 			throws IOException, FileNotFoundException, FileAlreadyExistsException {
+		Model model1 = model;
 
 		// input file name
 		File source = splitInputFile;
@@ -83,15 +85,15 @@ public class FastSplit {
 			sourceChannel = new FileInputStream(source).getChannel();
 
 			// file parts
-			long splitSize = 0; // = 145997824;
-			// // calculate number of chunks
-			double numberOfChunks = 0.0; // = Math.ceil(sourceChannel.size() / (double) splitSize);
+			long splitSize = 0;
+			// calculate number of chunks
+			double numberOfChunks = 0.0;
 
 			if (parts) {
-				numberOfChunks = inputSize;
+				numberOfChunks = inputSplitSize;
 				splitSize = (long) Math.ceil(sourceChannel.size() / numberOfChunks);
 			} else {
-				splitSize = inputSize;
+				splitSize = inputSplitSize;
 				numberOfChunks = Math.ceil(sourceChannel.size() / (double) splitSize);
 			}
 
@@ -152,9 +154,10 @@ public class FastSplit {
 						// maximum bytes that should be read from current byte buffer
 						int bytesToWrite = (int) Math.min(buffer.remaining(), chunkBytesFree);
 
-						System.out.println(String.format(
-								"Byte buffer has %d remaining bytes; chunk has %d bytes free; writing up to %d bytes to chunk %d",
-								buffer.remaining(), chunkBytesFree, bytesToWrite, outputChunkNumber));
+						// System.out.println(String.format(
+						// "Byte buffer has %d remaining bytes; chunk has %d bytes free; writing up to
+						// %d bytes to chunk %d",
+						// buffer.remaining(), chunkBytesFree, bytesToWrite, outputChunkNumber));
 
 						// set limit in buffer up to where bytes can be read
 						buffer.limit(bytesWrittenFromBuffer + bytesToWrite);
@@ -165,9 +168,17 @@ public class FastSplit {
 						outputChunkBytesWritten += bytesWritten;
 						bytesWrittenFromBuffer += bytesWritten;
 						totalBytesWritten += bytesWritten;
-						System.out.println(String.format(
-								"Wrote %d to chunk; %d bytes written to chunk so far; %d bytes written from buffer so far; %d bytes written in total",
-								bytesWritten, outputChunkBytesWritten, bytesWrittenFromBuffer, totalBytesWritten));
+
+						// TODO test;
+						model1.setProgress(((double) totalBytesWritten / (double) sourceChannel.size()));
+						// System.out.println( totalBytesWritten + " " + sourceChannel.size() + " " +
+						// ((double)totalBytesWritten / (double)sourceChannel.size()));
+
+						// System.out.println(String.format(
+						// "Wrote %d to chunk; %d bytes written to chunk so far; %d bytes written from
+						// buffer so far; %d bytes written in total",
+						// bytesWritten, outputChunkBytesWritten, bytesWrittenFromBuffer,
+						// totalBytesWritten));
 
 						// reset limit
 						buffer.limit(bytesRead);

@@ -35,7 +35,7 @@ public class SplitTabController implements Observer {
 	private Button outBrowseBtn;
 
 	@FXML
-	private ProgressBar statusBar;
+	private ProgressBar progressBar;
 
 	@FXML
 	private RadioButton bytesRadioBtn;
@@ -130,7 +130,8 @@ public class SplitTabController implements Observer {
 			System.out.println(bytesTextField.getText() + " " + bytesSizeComboBox.getValue());
 			switch (bytesSizeComboBox.getValue()) {
 			case "kilobytes":
-				prefix = 1024;;
+				prefix = 1024;
+				;
 				break;
 			case "megabytes":
 				prefix = 1048576;
@@ -141,9 +142,7 @@ public class SplitTabController implements Observer {
 			default:
 				break;
 			}
-			
-			
-			
+
 			mainController.model().splitFile(Long.parseLong(bytesTextField.getText()) * prefix, false);
 		} else {
 			System.out.println(partsTextField.getText() + " parts");
@@ -162,17 +161,24 @@ public class SplitTabController implements Observer {
 	@Override
 	public void update(Observable o, Object arg) {
 
-		// Update text field with file path
-		String updateInput = (String) arg;
-		char flag = updateInput.charAt(0);
-		updateInput = updateInput.substring(1);
+		if (arg instanceof String) {
+			System.out.println("model update string");
+			// Update text field with file path
+			String updateInput = (String) arg;
+			char flag = updateInput.charAt(0);
+			updateInput = updateInput.substring(1);
 
-		// TODO: make this better
-		// dumb way to determine which component to update
-		if (flag == '0') {
-			srcTextField.setText(updateInput);
-		} else if (flag == '1') {
-			outTextField.setText(updateInput);
+			// TODO: make this better
+			// dumb way to determine which component to update
+			if (flag == '0') {
+				srcTextField.setText(updateInput);
+			} else if (flag == '1') {
+				outTextField.setText(updateInput);
+			}
+		} else {
+			System.out.println("model update progress");
+			Double progress = (Double) arg;
+			progressBar.setProgress(progress);
 		}
 	}
 
