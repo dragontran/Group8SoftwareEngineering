@@ -1,0 +1,7 @@
+C:\Users\Ramon\OneDrive\Documents\softwareengineering\noreqsjustdeliver\SoftEngMidterm\SoftEngMidterm\bin\Debug\SoftEngMidterm.exe.config
+C:\Users\Ramon\OneDrive\Documents\softwareengineering\noreqsjustdeliver\SoftEngMidterm\SoftEngMidterm\bin\Debug\SoftEngMidterm.exe
+C:\Users\Ramon\OneDrive\Documents\softwareengineering\noreqsjustdeliver\SoftEngMidterm\SoftEngMidterm\bin\Debug\SoftEngMidterm.pdb
+C:\Users\Ramon\OneDrive\Documents\softwareengineering\noreqsjustdeliver\SoftEngMidterm\SoftEngMidterm\bin\Debug\Microsoft.VisualStudio.QualityTools.UnitTestFramework.dll
+C:\Users\Ramon\OneDrive\Documents\softwareengineering\noreqsjustdeliver\SoftEngMidterm\SoftEngMidterm\obj\Debug\SoftEngMidterm.csprojResolveAssemblyReference.cache
+C:\Users\Ramon\OneDrive\Documents\softwareengineering\noreqsjustdeliver\SoftEngMidterm\SoftEngMidterm\obj\Debug\SoftEngMidterm.exe
+C:\Users\Ramon\OneDrive\Documents\softwareengineering\noreqsjustdeliver\SoftEngMidterm\SoftEngMidterm\obj\Debug\SoftEngMidterm.pdb
