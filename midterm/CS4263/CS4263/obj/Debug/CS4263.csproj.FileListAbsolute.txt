@@ -1,6 +1,0 @@
-c:\users\ramon\onedrive\documents\visual studio 2015\Projects\CS4263\CS4263\bin\Debug\CS4263.exe.config
-c:\users\ramon\onedrive\documents\visual studio 2015\Projects\CS4263\CS4263\bin\Debug\CS4263.exe
-c:\users\ramon\onedrive\documents\visual studio 2015\Projects\CS4263\CS4263\bin\Debug\CS4263.pdb
-c:\users\ramon\onedrive\documents\visual studio 2015\Projects\CS4263\CS4263\obj\Debug\CS4263.csprojResolveAssemblyReference.cache
-c:\users\ramon\onedrive\documents\visual studio 2015\Projects\CS4263\CS4263\obj\Debug\CS4263.exe
-c:\users\ramon\onedrive\documents\visual studio 2015\Projects\CS4263\CS4263\obj\Debug\CS4263.pdb
