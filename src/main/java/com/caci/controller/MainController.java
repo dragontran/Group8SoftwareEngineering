@@ -2,6 +2,7 @@ package main.java.com.caci.controller;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.TabPane;
+import javafx.stage.Stage;
 import main.java.com.caci.model.Model;
 
 public class MainController {
@@ -16,6 +17,8 @@ public class MainController {
 	private HelpTabController helpTabController;
 
 	private Model model;
+	
+	private Stage primaryStage;
 
 	// set model
 	public void setModel(Model model) {
@@ -24,10 +27,18 @@ public class MainController {
 		// model.addObserver(assembleTabController);
 		// model.addObserver(helpTabController);
 	}
+	
+	public void setStage(Stage stage) {
+		this.primaryStage = stage;
+	}
 
 	// get model
 	public Model model() {
 		return this.model;
+	}
+	
+	public Stage stage() {
+		return this.primaryStage;
 	}
 
 	@FXML

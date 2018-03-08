@@ -3,6 +3,7 @@ package main.java.com.caci.controller;
 import java.io.File;
 import java.util.Observable;
 import java.util.Observer;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -10,6 +11,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleGroup;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 
@@ -18,58 +20,75 @@ import javafx.stage.FileChooser;
  * 	disable main window access when file/directory chooser is open
  * */
 
+public class SplitTabController implements Observer {
 
-public class SplitTabController implements Observer{
+	@FXML
+	private TextField srcTextField;
 
-    @FXML
-    private TextField srcTextField;
+	@FXML
+	private Button srcBrowseBtn;
 
-    @FXML
-    private Button srcBrowseBtn;
+	@FXML
+	private TextField outTextField;
 
-    @FXML
-    private TextField outTextField;
+	@FXML
+	private Button outBrowseBtn;
 
-    @FXML
-    private Button outBrowseBtn;
+	@FXML
+	private ProgressBar progressBar;
 
-    @FXML
-    private ProgressBar statusBar;
+	@FXML
+	private RadioButton bytesRadioBtn;
 
-    @FXML
-    private RadioButton bytesRadioBtn;
+	@FXML
+	private ToggleGroup splitOptions;
 
-    @FXML
-    private RadioButton partsRadioBtn;
+	@FXML
+	private RadioButton partsRadioBtn;
 
-    @FXML
-    private TextField partsTextField;
+	@FXML
+	private TextField partsTextField;
 
-    @FXML
-    private TextField bytesTextField;
+	@FXML
+	private TextField bytesTextField;
 
-    @FXML
-    private ComboBox<String> bytesSizeComboBox;
+	@FXML
+	private ComboBox<String> bytesSizeComboBox;
 
-    @FXML
-    private Button splitBtn;
-    
+	@FXML
+	private Button splitBtn;
+
 	private MainController mainController;
 
-    @FXML
-    void getOutDirectory(ActionEvent event) {
-    	
-    	// open directory chooser 
-    	DirectoryChooser dirChooser = new DirectoryChooser();
-    	dirChooser.setTitle("Select Output Directory");
-    	
-    	// set local path as default path
+	@FXML
+	void bytesRadioToggle(ActionEvent event) {
+		this.bytesTextField.setDisable(false);
+		this.bytesSizeComboBox.setDisable(false);
+		this.partsTextField.setDisable(true);
+	}
+
+	@FXML
+	void PartsRadioToggle(ActionEvent event) {
+		this.partsTextField.setDisable(false);
+		this.bytesTextField.setDisable(true);
+		this.bytesSizeComboBox.setDisable(true);
+	}
+
+	@FXML
+	void getOutDirectory(ActionEvent event) {
+
+		// open directory chooser
+		DirectoryChooser dirChooser = new DirectoryChooser();
+		dirChooser.setTitle("Select Output Directory");
+
+		// set local path as default path
 		File defaultDirectory = new File(System.getProperty("user.dir"));
 		dirChooser.setInitialDirectory(defaultDirectory);
 
 		// show chooser
-		File file = dirChooser.showDialog(null);
-		
+		// disable main stage when chooser is open
+		File file = dirChooser.showDialog(mainController.stage());
+
 		// TODO: error handling
 		if (file != null) {
 			// update split output directory path in model
@@ -88,7 +107,8 @@ public class SplitTabController implements Observer{
 		fileChooser.setInitialDirectory(defaultDirectory);
 
 		// show chooser
-		File file = fileChooser.showOpenDialog(null);
+		// disable main stage when chooser is open
+		File file = fileChooser.showOpenDialog(mainController.stage());
 
 		// TODO: error handling
 		if (file != null) {
@@ -101,7 +121,33 @@ public class SplitTabController implements Observer{
 
 	@FXML
 	void splitFile(ActionEvent event) {
+		// split files
+		// TODO display error alerts?
+		// TODO error checking make sure proper values are inserted
+		// mainController.model().splitFile();
+		long prefix = 1;
+		if (bytesRadioBtn.isSelected()) {
+			System.out.println(bytesTextField.getText() + " " + bytesSizeComboBox.getValue());
+			switch (bytesSizeComboBox.getValue()) {
+			case "kilobytes":
+				prefix = 1024;
+				;
+				break;
+			case "megabytes":
+				prefix = 1048576;
+				break;
+			case "gigabytes":
+				prefix = 1073741824;
+				break;
+			default:
+				break;
+			}
 
+			mainController.model().splitFile(Long.parseLong(bytesTextField.getText()) * prefix, false);
+		} else {
+			System.out.println(partsTextField.getText() + " parts");
+			mainController.model().splitFile(Long.parseLong(partsTextField.getText()), true);
+		}
 	}
 
 	@FXML
@@ -114,20 +160,26 @@ public class SplitTabController implements Observer{
 
 	@Override
 	public void update(Observable o, Object arg) {
-		// Update text field with file path
-		String updateInput = (String) arg;
-		char flag = updateInput.charAt(0);
-		updateInput = updateInput.substring(1);
-		
-		// TODO: make this better
-		// dumb way to determine which component to update
-		if (flag == '0') {
-			srcTextField.setText(updateInput);
-		} else if (flag == '1') {
-			outTextField.setText(updateInput);
-		}
-		
 
+		if (arg instanceof String) {
+			System.out.println("model update string");
+			// Update text field with file path
+			String updateInput = (String) arg;
+			char flag = updateInput.charAt(0);
+			updateInput = updateInput.substring(1);
+
+			// TODO: make this better
+			// dumb way to determine which component to update
+			if (flag == '0') {
+				srcTextField.setText(updateInput);
+			} else if (flag == '1') {
+				outTextField.setText(updateInput);
+			}
+		} else {
+			System.out.println("model update progress");
+			Double progress = (Double) arg;
+			progressBar.setProgress(progress);
+		}
 	}
 
 	// set main controller
@@ -136,4 +188,3 @@ public class SplitTabController implements Observer{
 	}
 
 }
-

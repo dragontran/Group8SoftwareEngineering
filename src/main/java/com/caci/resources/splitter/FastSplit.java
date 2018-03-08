@@ -2,15 +2,18 @@ package main.java.com.caci.resources.splitter;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
+import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import main.java.com.caci.model.Model;
 import main.java.com.caci.resources.checksum.Checksum;
 
 // TODO: adapt / generalize to split class
@@ -42,40 +45,66 @@ public class FastSplit {
 		}
 	}
 
-	public static void split(String fileName) throws IOException {
-
-		// 500 mb file parts
-		long splitSize = 145997824;
-
-		// 256 Megabyte memory buffer for reading source file
-		int bufferSize = 256 * 1048576;
+	public static void split(File splitInputFile, File splitOutputDir, long inputSplitSize, boolean parts, Model model)
+			throws IOException, FileNotFoundException, FileAlreadyExistsException {
+		Model model1 = model;
 
 		// input file name
-		String source = fileName;
+		File source = splitInputFile;
+
+		// output directory
+		File output = splitOutputDir;
 
 		// channel to read a file
 		FileChannel sourceChannel = null;
 
-		Path path = Paths.get(source);
+		String folderPartsPath;
 
 		/* TODO: maybe create a new directory? */
-		// if (Files.notExists(path)) {
-		// System.out.println("test? idk");
-		// }
+		// check if output path exists and is a directory
+		if (output.exists() && output.isDirectory()) {
+
+			// file name without file extention
+			String fileName = source.getName().replaceFirst("[.][^.]+$", "");
+			// new directory path
+			folderPartsPath = output.getAbsolutePath() + File.separator + fileName + " parts";
+			System.out.println(folderPartsPath);
+
+			File filePartsFolder = new File(folderPartsPath);
+
+			if (!filePartsFolder.mkdir()) {
+				throw new FileAlreadyExistsException(folderPartsPath);
+			}
+		} else {
+			System.out.println("folder doesn't exist bro");
+			throw new FileNotFoundException("Could not find directory");
+		}
 
 		try {
-
 			// file channel for source file byte stream
 			sourceChannel = new FileInputStream(source).getChannel();
+
+			// file parts
+			long splitSize = 0;
+			// calculate number of chunks
+			double numberOfChunks = 0.0;
+
+			if (parts) {
+				numberOfChunks = inputSplitSize;
+				splitSize = (long) Math.ceil(sourceChannel.size() / numberOfChunks);
+			} else {
+				splitSize = inputSplitSize;
+				numberOfChunks = Math.ceil(sourceChannel.size() / (double) splitSize);
+			}
+
+			// 256 megabyte memory buffer for reading source file
+			int bufferSize = 256 * 1048576;
 
 			// buffer for reading
 			ByteBuffer buffer = ByteBuffer.allocateDirect(bufferSize);
 
 			// total bytes written to output
 			long totalBytesWritten = 0;
-
-			// calculate number of chunks
-			double numberOfChunks = Math.ceil(sourceChannel.size() / (double) splitSize);
 
 			// channel to output split files
 			FileChannel outputChannel = null;
@@ -109,7 +138,8 @@ public class FastSplit {
 							outputChunkBytesWritten = 0;
 
 							// output file name
-							String outputName = String.format(outputFileFormat, source, outputChunkNumber);
+							String outputPath = folderPartsPath + File.separator + source.getName();
+							String outputName = String.format(outputFileFormat, outputPath, outputChunkNumber);
 
 							// increment part number
 							outputChunkNumber++;
@@ -126,8 +156,8 @@ public class FastSplit {
 
 						// System.out.println(String.format(
 						// "Byte buffer has %d remaining bytes; chunk has %d bytes free; writing up to
-						// %d bytes to chunk",
-						// buffer.remaining(), chunkBytesFree, bytesToWrite));
+						// %d bytes to chunk %d",
+						// buffer.remaining(), chunkBytesFree, bytesToWrite, outputChunkNumber));
 
 						// set limit in buffer up to where bytes can be read
 						buffer.limit(bytesWrittenFromBuffer + bytesToWrite);
@@ -138,6 +168,11 @@ public class FastSplit {
 						outputChunkBytesWritten += bytesWritten;
 						bytesWrittenFromBuffer += bytesWritten;
 						totalBytesWritten += bytesWritten;
+
+						// TODO test;
+						model1.setProgress(((double) totalBytesWritten / (double) sourceChannel.size()));
+						// System.out.println( totalBytesWritten + " " + sourceChannel.size() + " " +
+						// ((double)totalBytesWritten / (double)sourceChannel.size()));
 
 						// System.out.println(String.format(
 						// "Wrote %d to chunk; %d bytes written to chunk so far; %d bytes written from
@@ -165,41 +200,51 @@ public class FastSplit {
 
 					buffer.clear();
 				}
+
 			} finally {
 				closeChannel(outputChannel);
 			}
+
 		} finally {
 			closeChannel(sourceChannel);
 		}
 
-		calculateChecksums("hi", "C:\\Users\\Dragon\\Desktop\\test\\");
+		calculateChecksums(splitInputFile, folderPartsPath);
+
+		System.out.println("done");
 	}
 
 	// TODO: make this better :\ cant use fancy byte[] or files with nio
-	public static void calculateChecksums(String filePath, String dirPath) {
-		File dir = new File(dirPath);
+	// TODO: Fix checksum bug (exclude calculation for checksum file
+	// TODO: implement quotes to prevent comma delimited breakage
+	public static void calculateChecksums(File splitInputFile, String splitPartsDir) throws IOException {
+
+		File dir = new File(splitPartsDir);
 		Checksum test;
 		PrintWriter f0 = null;
 		try {
 
-			f0 = new PrintWriter(new FileWriter(dirPath + "\\checksum.crc32"));
+			String checksumFileName = splitInputFile.getName().replaceFirst("[.][^.]+$", "") + ".crc32";
+
+			f0 = new PrintWriter(new FileWriter(dir.getAbsolutePath() + File.separator + checksumFileName));
+
+			// TODO: error handling stuff
+			f0.println(splitInputFile.getName() + "," + (new Checksum(splitInputFile)).getCheckSum());
 
 			File[] directoryListing = dir.listFiles();
-			f0.println("hi");
+
 			if (directoryListing != null) {
 				for (File child : directoryListing) {
-					// Do something with child
 
 					test = new Checksum(child);
+
 					f0.println(child.getName() + "," + test.getCheckSum());
+
 					System.out.println(test.getCheckSum());
 				}
 				f0.close();
 			}
 
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			// e1.printStackTrace();
 		} finally {
 			f0.close();
 		}

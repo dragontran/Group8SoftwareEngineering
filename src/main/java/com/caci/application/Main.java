@@ -25,6 +25,7 @@ public class Main extends Application {
 		// set model
 		MainController mainController = (MainController) fxmlLoader.getController();
 		mainController.setModel(new Model());
+		mainController.setStage(primaryStage);
 		
 		// show stage
 		primaryStage.show();
