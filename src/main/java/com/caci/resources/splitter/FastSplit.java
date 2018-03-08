@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
+import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -44,26 +45,43 @@ public class FastSplit {
 	}
 
 	public static void split(File splitInputFile, File splitOutputDir, long inputSize)
-			throws IOException, FileNotFoundException {
+			throws IOException, FileNotFoundException, FileAlreadyExistsException {
 
-		// 500 mb file parts
+		// file parts
 		long splitSize = 145997824;
 
-		// 256 Megabyte memory buffer for reading source file
+		// 256 megabyte memory buffer for reading source file
 		int bufferSize = 256 * 1048576;
 
 		// input file name
 		File source = splitInputFile;
+		System.out.println(splitInputFile.getName());
+
+		// output directory
+		File output = splitOutputDir;
 
 		// channel to read a file
 		FileChannel sourceChannel = null;
-
-		// Path path = Paths.get(source);
+		String folderPath;
 
 		/* TODO: maybe create a new directory? */
-		// if (Files.notExists(path)) {
-		// System.out.println("test? idk");
-		// }
+		// check if output path exists and is a directory
+		if (output.exists() && output.isDirectory()) {
+			
+			// file name without file extention
+			String fileName = source.getName().replaceFirst("[.][^.]+$", "");
+			// new directory path
+			folderPath = output.getAbsolutePath() + File.separator + fileName +" parts";
+			System.out.println(folderPath);
+			
+			File filePartsFolder = new File(folderPath);
+			
+			if(!filePartsFolder.mkdir()) {
+				throw new FileAlreadyExistsException(folderPath);
+			}
+		} else {
+			throw new FileNotFoundException("Could not find directory");
+		}
 
 		try {
 
@@ -111,7 +129,8 @@ public class FastSplit {
 							outputChunkBytesWritten = 0;
 
 							// output file name
-							String outputName = String.format(outputFileFormat, source, outputChunkNumber);
+							String outputPath = folderPath + File.separator + source.getName();
+							String outputName = String.format(outputFileFormat, outputPath, outputChunkNumber);
 
 							// increment part number
 							outputChunkNumber++;
@@ -173,6 +192,8 @@ public class FastSplit {
 		}
 
 		// calculateChecksums("hi", outputString);
+
+		System.out.println("done");
 	}
 
 	// TODO: make this better :\ cant use fancy byte[] or files with nio

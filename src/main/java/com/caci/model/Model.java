@@ -3,6 +3,7 @@ package main.java.com.caci.model;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.FileAlreadyExistsException;
 import java.util.Observable;
 
 import main.java.com.caci.resources.splitter.FastSplit;
@@ -50,8 +51,12 @@ public class Model extends Observable {
 
 			FastSplit.split(this.splitInputFile, this.splitOutputDir, 0);
 		} catch (FileNotFoundException e) {
-			System.out.println("file not found brother");
-		} catch (IOException e) {
+			System.out.println("file doesn't exist bro");
+		} catch (FileAlreadyExistsException e) {
+			// TODO: talk about how to handle this
+			System.out.println("parts folder already exists here");
+		}
+		catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
