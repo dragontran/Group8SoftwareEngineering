@@ -2,6 +2,7 @@ package main.java.com.caci.resources.splitter;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -42,7 +43,8 @@ public class FastSplit {
 		}
 	}
 
-	public static void split(String fileName) throws IOException {
+	public static void split(File splitInputFile, File splitOutputDir, long inputSize)
+			throws IOException, FileNotFoundException {
 
 		// 500 mb file parts
 		long splitSize = 145997824;
@@ -51,12 +53,12 @@ public class FastSplit {
 		int bufferSize = 256 * 1048576;
 
 		// input file name
-		String source = fileName;
+		File source = splitInputFile;
 
 		// channel to read a file
 		FileChannel sourceChannel = null;
 
-		Path path = Paths.get(source);
+		// Path path = Paths.get(source);
 
 		/* TODO: maybe create a new directory? */
 		// if (Files.notExists(path)) {
@@ -124,10 +126,9 @@ public class FastSplit {
 						// maximum bytes that should be read from current byte buffer
 						int bytesToWrite = (int) Math.min(buffer.remaining(), chunkBytesFree);
 
-						// System.out.println(String.format(
-						// "Byte buffer has %d remaining bytes; chunk has %d bytes free; writing up to
-						// %d bytes to chunk",
-						// buffer.remaining(), chunkBytesFree, bytesToWrite));
+						System.out.println(String.format(
+								"Byte buffer has %d remaining bytes; chunk has %d bytes free; writing up to %d bytes to chunk",
+								buffer.remaining(), chunkBytesFree, bytesToWrite));
 
 						// set limit in buffer up to where bytes can be read
 						buffer.limit(bytesWrittenFromBuffer + bytesToWrite);
@@ -138,12 +139,9 @@ public class FastSplit {
 						outputChunkBytesWritten += bytesWritten;
 						bytesWrittenFromBuffer += bytesWritten;
 						totalBytesWritten += bytesWritten;
-
-						// System.out.println(String.format(
-						// "Wrote %d to chunk; %d bytes written to chunk so far; %d bytes written from
-						// buffer so far; %d bytes written in total",
-						// bytesWritten, outputChunkBytesWritten, bytesWrittenFromBuffer,
-						// totalBytesWritten));
+						System.out.println(String.format(
+								"Wrote %d to chunk; %d bytes written to chunk so far; %d bytes written from buffer so far; %d bytes written in total",
+								bytesWritten, outputChunkBytesWritten, bytesWrittenFromBuffer, totalBytesWritten));
 
 						// reset limit
 						buffer.limit(bytesRead);
@@ -165,14 +163,16 @@ public class FastSplit {
 
 					buffer.clear();
 				}
+
 			} finally {
 				closeChannel(outputChannel);
 			}
+
 		} finally {
 			closeChannel(sourceChannel);
 		}
 
-		calculateChecksums("hi", "C:\\Users\\Dragon\\Desktop\\test\\");
+		// calculateChecksums("hi", outputString);
 	}
 
 	// TODO: make this better :\ cant use fancy byte[] or files with nio
@@ -182,7 +182,7 @@ public class FastSplit {
 		PrintWriter f0 = null;
 		try {
 
-			f0 = new PrintWriter(new FileWriter(dirPath + "\\checksum.crc32"));
+			f0 = new PrintWriter(new FileWriter(dirPath + "\\test.crc32"));
 
 			File[] directoryListing = dir.listFiles();
 			f0.println("hi");

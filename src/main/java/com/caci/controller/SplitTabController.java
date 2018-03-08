@@ -101,7 +101,9 @@ public class SplitTabController implements Observer{
 
 	@FXML
 	void splitFile(ActionEvent event) {
-
+		// split files 
+		// TODO display error alerts?
+		mainController.model().splitFile();
 	}
 
 	@FXML
