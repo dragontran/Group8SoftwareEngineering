@@ -3,7 +3,6 @@ package main.java.com.caci.controller;
 import java.io.File;
 import java.util.Observable;
 import java.util.Observer;
-
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -14,11 +13,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
-
-/*
- * TODO: 
- * 	disable main window access when file/directory chooser is open
- * */
 
 public class SplitTabController implements Observer {
 
@@ -162,7 +156,7 @@ public class SplitTabController implements Observer {
 	public void update(Observable o, Object arg) {
 
 		if (arg instanceof String) {
-			System.out.println("model update string");
+
 			// Update text field with file path
 			String updateInput = (String) arg;
 			char flag = updateInput.charAt(0);
@@ -176,7 +170,7 @@ public class SplitTabController implements Observer {
 				outTextField.setText(updateInput);
 			}
 		} else {
-			System.out.println("model update progress");
+
 			Double progress = (Double) arg;
 			progressBar.setProgress(progress);
 		}
