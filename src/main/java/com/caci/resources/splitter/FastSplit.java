@@ -44,18 +44,11 @@ public class FastSplit {
 		}
 	}
 
-	public static void split(File splitInputFile, File splitOutputDir, long inputSize)
+	public static void split(File splitInputFile, File splitOutputDir, long inputSize, boolean parts)
 			throws IOException, FileNotFoundException, FileAlreadyExistsException {
-
-		// file parts
-		long splitSize = 145997824;
-
-		// 256 megabyte memory buffer for reading source file
-		int bufferSize = 256 * 1048576;
 
 		// input file name
 		File source = splitInputFile;
-		System.out.println(splitInputFile.getName());
 
 		// output directory
 		File output = splitOutputDir;
@@ -86,18 +79,30 @@ public class FastSplit {
 		}
 
 		try {
-
 			// file channel for source file byte stream
 			sourceChannel = new FileInputStream(source).getChannel();
+
+			// file parts
+			long splitSize = 0; // = 145997824;
+			// // calculate number of chunks
+			double numberOfChunks = 0.0; // = Math.ceil(sourceChannel.size() / (double) splitSize);
+
+			if (parts) {
+				numberOfChunks = inputSize;
+				splitSize = (long) Math.ceil(sourceChannel.size() / numberOfChunks);
+			} else {
+				splitSize = inputSize;
+				numberOfChunks = Math.ceil(sourceChannel.size() / (double) splitSize);
+			}
+
+			// 256 megabyte memory buffer for reading source file
+			int bufferSize = 256 * 1048576;
 
 			// buffer for reading
 			ByteBuffer buffer = ByteBuffer.allocateDirect(bufferSize);
 
 			// total bytes written to output
 			long totalBytesWritten = 0;
-
-			// calculate number of chunks
-			double numberOfChunks = Math.ceil(sourceChannel.size() / (double) splitSize);
 
 			// channel to output split files
 			FileChannel outputChannel = null;
@@ -212,9 +217,9 @@ public class FastSplit {
 
 			f0 = new PrintWriter(new FileWriter(dir.getAbsolutePath() + File.separator + checksumFileName));
 
-			// TODO: error handling stuff 
+			// TODO: error handling stuff
 			f0.println(splitInputFile.getName() + "," + (new Checksum(splitInputFile)).getCheckSum());
-			
+
 			File[] directoryListing = dir.listFiles();
 
 			if (directoryListing != null) {

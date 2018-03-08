@@ -44,19 +44,18 @@ public class Model extends Observable {
 	}
 
 	// split file
-	public void splitFile() {
+	public void splitFile(long size, boolean parts) {
 
 		// TODO: make sure there is input and output path
 		try {
 
-			FastSplit.split(this.splitInputFile, this.splitOutputDir, 0);
+			FastSplit.split(this.splitInputFile, this.splitOutputDir, size, parts);
 		} catch (FileNotFoundException e) {
 			System.out.println("file doesn't exist bro");
 		} catch (FileAlreadyExistsException e) {
 			// TODO: talk about how to handle this
 			System.out.println("parts folder already exists here");
-		}
-		catch (IOException e) {
+		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
