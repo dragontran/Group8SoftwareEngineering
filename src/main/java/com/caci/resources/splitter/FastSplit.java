@@ -62,6 +62,7 @@ public class FastSplit {
 
 		// channel to read a file
 		FileChannel sourceChannel = null;
+		
 		String folderPath;
 
 		/* TODO: maybe create a new directory? */
@@ -80,6 +81,7 @@ public class FastSplit {
 				throw new FileAlreadyExistsException(folderPath);
 			}
 		} else {
+			System.out.println("folder doesn't exist bro");
 			throw new FileNotFoundException("Could not find directory");
 		}
 

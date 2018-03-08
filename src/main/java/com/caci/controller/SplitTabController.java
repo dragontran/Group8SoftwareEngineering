@@ -68,7 +68,8 @@ public class SplitTabController implements Observer{
 		dirChooser.setInitialDirectory(defaultDirectory);
 
 		// show chooser
-		File file = dirChooser.showDialog(null);
+		// disable main stage when chooser is open
+		File file = dirChooser.showDialog(mainController.stage());
 		
 		// TODO: error handling
 		if (file != null) {
@@ -88,7 +89,8 @@ public class SplitTabController implements Observer{
 		fileChooser.setInitialDirectory(defaultDirectory);
 
 		// show chooser
-		File file = fileChooser.showOpenDialog(null);
+		// disable main stage when chooser is open
+		File file = fileChooser.showOpenDialog(mainController.stage());
 
 		// TODO: error handling
 		if (file != null) {
