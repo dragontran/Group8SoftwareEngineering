@@ -62,23 +62,23 @@ public class FastSplit {
 
 		// channel to read a file
 		FileChannel sourceChannel = null;
-		
-		String folderPath;
+
+		String folderPartsPath;
 
 		/* TODO: maybe create a new directory? */
 		// check if output path exists and is a directory
 		if (output.exists() && output.isDirectory()) {
-			
+
 			// file name without file extention
 			String fileName = source.getName().replaceFirst("[.][^.]+$", "");
 			// new directory path
-			folderPath = output.getAbsolutePath() + File.separator + fileName +" parts";
-			System.out.println(folderPath);
-			
-			File filePartsFolder = new File(folderPath);
-			
-			if(!filePartsFolder.mkdir()) {
-				throw new FileAlreadyExistsException(folderPath);
+			folderPartsPath = output.getAbsolutePath() + File.separator + fileName + " parts";
+			System.out.println(folderPartsPath);
+
+			File filePartsFolder = new File(folderPartsPath);
+
+			if (!filePartsFolder.mkdir()) {
+				throw new FileAlreadyExistsException(folderPartsPath);
 			}
 		} else {
 			System.out.println("folder doesn't exist bro");
@@ -131,7 +131,7 @@ public class FastSplit {
 							outputChunkBytesWritten = 0;
 
 							// output file name
-							String outputPath = folderPath + File.separator + source.getName();
+							String outputPath = folderPartsPath + File.separator + source.getName();
 							String outputName = String.format(outputFileFormat, outputPath, outputChunkNumber);
 
 							// increment part number
@@ -148,8 +148,8 @@ public class FastSplit {
 						int bytesToWrite = (int) Math.min(buffer.remaining(), chunkBytesFree);
 
 						System.out.println(String.format(
-								"Byte buffer has %d remaining bytes; chunk has %d bytes free; writing up to %d bytes to chunk",
-								buffer.remaining(), chunkBytesFree, bytesToWrite));
+								"Byte buffer has %d remaining bytes; chunk has %d bytes free; writing up to %d bytes to chunk %d",
+								buffer.remaining(), chunkBytesFree, bytesToWrite, outputChunkNumber));
 
 						// set limit in buffer up to where bytes can be read
 						buffer.limit(bytesWrittenFromBuffer + bytesToWrite);
@@ -193,36 +193,42 @@ public class FastSplit {
 			closeChannel(sourceChannel);
 		}
 
-		// calculateChecksums("hi", outputString);
+		calculateChecksums(splitInputFile, folderPartsPath);
 
 		System.out.println("done");
 	}
 
 	// TODO: make this better :\ cant use fancy byte[] or files with nio
-	public static void calculateChecksums(String filePath, String dirPath) {
-		File dir = new File(dirPath);
+	// TODO: Fix checksum bug (exclude calculation for checksum file
+	// TODO: implement quotes to prevent comma delimited breakage
+	public static void calculateChecksums(File splitInputFile, String splitPartsDir) throws IOException {
+
+		File dir = new File(splitPartsDir);
 		Checksum test;
 		PrintWriter f0 = null;
 		try {
 
-			f0 = new PrintWriter(new FileWriter(dirPath + "\\test.crc32"));
+			String checksumFileName = splitInputFile.getName().replaceFirst("[.][^.]+$", "") + ".crc32";
 
+			f0 = new PrintWriter(new FileWriter(dir.getAbsolutePath() + File.separator + checksumFileName));
+
+			// TODO: error handling stuff 
+			f0.println(splitInputFile.getName() + "," + (new Checksum(splitInputFile)).getCheckSum());
+			
 			File[] directoryListing = dir.listFiles();
-			f0.println("hi");
+
 			if (directoryListing != null) {
 				for (File child : directoryListing) {
-					// Do something with child
 
 					test = new Checksum(child);
+
 					f0.println(child.getName() + "," + test.getCheckSum());
+
 					System.out.println(test.getCheckSum());
 				}
 				f0.close();
 			}
 
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			// e1.printStackTrace();
 		} finally {
 			f0.close();
 		}
