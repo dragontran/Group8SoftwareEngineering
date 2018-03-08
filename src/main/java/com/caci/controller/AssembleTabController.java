@@ -1,5 +1,7 @@
 package main.java.com.caci.controller;
 
+import java.util.Observable;
+import java.util.Observer;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -9,7 +11,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Alert.AlertType;
 
-public class AssembleTabController {
+public class AssembleTabController implements Observer {
 
 	@FXML
 	private TextField srcDirTextField;
@@ -41,6 +43,8 @@ public class AssembleTabController {
 	@FXML
 	private Button outputBrowseBtn;
 
+	private MainController mainController;
+
 	@FXML
 	void addPart(ActionEvent event) {
 
@@ -58,11 +62,11 @@ public class AssembleTabController {
 
 	@FXML
 	void getSrcDirectory(ActionEvent event) {
-    	Alert alert = new Alert(AlertType.INFORMATION);
-    	alert.setTitle("hello, andrew");
-    	alert.setHeaderText(null);
-    	alert.setContentText("have fun >:)");
-    	alert.showAndWait();
+		Alert alert = new Alert(AlertType.INFORMATION);
+		alert.setTitle("hello, andrew");
+		alert.setHeaderText(null);
+		alert.setContentText("have fun >:)");
+		alert.showAndWait();
 	}
 
 	@FXML
@@ -72,6 +76,17 @@ public class AssembleTabController {
 
 	@FXML
 	void removePart(ActionEvent event) {
+
+	}
+
+	// set main controller
+	public void injectMainController(MainController mainController) {
+		this.mainController = mainController;
+	}
+
+	@Override
+	public void update(Observable o, Object arg) {
+		// TODO Auto-generated method stub
 
 	}
 

@@ -24,7 +24,7 @@ public class MainController {
 	public void setModel(Model model) {
 		this.model = model;
 		model.addObserver(splitTabController);
-		// model.addObserver(assembleTabController);
+		 model.addObserver(assembleTabController);
 		// model.addObserver(helpTabController);
 	}
 	
@@ -45,7 +45,7 @@ public class MainController {
 	void initialize() {
 		// inject main controller into subtab controllers
 		splitTabController.injectMainController(this);
-		// assembleTabController.injectMainController(this);
+		 assembleTabController.injectMainController(this);
 		// helpTabController.injectMainController(this);
 	}
 }
