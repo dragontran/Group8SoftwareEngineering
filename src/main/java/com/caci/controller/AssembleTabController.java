@@ -1,74 +1,78 @@
-/**
- * Sample Skeleton for 'AssembleTabView.fxml' Controller Class
- */
-
 package main.java.com.caci.controller;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Alert.AlertType;
 
 public class AssembleTabController {
 
-    @FXML // fx:id="srcDirTextField"
-    private TextField srcDirTextField; // Value injected by FXMLLoader
+	@FXML
+	private TextField srcDirTextField;
 
-    @FXML // fx:id="srcDirBtn"
-    private Button srcDirBtn; // Value injected by FXMLLoader
+	@FXML
+	private Button srcDirBrowseBtn;
 
-    @FXML // fx:id="removeFilePartBtn"
-    private Button removeFilePartBtn; // Value injected by FXMLLoader
+	@FXML
+	private Button removePartBtn;
 
-    @FXML // fx:id="joinBtn"
-    private Button joinBtn; // Value injected by FXMLLoader
+	@FXML
+	private Button joinBtn;
 
-    @FXML // fx:id="outputFileTextField"
-    private TextField outputFileTextField; // Value injected by FXMLLoader
+	@FXML
+	private TextField outputTextField;
 
-    @FXML // fx:id="filePartsTable"
-    private TableView<?> filePartsTable; // Value injected by FXMLLoader
+	@FXML
+	private TableView<?> filePartsTable;
 
-    @FXML // fx:id="filePartNameCol"
-    private TableColumn<?, ?> filePartNameCol; // Value injected by FXMLLoader
+	@FXML
+	private Button addPartBtn;
 
-    @FXML // fx:id="filePartSizeCol"
-    private TableColumn<?, ?> filePartSizeCol; // Value injected by FXMLLoader
+	@FXML
+	private Button clearAllPartsBtn;
 
-    @FXML // fx:id="filePartPathCol"
-    private TableColumn<?, ?> filePartPathCol; // Value injected by FXMLLoader
+	@FXML
+	private ProgressBar progressBar;
 
-    @FXML // fx:id="addFilePartBtn"
-    private Button addFilePartBtn; // Value injected by FXMLLoader
+	@FXML
+	private Button outputBrowseBtn;
 
-    @FXML // fx:id="clearFilePartsBtn"
-    private Button clearFilePartsBtn; // Value injected by FXMLLoader
+	@FXML
+	void addPart(ActionEvent event) {
 
-    @FXML
-    void addFilePart(ActionEvent event) {
+	}
 
-    }
+	@FXML
+	void clearAllParts(ActionEvent event) {
 
-    @FXML
-    void clearFileParts(ActionEvent event) {
+	}
 
-    }
+	@FXML
+	void getOutputPath(ActionEvent event) {
 
-    @FXML
-    void getSrcDir(ActionEvent event) {
+	}
 
-    }
+	@FXML
+	void getSrcDirectory(ActionEvent event) {
+    	Alert alert = new Alert(AlertType.INFORMATION);
+    	alert.setTitle("hello, andrew");
+    	alert.setHeaderText(null);
+    	alert.setContentText("have fun >:)");
+    	alert.showAndWait();
+	}
 
-    @FXML
-    void joinFileParts(ActionEvent event) {
+	@FXML
+	void joinFileParts(ActionEvent event) {
 
-    }
+	}
 
-    @FXML
-    void removeFilePart(ActionEvent event) {
+	@FXML
+	void removePart(ActionEvent event) {
 
-    }
+	}
 
 }
