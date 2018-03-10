@@ -10,8 +10,7 @@ import java.io.PrintWriter;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.file.FileAlreadyExistsException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.util.ArrayList;
 
 import main.java.com.caci.model.Model;
 import main.java.com.caci.resources.checksum.Checksum;
@@ -170,7 +169,7 @@ public class FastSplit {
 						totalBytesWritten += bytesWritten;
 
 						// TODO test;
-						model1.setSplitProgress(((double) totalBytesWritten / (double) sourceChannel.size()));
+						model1.setSplitProgress(((double) totalBytesWritten / (double) (sourceChannel.size() * 1.1)));
 						// System.out.println( totalBytesWritten + " " + sourceChannel.size() + " " +
 						// ((double)totalBytesWritten / (double)sourceChannel.size()));
 
@@ -210,6 +209,9 @@ public class FastSplit {
 		}
 
 		calculateChecksums(splitInputFile, folderPartsPath);
+		/* TODO: make this not jank*/
+		// quick and dirty way of showing checksum progress...
+		model1.setSplitProgress(1);
 
 		System.out.println("done");
 	}
@@ -221,15 +223,25 @@ public class FastSplit {
 
 		File dir = new File(splitPartsDir);
 		Checksum test;
-		PrintWriter f0 = null;
+		FileWriter fileWriter = null;
 		try {
 
-			String checksumFileName = splitInputFile.getName().replaceFirst("[.][^.]+$", "") + ".crc32";
+			String checksumFileName = splitInputFile.getName() + ".crc32";
 
-			f0 = new PrintWriter(new FileWriter(dir.getAbsolutePath() + File.separator + checksumFileName));
+			// f0 = new PrintWriter(new FileWriter(dir.getAbsolutePath() + File.separator +
+			// checksumFileName));
+
+			ArrayList<String> fileChecksumList = new ArrayList<String>();
 
 			// TODO: error handling stuff
-			f0.println(splitInputFile.getName() + "," + (new Checksum(splitInputFile)).getCheckSum());
+			// f0.println(splitInputFile.getName() + "," + (new
+			// Checksum(splitInputFile)).getCheckSum());
+			
+			String fileName = splitInputFile.getName();
+			
+			String fileChecksum = String.format("%s,%d\n", fileName,  (new Checksum(splitInputFile)).getCheckSum());
+
+			fileChecksumList.add(fileChecksum);
 
 			File[] directoryListing = dir.listFiles();
 
@@ -238,15 +250,19 @@ public class FastSplit {
 
 					test = new Checksum(child);
 
-					f0.println(child.getName() + "," + test.getCheckSum());
+					fileChecksumList.add(child.getName() + "," + test.getCheckSum() + "\n");
 
-					System.out.println(test.getCheckSum());
+					// System.out.println(test.getCheckSum());
 				}
-				f0.close();
+			}
+
+			fileWriter = new FileWriter(dir.getAbsolutePath() + File.separator + checksumFileName);
+			for (String output : fileChecksumList) {
+				fileWriter.write(output);
 			}
 
 		} finally {
-			f0.close();
+			fileWriter.close();
 		}
 	}
 }
