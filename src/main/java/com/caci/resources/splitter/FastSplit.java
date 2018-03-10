@@ -170,7 +170,7 @@ public class FastSplit {
 						totalBytesWritten += bytesWritten;
 
 						// TODO test;
-						model1.setProgress(((double) totalBytesWritten / (double) sourceChannel.size()));
+						model1.setSplitProgress(((double) totalBytesWritten / (double) sourceChannel.size()));
 						// System.out.println( totalBytesWritten + " " + sourceChannel.size() + " " +
 						// ((double)totalBytesWritten / (double)sourceChannel.size()));
 

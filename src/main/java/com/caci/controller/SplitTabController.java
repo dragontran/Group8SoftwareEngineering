@@ -106,7 +106,6 @@ public class SplitTabController implements Observer {
 
 		// TODO: error handling
 		if (file != null) {
-
 			// update split file input path in model
 			mainController.model().setSplitInputPath(file.getAbsolutePath());
 		}
