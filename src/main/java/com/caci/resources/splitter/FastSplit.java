@@ -169,7 +169,7 @@ public class FastSplit {
 						totalBytesWritten += bytesWritten;
 
 						// TODO test;
-						model1.setSplitProgress(((double) totalBytesWritten / (double) sourceChannel.size()));
+						model1.setSplitProgress(((double) totalBytesWritten / (double) (sourceChannel.size() * 1.1)));
 						// System.out.println( totalBytesWritten + " " + sourceChannel.size() + " " +
 						// ((double)totalBytesWritten / (double)sourceChannel.size()));
 
@@ -209,6 +209,9 @@ public class FastSplit {
 		}
 
 		calculateChecksums(splitInputFile, folderPartsPath);
+		/* TODO: make this not jank*/
+		// quick and dirty way of showing checksum progress...
+		model1.setSplitProgress(1);
 
 		System.out.println("done");
 	}
