@@ -11,6 +11,7 @@ import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.file.FileAlreadyExistsException;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import main.java.com.caci.model.Model;
 import main.java.com.caci.resources.checksum.Checksum;
@@ -244,7 +245,8 @@ public class FastSplit {
 			fileChecksumList.add(fileChecksum);
 
 			File[] directoryListing = dir.listFiles();
-
+			Arrays.sort(directoryListing);
+			
 			if (directoryListing != null) {
 				for (File child : directoryListing) {
 
