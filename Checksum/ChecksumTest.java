@@ -7,7 +7,8 @@ import java.io.IOException;
 public class ChecksumTest {
 
     private final String bigInputPath = "./bigInput.txt";
-    private final String massiveFilePath = "C:/HonorsResearch/CNXA2C_R1.csv";
+    private final String massiveFilePath1 = "C:/HonorsResearch/CNXA2C_R1.csv";
+    private final String massiveFilePath2 = "C:/HonorsResearch/CNXA2C_R1_big.csv";
 
     private final String testInput = "This is my rifle. There are many like it, but this one is mine.\n" +
             "My rifle is my best friend. It is my life. I must master it as I must master my life.\n" +
@@ -86,7 +87,7 @@ public class ChecksumTest {
     @Test
     public void CreateChecksumForGargantuanString() throws IOException {
         // Read in very large file
-        File massiveFile = new File(massiveFilePath);
+        File massiveFile = new File(massiveFilePath1);
         try {
             Checksum testSum = new Checksum(massiveFile);
             Assertions.assertEquals(true,true);
@@ -104,5 +105,14 @@ public class ChecksumTest {
         } else {
             return s;
         }
+    }
+
+    @Test
+    public void CompareTwoVeryLargeAndDifferentFiles() throws IOException {
+        File massiveFile1 = new File(massiveFilePath1);
+        File massiveFile2 = new File(massiveFilePath2);
+        Checksum checksum1 = new Checksum(massiveFile1);
+        Checksum checksum2 = new Checksum(massiveFile2);
+        Assertions.assertNotEquals(checksum1.getCheckSum(), checksum2.getCheckSum());
     }
 }
