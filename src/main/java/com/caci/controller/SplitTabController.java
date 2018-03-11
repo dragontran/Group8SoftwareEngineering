@@ -154,24 +154,26 @@ public class SplitTabController implements Observer {
 	@Override
 	public void update(Observable o, Object arg) {
 
+		// TODO: make this better
+		// dumb way to determine which component to update
+		/* TODO: omg please this need to be better */
 		if (arg instanceof String) {
-
-			// Update text field with file path
 			String updateInput = (String) arg;
 			char flag = updateInput.charAt(0);
 			updateInput = updateInput.substring(1);
 
-			// TODO: make this better
-			// dumb way to determine which component to update
-			if (flag == '0') {
+			switch (flag) {
+			case '0':
 				srcTextField.setText(updateInput);
-			} else if (flag == '1') {
+				break;
+			case '1':
 				outTextField.setText(updateInput);
-			}
-		} else {
+				break;
+			case '5':
+				progressBar.setProgress(Double.parseDouble(updateInput));
+				break;
 
-			Double progress = (Double) arg;
-			progressBar.setProgress(progress);
+			}
 		}
 	}
 

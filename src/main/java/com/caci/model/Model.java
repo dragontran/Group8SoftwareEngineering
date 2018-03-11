@@ -94,9 +94,11 @@ public class Model extends Observable {
 
 	public void setSplitProgress(double value) {
 		this.splitProgressBarValue = value;
+		
+		String splitProgressOutput = "5" + Double.toString(this.splitProgressBarValue); 
 
 		setChanged();
-		notifyObservers(this.splitProgressBarValue);
+		notifyObservers(splitProgressOutput);
 	}
 
 	// update join src file dir path
