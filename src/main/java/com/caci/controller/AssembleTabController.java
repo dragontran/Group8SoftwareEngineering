@@ -1,6 +1,7 @@
 package main.java.com.caci.controller;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.Observable;
 import java.util.Observer;
 import javafx.event.ActionEvent;
@@ -96,12 +97,21 @@ public class AssembleTabController implements Observer {
 		if (file != null) {
 			// update join source directory path in model
 			mainController.model().setJoinSrcDirPath(file.getAbsolutePath());
+			
+			// get files from specified directory and sort alphabetically (i.e. crc32 then parts0 -> partsN)
+			File[] dirFiles = file.listFiles();
+			Arrays.sort(dirFiles);
+			
+			// populate table 
+			for (File f : dirFiles) {
+				// TODO: populate table
+			}
 		}
 	}
 
 	@FXML
 	void joinFileParts(ActionEvent event) {
-
+		mainController.model().assembleFile();
 	}
 
 	@FXML
