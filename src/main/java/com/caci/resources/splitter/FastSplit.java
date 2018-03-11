@@ -6,12 +6,12 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.file.FileAlreadyExistsException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 
 import main.java.com.caci.model.Model;
 import main.java.com.caci.resources.checksum.Checksum;
@@ -210,7 +210,7 @@ public class FastSplit {
 		}
 
 		calculateChecksums(splitInputFile, folderPartsPath);
-		/* TODO: make this not jank*/
+		/* TODO: make this not jank */
 		// quick and dirty way of showing checksum progress...
 		model1.setSplitProgress(1);
 
@@ -237,16 +237,29 @@ public class FastSplit {
 			// TODO: error handling stuff
 			// f0.println(splitInputFile.getName() + "," + (new
 			// Checksum(splitInputFile)).getCheckSum());
-			
+
 			String fileName = splitInputFile.getName();
-			
-			String fileChecksum = String.format("%s,%d\n", fileName,  (new Checksum(splitInputFile)).getCheckSum());
+
+			String fileChecksum = String.format("%s,%d\n", fileName, (new Checksum(splitInputFile)).getCheckSum());
 
 			fileChecksumList.add(fileChecksum);
 
 			File[] directoryListing = dir.listFiles();
-			Arrays.sort(directoryListing);
-			
+			// Arrays.sort(directoryListing);
+
+			Arrays.sort(directoryListing, new Comparator<File>() {
+
+				@Override
+				public int compare(File o1, File o2) {
+					String file1Part = (o1.getName()).replaceAll("\\D", "");
+					String file2Part = (o2.getName()).replaceAll("\\D", "");
+					Integer file1PartNo = Integer.parseInt(file1Part);
+					Integer file2PartNo = Integer.parseInt(file2Part);
+					return file1PartNo.compareTo(file2PartNo);
+				}
+
+			});
+
 			if (directoryListing != null) {
 				for (File child : directoryListing) {
 
