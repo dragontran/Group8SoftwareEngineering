@@ -20,7 +20,7 @@ public class Model extends Observable {
 	
 	// file paths for assembler
 	private File joinSrcFileDir;
-	private File joinOutputFile;
+	private File joinOutFileDir;
 
 	private double splitProgressBarValue;
 	private double joinProgressBarValue;
@@ -29,7 +29,7 @@ public class Model extends Observable {
 		this.splitInputFile = null;
 		this.splitOutputDir = null;
 		this.joinSrcFileDir = null;
-		this.joinOutputFile = null;
+		this.joinOutFileDir = null;
 		this.splitProgressBarValue = 0.0;
 		this.joinProgressBarValue = 0.0;
 	}
@@ -104,8 +104,8 @@ public class Model extends Observable {
 	}
 
 	// update join output directory path
-	public void setJoinOutputPath(String outputPath) {
-		this.joinOutputFile = new File(outputPath);
+	public void setJoinOutDirPath(String outputPath) {
+		this.joinOutFileDir = new File(outputPath);
 		this.setSplitProgress(0.0);
 		
 		// TODO: make output better
@@ -114,7 +114,7 @@ public class Model extends Observable {
 		notifyObservers(out);
 	}
 	
-	// split file
+	// join file
 	public void assembleFile(long size, boolean parts) {
 		Model model = this;
 		// TODO: make sure there is input and output path
@@ -122,7 +122,7 @@ public class Model extends Observable {
 		Task task = new Task<Void>() {
 			
 			// View / statusbar wouldnt update unless
-			// split process was run on a concurrent thread
+			// join process was run on a concurrent thread
 			@Override
 			public Void call() {
 				try {

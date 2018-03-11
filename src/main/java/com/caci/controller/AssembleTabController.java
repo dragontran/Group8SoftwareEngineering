@@ -1,5 +1,6 @@
 package main.java.com.caci.controller;
 
+import java.io.File;
 import java.util.Observable;
 import java.util.Observer;
 import javafx.event.ActionEvent;
@@ -10,6 +11,7 @@ import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Alert.AlertType;
+import javafx.stage.DirectoryChooser;
 
 public class AssembleTabController implements Observer {
 
@@ -57,16 +59,44 @@ public class AssembleTabController implements Observer {
 
 	@FXML
 	void getOutputPath(ActionEvent event) {
+		// open directory chooser
+		DirectoryChooser dirChooser = new DirectoryChooser();
+		dirChooser.setTitle("Select Source Directory");
 
+		// set local path as default path
+		File defaultDirectory = new File(System.getProperty("user.dir"));
+		dirChooser.setInitialDirectory(defaultDirectory);
+
+		// show chooser
+		// disable main stage when chooser is open
+		File file = dirChooser.showDialog(mainController.stage());
+
+		// TODO: error handling
+		if (file != null) {
+			// update join output directory path in model
+			mainController.model().setJoinOutDirPath(file.getAbsolutePath());
+		}
 	}
 
 	@FXML
 	void getSrcDirectory(ActionEvent event) {
-		Alert alert = new Alert(AlertType.INFORMATION);
-		alert.setTitle("hello, andrew");
-		alert.setHeaderText(null);
-		alert.setContentText("have fun >:)");
-		alert.showAndWait();
+		// open directory chooser
+		DirectoryChooser dirChooser = new DirectoryChooser();
+		dirChooser.setTitle("Select Source Directory");
+
+		// set local path as default path
+		File defaultDirectory = new File(System.getProperty("user.dir"));
+		dirChooser.setInitialDirectory(defaultDirectory);
+
+		// show chooser
+		// disable main stage when chooser is open
+		File file = dirChooser.showDialog(mainController.stage());
+
+		// TODO: error handling
+		if (file != null) {
+			// update join source directory path in model
+			mainController.model().setJoinSrcDirPath(file.getAbsolutePath());
+		}
 	}
 
 	@FXML
@@ -87,7 +117,23 @@ public class AssembleTabController implements Observer {
 	@Override
 	public void update(Observable o, Object arg) {
 		// TODO Auto-generated method stub
+		if (arg instanceof String) {
+			// Update text field with file path
+			String updateInput = (String) arg;
+			char flag = updateInput.charAt(0);
+			updateInput = updateInput.substring(1);
 
+			// TODO: make this better
+			// dumb way to determine which component to update
+			if (flag == '3') {
+				srcDirTextField.setText(updateInput);
+			} else if (flag == '4') {
+				outputTextField.setText(updateInput);
+			}
+		} else {
+			Double progress = (Double) arg;
+			progressBar.setProgress(progress);
+		}
 	}
 
 }
