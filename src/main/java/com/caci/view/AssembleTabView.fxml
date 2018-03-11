@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ProgressBar?>
 <?import javafx.scene.control.TableColumn?>
@@ -8,14 +12,14 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="373.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.java.com.caci.controller.AssembleTabController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="373.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.java.com.caci.controller.AssembleTabController">
    <children>
       <Text layoutX="31.0" layoutY="41.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Source Directory:" AnchorPane.leftAnchor="35.0" AnchorPane.topAnchor="20.0" />
       <TextField fx:id="srcDirTextField" layoutX="35.0" layoutY="60.0" prefHeight="25.0" prefWidth="465.0" AnchorPane.leftAnchor="25.0" AnchorPane.rightAnchor="110.0" AnchorPane.topAnchor="40.0" />
       <Button fx:id="srcDirBrowseBtn" layoutX="513.0" layoutY="60.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#getSrcDirectory" text="Browse" AnchorPane.leftAnchor="500.0" AnchorPane.rightAnchor="25.0" AnchorPane.topAnchor="40.0" />
       <Text layoutX="35.0" layoutY="111.0" strokeType="OUTSIDE" strokeWidth="0.0" text="File Parts" AnchorPane.leftAnchor="35.0" AnchorPane.topAnchor="120.0" />
       <Button fx:id="removePartBtn" layoutX="512.0" layoutY="130.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#removePart" text="Remove" AnchorPane.leftAnchor="500.0" AnchorPane.rightAnchor="25.0" AnchorPane.topAnchor="210.0" />
-      <Text layoutX="35.0" layoutY="292.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Output File:" AnchorPane.leftAnchor="35.0" AnchorPane.topAnchor="70.0" />
+      <Text layoutX="35.0" layoutY="292.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Output Directory:" AnchorPane.leftAnchor="35.0" AnchorPane.topAnchor="70.0" />
       <Button fx:id="joinBtn" layoutX="510.0" layoutY="300.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#joinFileParts" text="Join" AnchorPane.bottomAnchor="25.0" AnchorPane.leftAnchor="500.0" AnchorPane.rightAnchor="25.0" />
       <TextField fx:id="outputTextField" layoutX="30.0" layoutY="310.0" prefHeight="25.0" prefWidth="465.0" AnchorPane.leftAnchor="25.0" AnchorPane.rightAnchor="110.0" AnchorPane.topAnchor="90.0" />
       <TableView fx:id="filePartsTable" layoutX="35.0" layoutY="100.0" prefHeight="155.0" prefWidth="460.0" AnchorPane.leftAnchor="25.0" AnchorPane.rightAnchor="110.0" AnchorPane.topAnchor="140.0">
