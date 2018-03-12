@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Observable;
 
 import javafx.concurrent.Task;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import main.java.com.caci.resources.assembler.Assembler;
 import main.java.com.caci.resources.splitter.FastSplit;
 
@@ -68,7 +70,7 @@ public class Model extends Observable {
 		Model model = this;
 		// TODO: make sure there is input and output path
 
-		Task task = new Task<Void>() {
+		Task<Void> task = new Task<Void>() {
 
 			// View / statusbar wouldnt update unless
 			// split process was run on a concurrent thread
@@ -94,7 +96,7 @@ public class Model extends Observable {
 
 	public void setSplitProgress(double value) {
 		this.splitProgressBarValue = value;
-		
+
 		String splitProgressOutput = "5" + Double.toString(this.splitProgressBarValue); 
 
 		setChanged();
@@ -128,7 +130,7 @@ public class Model extends Observable {
 		Model model = this;
 		// TODO: make sure there is input and output path
 
-		Task task = new Task<Void>() {
+		Task<Void> task = new Task<Void>() {
 
 			// View / statusbar wouldnt update unless
 			// join process was run on a concurrent thread

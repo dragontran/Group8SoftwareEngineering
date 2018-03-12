@@ -2,6 +2,7 @@ package main.java.com.caci.controller;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Observable;
 import java.util.Observer;
 import javafx.event.ActionEvent;
@@ -100,8 +101,24 @@ public class AssembleTabController implements Observer {
 			
 			// get files from specified directory and sort alphabetically (i.e. crc32 then parts0 -> partsN)
 			File[] dirFiles = file.listFiles();
-			Arrays.sort(dirFiles);
-			
+			// sort with crc32 first then by file part number
+			Arrays.sort(dirFiles, new Comparator<File>() {
+
+				@Override
+				public int compare(File o1, File o2) {
+					if (o1.getName().contains(".crc32")) {
+						return -1;
+					} else if (o2.getName().contains(".crc32")) {
+						return 1;
+					}
+					String file1Part = (o1.getName()).replaceAll("\\D", "");
+					String file2Part = (o2.getName()).replaceAll("\\D", "");
+					Integer file1PartNo = Integer.parseInt(file1Part);
+					Integer file2PartNo = Integer.parseInt(file2Part);
+					return file1PartNo.compareTo(file2PartNo);
+				}
+
+			});
 			// populate table 
 			for (File f : dirFiles) {
 				// TODO: populate table

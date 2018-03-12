@@ -11,6 +11,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 
 import main.java.com.caci.model.Model;
@@ -104,7 +105,7 @@ public class Assembler {
 	}
 
 	// TODO: error handling, throw instead of catch and handle in controller?
-	public static void assemble(File srcDir, File outDir, Model model){
+	public static void assemble(File srcDir, File outDir, Model model) {
 		Model model1 = model;
 		
 		Instant start = Instant.now();
@@ -112,11 +113,11 @@ public class Assembler {
 		String filename = getBaseFileName(srcDir);
 		String newfile = filename;
 		
-		//TODO: make less terrible (-1 to remove crc32) (-1 to 0 index)
-		// maybe is fine actually?
+		//TODO: make work for more than just srcDir (-1 to remove crc32) (-1 to 0 index)
+		// this means use the list (not yet implemented)
 		int numparts = srcDir.list().length - 2;
 		
-		File ofile = new File(outDir.getAbsolutePath() + File.separator + newfile);
+		File ofile = new File(filename);
 		FileOutputStream fos;
 		FileInputStream fis;
 		byte[] fileBytes;
@@ -124,7 +125,25 @@ public class Assembler {
 
 		// create a list containing each file part
 		File[] srcDirFiles = srcDir.listFiles();
-		Arrays.sort(srcDirFiles);
+		// sort with crc32 first then by file part number
+		Arrays.sort(srcDirFiles, new Comparator<File>() {
+
+			@Override
+			public int compare(File o1, File o2) {
+				if (o1.getName().contains(".crc32")) {
+					return -1;
+				} else if (o2.getName().contains(".crc32")) {
+					return 1;
+				}
+				String file1Part = (o1.getName()).replaceAll("\\D", "");
+				String file2Part = (o2.getName()).replaceAll("\\D", "");
+				Integer file1PartNo = Integer.parseInt(file1Part);
+				Integer file2PartNo = Integer.parseInt(file2Part);
+				return file1PartNo.compareTo(file2PartNo);
+			}
+
+		});
+		
 		List<File> list = new ArrayList<File>(Arrays.asList(srcDirFiles));
 		
 		// Create list of checksums for each file part
@@ -178,6 +197,7 @@ public class Assembler {
 				
 				model1.setJoinProgress(i/numparts);
 			}
+			
 			Instant end = Instant.now();
 			Checksum checksum = new Checksum(ofile);
 			System.out.println(newfile + " checksum: " + checksum.getCheckSum());
@@ -189,7 +209,7 @@ public class Assembler {
 				System.out.println("Assembled checksum DOES NOT MATCH checksum before being split");
 				System.out.println("Files NOT combined successfully");
 			}
-			System.out.println("Combined file saved as: "+ofile.getName());
+			System.out.println("Combined file saved as: " + newfile);
 			System.out.println("Combined file saved to directory: " + outDir.getAbsolutePath());
 			
 			Duration diff = Duration.between(start, end);
