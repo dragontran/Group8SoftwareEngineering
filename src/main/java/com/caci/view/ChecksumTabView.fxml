@@ -8,24 +8,23 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Text?>
 
-
-<AnchorPane prefHeight="373.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.141">
+<AnchorPane prefHeight="373.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.java.com.caci.controller.ChecksumTabController">
    <children>
       <Text layoutX="31.0" layoutY="41.0" strokeType="OUTSIDE" strokeWidth="0.0" text="File Location" AnchorPane.leftAnchor="35.0" AnchorPane.topAnchor="20.0" />
-      <TextField AnchorPane.leftAnchor="25.0" AnchorPane.rightAnchor="110.0" AnchorPane.topAnchor="40.0" />
-      <Button mnemonicParsing="false" text="Browse" AnchorPane.leftAnchor="500.0" AnchorPane.rightAnchor="25.0" AnchorPane.topAnchor="40.0" />
+      <TextField fx:id="srcDirTextField" AnchorPane.leftAnchor="25.0" AnchorPane.rightAnchor="110.0" AnchorPane.topAnchor="40.0" />
+      <Button fx:id="srcDirBrowseBtn" mnemonicParsing="false" onAction="#getSrcDirectory" text="Browse" AnchorPane.leftAnchor="500.0" AnchorPane.rightAnchor="25.0" AnchorPane.topAnchor="40.0" />
       <TableView layoutX="25.0" layoutY="87.0" prefHeight="200.0" prefWidth="465.0">
         <columns>
-          <TableColumn prefWidth="113.0" text="Name" />
-          <TableColumn minWidth="9.0" prefWidth="104.0" text="Size" />
-            <TableColumn prefWidth="112.0" text="Path" />
-            <TableColumn prefWidth="135.0" text="Checksum" />
+          <TableColumn fx:id="iName" prefWidth="113.0" text="Name" />
+          <TableColumn fx:id="iSize" minWidth="9.0" prefWidth="104.0" text="Size" />
+            <TableColumn fx:id="iPath" prefWidth="112.0" text="Path" />
+            <TableColumn fx:id="iChecksum" prefWidth="135.0" text="Checksum" />
         </columns>
       </TableView>
       <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Status" AnchorPane.leftAnchor="35.0" AnchorPane.topAnchor="300.0" />
       <ProgressBar layoutX="25.0" layoutY="330.0" prefHeight="30.0" prefWidth="200.0" progress="0.0" AnchorPane.leftAnchor="25.0" AnchorPane.rightAnchor="110.0" AnchorPane.topAnchor="320.0" />
       <Button layoutX="500.0" layoutY="130.0" mnemonicParsing="false" text="Add" AnchorPane.leftAnchor="500.0" AnchorPane.rightAnchor="25.0" AnchorPane.topAnchor="130.0" />
       <Button layoutX="500.0" layoutY="174.0" mnemonicParsing="false" text="Remove" AnchorPane.leftAnchor="500.0" AnchorPane.rightAnchor="25.0" AnchorPane.topAnchor="174.0" />
-      <Button layoutX="500.0" layoutY="243.0" mnemonicParsing="false" text="Button" AnchorPane.leftAnchor="500.0" AnchorPane.rightAnchor="25.0" AnchorPane.topAnchor="220.0" />
+      <Button layoutX="500.0" layoutY="243.0" mnemonicParsing="false" text="Clear All" AnchorPane.leftAnchor="500.0" AnchorPane.rightAnchor="25.0" AnchorPane.topAnchor="220.0" />
    </children>
 </AnchorPane>
