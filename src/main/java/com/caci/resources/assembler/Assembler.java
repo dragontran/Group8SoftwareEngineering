@@ -104,7 +104,7 @@ public class Assembler {
 
 		// Creates file at specified location
 		try {
-			 ofile = new File(outDir.getAbsolutePath() + "/" + filename);
+			 ofile = new File(outDir.getAbsolutePath() + File.separator + filename);
 			if (ofile.createNewFile()) {
 				System.out.printf("File Created"); //TODO: Pass Confirmation to User?
 			} else {
