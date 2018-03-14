@@ -36,23 +36,7 @@ public class Assembler {
 			list.add(new File(filename+".part"+i));
 		}
 		
-		ArrayList<Long> checksums = new ArrayList<Long>();
-		try {
-			FileReader fr = new FileReader(filename + ".checksums.csv");
-			BufferedReader br = new BufferedReader(fr);
-			String line;
-			
-			while ((line = br.readLine()) != null){
-				checksums.add(Long.valueOf(line.substring(line.indexOf(',')+1, line.length())).longValue());
-			}
-			
-			br.close();
-			fr.close();
-		} catch (FileNotFoundException e){
-			System.out.println(filename + ".checksums.csv" + " not found :(");
-		} catch (IOException e){
-			System.out.println("IOException :(");
-		}
+		ArrayList<Long> checksums = getChecksumList(filename);
 
 		System.out.println("Combining files: "+filename+".part0 to "+filename+".part"+numparts);
 
@@ -71,7 +55,7 @@ public class Assembler {
 				fis.close();
 				
 				// Ensure checksums match
-				Checksum checksum = new Checksum(fileBytes);
+				Checksum checksum = new Checksum(file);
 				if (checksum.getCheckSum() != checksums.get(i+1)){
 					System.out.println("Part " + i + " checksum does not match saved checksum from split");
 					System.out.println("Part " + i + " current checksum: " + checksum.getCheckSum());
@@ -116,8 +100,19 @@ public class Assembler {
 		//TODO: make work for more than just srcDir (-1 to remove crc32) (-1 to 0 index)
 		// this means use the list (not yet implemented)
 		int numparts = srcDir.list().length - 2;
-		
-		File ofile = new File(filename);
+		File ofile = null;
+
+		// Creates file at specified location
+		try {
+			 ofile = new File(outDir.getAbsolutePath() + "/" + filename);
+			if (ofile.createNewFile()) {
+				System.out.printf("File Created"); //TODO: Pass Confirmation to User?
+			} else {
+				System.out.printf("File already exists"); //TODO: Warn user and allow to overwrite file?
+			}
+		} catch (IOException e) {
+			System.out.printf(e.getMessage());
+		}
 		FileOutputStream fos;
 		FileInputStream fis;
 		byte[] fileBytes;
@@ -236,5 +231,27 @@ public class Assembler {
 			}
 		}
 		return baseFile;
+	}
+
+	// Gets arraylist of checksums from the csv for the specified filename
+	private static ArrayList<Long> getChecksumList(String filename) {
+		ArrayList<Long> checksums = new ArrayList<Long>();
+		try {
+			FileReader fr = new FileReader(filename + ".checksums.csv");
+			BufferedReader br = new BufferedReader(fr);
+			String line;
+
+			while ((line = br.readLine()) != null){
+				checksums.add(Long.valueOf(line.substring(line.indexOf(',')+1, line.length())));
+			}
+
+			br.close();
+			fr.close();
+		} catch (FileNotFoundException e){
+			System.out.println(filename + ".checksums.csv" + " not found :(");
+		} catch (IOException e){
+			System.out.println("IOException :(");
+		}
+		return checksums;
 	}
 }
