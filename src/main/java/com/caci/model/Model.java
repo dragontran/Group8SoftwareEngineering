@@ -1,16 +1,11 @@
 package main.java.com.caci.model;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.nio.file.FileAlreadyExistsException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
 
 import javafx.concurrent.Task;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import main.java.com.caci.resources.assembler.Assembler;
 import main.java.com.caci.resources.splitter.FastSplit;
 
@@ -43,6 +38,7 @@ public class Model extends Observable {
 		this.joinProgressBarValue = 0.0;
 	}
 
+
 	// update split file input path
 	public void setSplitInputPath(String inputPath) {
 		this.splitInputFile = new File(inputPath);
@@ -66,38 +62,41 @@ public class Model extends Observable {
 	}
 
 	// split file
-	public void splitFile(long size, boolean parts) {
+	public void splitFile(long size, boolean parts) throws Exception {
 		Model model = this;
-		// TODO: make sure there is input and output path
+		setSplitProgress(0.0);
 
-		Task<Void> task = new Task<Void>() {
+		// check for input path
+		if (this.splitInputFile == null) {
+			throw new Exception("Input file has not been selected!");
+			// check for output path
+		} else if (this.splitOutputDir == null) {
+			throw new Exception("Output directory has not been selected!");
+			// check if input file exists
+		} else if (!this.splitInputFile.exists()) {
+			throw new Exception("Selected input file does not exist!");
+			// check if output directory exists
+		} else if (!this.splitOutputDir.exists()) {
+			throw new Exception("Selected output directory does not exist!");
+			// check if input file is a file
+		} else if (!this.splitInputFile.isFile()) {
+			throw new Exception("Selected input file is not a file");
+			// check if output dir is a directory
+		} else if (!this.splitOutputDir.isDirectory()) {
+			throw new Exception("Selected output directory is not a directory");
+			// check if file can be read
+		} else if (!this.splitInputFile.canRead()) {
+			throw new Exception("Selected input file cannot be read");
+		}
 
-			// View / statusbar wouldnt update unless
-			// split process was run on a concurrent thread
-			@Override
-			public Void call() {
-				try {
-					FastSplit.split(splitInputFile, splitOutputDir, size, parts, model);
-				} catch (FileNotFoundException e) {
-					System.out.println("file doesn't exist bro");
-				} catch (FileAlreadyExistsException e) {
-					// TODO: talk about how to handle this
-					System.out.println("parts folder already exists here");
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				return null;
-			}
-		};
-		new Thread(task).start();
+		FastSplit.split(splitInputFile, splitOutputDir, size, parts, model);
 
 	}
 
 	public void setSplitProgress(double value) {
 		this.splitProgressBarValue = value;
 
-		String splitProgressOutput = "5" + Double.toString(this.splitProgressBarValue); 
+		String splitProgressOutput = "5" + Double.toString(this.splitProgressBarValue);
 
 		setChanged();
 		notifyObservers(splitProgressOutput);
@@ -137,17 +136,17 @@ public class Model extends Observable {
 			@Override
 			public Void call() {
 				// TODO: error handling (currently caught in assemble?)
-				//				try {
+				// try {
 				Assembler.assemble(joinSrcFileDir, joinOutFileDir, model);
-				//				} catch (FileNotFoundException e) {
-				//					System.out.println("file doesn't exist bro");
-				//				} catch (FileAlreadyExistsException e) {
-				//					// TODO: talk about how to handle this
-				//					System.out.println("parts folder already exists here");
-				//				} catch (IOException e) {
-				//					// TODO Auto-generated catch block
-				//					e.printStackTrace();
-				//				}
+				// } catch (FileNotFoundException e) {
+				// System.out.println("file doesn't exist bro");
+				// } catch (FileAlreadyExistsException e) {
+				// // TODO: talk about how to handle this
+				// System.out.println("parts folder already exists here");
+				// } catch (IOException e) {
+				// // TODO Auto-generated catch block
+				// e.printStackTrace();
+				// }
 				return null;
 			}
 		};
@@ -161,4 +160,18 @@ public class Model extends Observable {
 		setChanged();
 		notifyObservers(this.joinProgressBarValue);
 	}
+	
+	public double getSplitProgressBarValue() {
+		return splitProgressBarValue;
+	}
+
+	public File getSplitInputFile() {
+		return splitInputFile;
+	}
+
+	public File getSplitOutputDir() {
+		return splitOutputDir;
+	}
+	
+	
 }
