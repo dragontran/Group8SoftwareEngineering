@@ -261,23 +261,29 @@ public class FastSplit {
 			});
 
 			if (directoryListing != null) {
+				double progress = .1 / directoryListing.length;
 				for (File child : directoryListing) {
 
 					test = new Checksum(child);
 
 					fileChecksumList.add(child.getName() + "," + test.getCheckSum() + "\n");
 
-					// System.out.println(test.getCheckSum());
+					model.setSplitProgress(model.getSplitProgressBarValue() + progress);
+
 				}
 			}
 
 			fileWriter = new FileWriter(dir.getAbsolutePath() + File.separator + checksumFileName);
+
 			for (String output : fileChecksumList) {
+
 				fileWriter.write(output);
 			}
 
 		} finally {
+
 			fileWriter.close();
+
 		}
 	}
 }
