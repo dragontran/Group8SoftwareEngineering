@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
+import main.java.com.caci.model.AssembleTableElement;
 import main.java.com.caci.model.Model;
 import main.java.com.caci.resources.checksum.*;
 
@@ -88,7 +89,6 @@ public class Assembler {
 		}
 	}
 
-	// TODO: error handling, throw instead of catch and handle in controller?
 	public static void assemble(File srcDir, File outDir, Model model) {
 		Model model1 = model;
 		
@@ -221,12 +221,166 @@ public class Assembler {
 		}
 	}
 	
+	public static void assemble(List<AssembleTableElement> joinPartsList, File outDir, Model model) {
+				Model model1 = model;
+				
+				Instant start = Instant.now();
+				
+				String filename = getBaseFileName(joinPartsList);
+				String newfile = filename;
+				
+				int numparts = joinPartsList.size() - 2;
+				File ofile = null;
+
+				// Creates file at specified location
+				try {
+					 ofile = new File(outDir.getAbsolutePath() + File.separator + filename);
+					if (ofile.createNewFile()) {
+						System.out.printf("File Created"); //TODO: Pass Confirmation to User?
+					} else {
+						System.out.printf("File already exists"); //TODO: Warn user and allow to overwrite file?
+					}
+				} catch (IOException e) {
+					System.out.printf(e.getMessage());
+				}
+				FileOutputStream fos;
+				FileInputStream fis;
+				byte[] fileBytes;
+				int bytesRead = 0;
+
+				// create a list containing each file part
+				ArrayList<File> partFilesArrayList = new ArrayList<File>();
+				for (AssembleTableElement e : joinPartsList){
+					partFilesArrayList.add(e.getFile());
+				}
+				File[] partFiles = partFilesArrayList.toArray(new File[partFilesArrayList.size()]);
+				
+				// sort with crc32 first then by file part number
+				Arrays.sort(partFiles, new Comparator<File>() {
+
+					@Override
+					public int compare(File o1, File o2) {
+						if (o1.getName().contains(".crc32")) {
+							return -1;
+						} else if (o2.getName().contains(".crc32")) {
+							return 1;
+						}
+						String file1Part = (o1.getName()).replaceAll("\\D", "");
+						String file2Part = (o2.getName()).replaceAll("\\D", "");
+						Integer file1PartNo = Integer.parseInt(file1Part);
+						Integer file2PartNo = Integer.parseInt(file2Part);
+						return file1PartNo.compareTo(file2PartNo);
+					}
+
+				});
+				
+				List<File> list = new ArrayList<File>(Arrays.asList(partFiles));
+				
+				// Create list of checksums for each file part
+				ArrayList<Long> checksums = new ArrayList<Long>();
+				try {
+					FileReader fr = new FileReader(list.get(CRC32));
+					BufferedReader br = new BufferedReader(fr);
+					String line;
+					
+					while ((line = br.readLine()) != null){
+						checksums.add(Long.valueOf(line.substring(line.indexOf(',')+1, line.length())).longValue());
+					}
+					
+					list.remove(CRC32);
+					br.close();
+					fr.close();
+				} catch (FileNotFoundException e){
+					System.out.println(filename + ".crc32" + " not found :(");
+				} catch (IOException e){
+					System.out.println("IOException :(");
+				}
+
+				System.out.println("Combining files: "+filename+".part0 to "+filename+".part"+numparts);
+
+				try {
+					fos = new FileOutputStream(ofile,true);
+
+					int i = 0;
+					for (File file : list) {
+						fis = new FileInputStream(file);
+						fileBytes = new byte[(int) file.length()];
+						bytesRead = fis.read(fileBytes, 0,(int)  file.length());
+						assert(bytesRead == fileBytes.length);
+						assert(bytesRead == (int) file.length());
+						fos.write(fileBytes);
+						fos.flush();
+						fis.close();
+						
+						// Ensure checksums match
+						Checksum checksum = new Checksum(file);
+						if (checksum.getCheckSum() != checksums.get(i+1)){
+							System.out.println("Part " + i + " checksum does not match saved checksum from split");
+							System.out.println("Part " + i + " current checksum: " + checksum.getCheckSum());
+							System.out.println("Part " + i + " saved checksum: " + checksums.get(i+1));
+							// probably exit
+						}
+										
+						fileBytes = null;
+						fis = null;
+						i++;
+						
+						model1.setJoinProgress(i/numparts);
+					}
+					
+					Instant end = Instant.now();
+					Checksum checksum = new Checksum(ofile);
+					System.out.println(newfile + " checksum: " + checksum.getCheckSum());
+					
+					if (checksum.getCheckSum() == checksums.get(ORIGINAL_FILE)){
+						System.out.println("Assembled checksum matches checksum before being split");
+						System.out.println("Files combined successfully");
+					} else {
+						System.out.println("Assembled checksum DOES NOT MATCH checksum before being split");
+						System.out.println("Files NOT combined successfully");
+					}
+					System.out.println("Combined file saved as: " + newfile);
+					System.out.println("Combined file saved to directory: " + outDir.getAbsolutePath());
+					
+					Duration diff = Duration.between(start, end);
+					System.out.println("Time elapsed: " + diff.toMillis() + " ms");
+					
+					model1.setJoinProgress(1);
+					
+					fos.close();
+					fos = null;
+				} catch (FileNotFoundException e){
+					System.out.println(filename + " part not found :(");
+				} catch (IOException e){
+					System.out.println("IOException");
+				}
+			}
+	
+	private static String getBaseFileName(List<AssembleTableElement> joinPartsList) {
+		String baseFile = "";
+		for (AssembleTableElement e : joinPartsList) {
+			String fname = e.getFileName();
+			if (fname.contains(".part")) {
+				baseFile = fname.substring(0,fname.lastIndexOf(".part"));
+				break;
+			} else if (fname.contains(".crc32")) {
+				baseFile = fname.substring(0,fname.lastIndexOf(".crc32"));
+				break;
+			}
+		}
+		
+		return baseFile;
+	}
+
 	private static String getBaseFileName(File srcDir) {
 		String baseFile = "";
 		String[] dirFiles = srcDir.list();
 		for (String f : dirFiles) {
 			if (f.contains(".part")) {
 				baseFile = f.substring(0,f.lastIndexOf(".part"));
+				break;
+			} else if (f.contains(".crc32")) {
+				baseFile = f.substring(0,f.lastIndexOf(".crc32"));
 				break;
 			}
 		}
@@ -254,4 +408,5 @@ public class Assembler {
 		}
 		return checksums;
 	}
+
 }

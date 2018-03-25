@@ -5,15 +5,20 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Observable;
 import java.util.Observer;
+
+import com.sun.javafx.collections.ObservableListWrapper;
+
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import javafx.scene.control.Alert.AlertType;
 import javafx.stage.DirectoryChooser;
+import javafx.stage.FileChooser;
+
+import main.java.com.caci.model.AssembleTableElement;
 
 public class AssembleTabController implements Observer {
 
@@ -33,7 +38,7 @@ public class AssembleTabController implements Observer {
 	private TextField outputTextField;
 
 	@FXML
-	private TableView<?> filePartsTable;
+	private TableView<AssembleTableElement> filePartsTable;
 
 	@FXML
 	private Button addPartBtn;
@@ -51,12 +56,26 @@ public class AssembleTabController implements Observer {
 
 	@FXML
 	void addPart(ActionEvent event) {
+		// open file chooser
+		FileChooser fileChooser = new FileChooser();
+		fileChooser.setTitle("Select a File to Add");
 
+		// set local path as default path
+		File defaultDirectory = new File(System.getProperty("user.dir"));
+		fileChooser.setInitialDirectory(defaultDirectory);
+
+		// show chooser
+		// disable main stage when chooser is open
+		File file = fileChooser.showOpenDialog(mainController.stage());
+
+		if (file != null) {
+			mainController.model().addFileToList(file);
+		}
 	}
 
 	@FXML
 	void clearAllParts(ActionEvent event) {
-
+		mainController.model().clearPartsList();
 	}
 
 	@FXML
@@ -98,7 +117,7 @@ public class AssembleTabController implements Observer {
 		if (file != null) {
 			// update join source directory path in model
 			mainController.model().setJoinSrcDirPath(file.getAbsolutePath());
-			
+
 			// get files from specified directory and sort alphabetically (i.e. crc32 then parts0 -> partsN)
 			File[] dirFiles = file.listFiles();
 			// sort with crc32 first then by file part number
@@ -121,7 +140,7 @@ public class AssembleTabController implements Observer {
 			});
 			// populate table 
 			for (File f : dirFiles) {
-				// TODO: populate table
+				mainController.model().addFileToList(f);
 			}
 		}
 	}
@@ -133,7 +152,9 @@ public class AssembleTabController implements Observer {
 
 	@FXML
 	void removePart(ActionEvent event) {
-
+		// TODO: get selected file in list	
+		AssembleTableElement element = filePartsTable.getSelectionModel().getSelectedItem();
+		mainController.model().removeFileFromList(element);
 	}
 
 	// set main controller
@@ -143,19 +164,30 @@ public class AssembleTabController implements Observer {
 
 	@Override
 	public void update(Observable o, Object arg) {
-		// TODO Auto-generated method stub
 		if (arg instanceof String) {
+			if (arg.equals("clear")) {
+				filePartsTable.getItems().clear();
+			}
+			
 			// Update text field with file path
 			String updateInput = (String) arg;
 			char flag = updateInput.charAt(0);
 			updateInput = updateInput.substring(1);
 
-			// TODO: make this better
-			// dumb way to determine which component to update
 			if (flag == '3') {
 				srcDirTextField.setText(updateInput);
 			} else if (flag == '4') {
 				outputTextField.setText(updateInput);
+			}
+		} else if (arg instanceof AssembleTableElement) {
+			// remove the element from the table
+			filePartsTable.getItems().remove(arg);
+		} else if (arg instanceof ObservableListWrapper<?>){
+			ObservableList<AssembleTableElement> list = (ObservableList<AssembleTableElement>) arg;
+			for (AssembleTableElement e : list) {
+				if (!filePartsTable.getItems().contains(e)) {
+					filePartsTable.getItems().add(e);
+				}
 			}
 		} else {
 			Double progress = (Double) arg;

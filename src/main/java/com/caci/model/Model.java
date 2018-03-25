@@ -4,20 +4,15 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.FileAlreadyExistsException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
 
+import javafx.collections.FXCollections;
 import javafx.concurrent.Task;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import main.java.com.caci.resources.assembler.Assembler;
 import main.java.com.caci.resources.splitter.FastSplit;
 
 public class Model extends Observable {
-
-	// String inputPath = "";
-	// String outputPath = "";
 
 	// file paths for splitter
 	private File splitInputFile;
@@ -27,7 +22,8 @@ public class Model extends Observable {
 	private File joinSrcFileDir;
 	private File joinOutFileDir;
 
-	private List<File> joinPartsList;
+	// file list for assembler
+	private List<AssembleTableElement> joinPartsList;
 
 	// progress bar values
 	private double splitProgressBarValue;
@@ -38,7 +34,7 @@ public class Model extends Observable {
 		this.splitOutputDir = null;
 		this.joinSrcFileDir = null;
 		this.joinOutFileDir = null;
-		this.joinPartsList = new ArrayList<File>();
+		this.joinPartsList = FXCollections.observableArrayList();
 		this.splitProgressBarValue = 0.0;
 		this.joinProgressBarValue = 0.0;
 	}
@@ -138,7 +134,7 @@ public class Model extends Observable {
 			public Void call() {
 				// TODO: error handling (currently caught in assemble?)
 				//				try {
-				Assembler.assemble(joinSrcFileDir, joinOutFileDir, model);
+				Assembler.assemble(joinPartsList, joinOutFileDir, model);
 				//				} catch (FileNotFoundException e) {
 				//					System.out.println("file doesn't exist bro");
 				//				} catch (FileAlreadyExistsException e) {
@@ -160,5 +156,31 @@ public class Model extends Observable {
 
 		setChanged();
 		notifyObservers(this.joinProgressBarValue);
+	}
+
+	public void addFileToList(File file) {
+		// add if not already in list
+		AssembleTableElement element = new AssembleTableElement(file);
+		if (!this.joinPartsList.contains(element)) {
+			this.joinPartsList.add(element);
+			
+			setChanged();
+			notifyObservers(this.joinPartsList);
+		}
+	}
+
+	public void removeFileFromList(AssembleTableElement element) {
+		this.joinPartsList.remove(element);
+
+		setChanged();
+		notifyObservers(element);
+	}
+
+	public void clearPartsList() {
+		this.joinPartsList.clear();
+
+		String out = "clear";
+		setChanged();
+		notifyObservers(out);
 	}
 }
