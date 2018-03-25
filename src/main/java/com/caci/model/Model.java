@@ -128,12 +128,10 @@ public class Model extends Observable {
 	// join file
 	public void assembleFile() {
 		Model model = this;
-		// TODO: make sure there is input and output path
+		// TODO: make sure there is output path, crc32 file, and no gaps in part numbers
 
 		Task<Void> task = new Task<Void>() {
 
-			// View / statusbar wouldnt update unless
-			// join process was run on a concurrent thread
 			@Override
 			public Void call() {
 				// TODO: error handling (currently caught in assemble?)
