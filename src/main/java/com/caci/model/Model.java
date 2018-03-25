@@ -128,13 +128,13 @@ public class Model extends Observable {
 	// join file
 	public void assembleFile() {
 		Model model = this;
+		setJoinProgress(0.0);
+		
 		// TODO: make sure there is output path, crc32 file, and no gaps in part numbers
-
 		Task<Void> task = new Task<Void>() {
 
 			@Override
 			public Void call() {
-				// TODO: error handling (currently caught in assemble?)
 				Assembler.assemble(joinPartsList, joinOutFileDir, model);
 				return null;
 			}
