@@ -114,7 +114,7 @@ public class SplitTabController implements Observer {
 	}
 
 	@FXML
-	void splitFile(ActionEvent event) {
+	void splitFile(ActionEvent event) throws NumberFormatException, Exception {
 		// split files
 		// TODO display error alerts?
 		// TODO error checking make sure proper values are inserted

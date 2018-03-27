@@ -67,7 +67,7 @@ public class ChecksumTabController implements Initializable, Observer{
 	void clearAllParts(ActionEvent event) {
 		// TODO: get selected file in list	
 		Table element = filePartsTable.getSelectionModel().getSelectedItem();
-		mainController.model().removeFileFromList(element);
+		//mainController.model().removeFileFromList(element);
 	}
 	
 	@FXML
@@ -133,14 +133,6 @@ public class ChecksumTabController implements Initializable, Observer{
 	@FXML
 	void addPart(ActionEvent event) {
 
-	}
-
-	public ObservableList<Table> getPeople(){
-		
-		ObservableList<Table> people = FXCollections.observableArrayList();
-		people.add(new Table("Frank", "Sinatra", "ree", "ree"));
-		
-		return people;
 	}
 
 	@Override
