@@ -12,7 +12,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-
+import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TableColumn;
@@ -23,7 +23,7 @@ import javafx.stage.FileChooser;
 import main.java.com.caci.application.Main;
 import main.java.com.caci.model.Table;
 
-public class ChecksumTabController implements Observer{
+public class ChecksumTabController implements Initializable, Observer{
 	
 	@FXML
 	private TextField srcDirTextField;
@@ -56,12 +56,6 @@ public class ChecksumTabController implements Observer{
 	@FXML
 	private TableColumn<Table, String> iChecksum;
 	
-	// DEFINE VARIABLES
-	private int iNumber = 1;
-	// CREATE TABLE DATA
-	final ObservableList<Table> data = FXCollections.observableArrayList(
-			new Table("v.jpg", "Name 1", "caci/", "????"));
-	
 	private MainController mainController;
 	
 	@FXML
@@ -91,12 +85,6 @@ public class ChecksumTabController implements Observer{
 		}
 		srcDirTextField.setText(file.getAbsolutePath());
 		
-		iName.setCellValueFactory(new PropertyValueFactory<Table, String>("firstName"));
-		iSize.setCellValueFactory(new PropertyValueFactory<Table, String>("lastName"));
-		iPath.setCellValueFactory(new PropertyValueFactory<Table, String>("birthday"));
-		iChecksum.setCellValueFactory(new PropertyValueFactory<Table, String>("birthday"));
-		
-		tableId.setItems(getPeople());
 	}
 	
 	@FXML
@@ -114,16 +102,28 @@ public class ChecksumTabController implements Observer{
 
 	}
 
-	@Override
-	public void update(Observable o, Object arg) {
-		
-	}
-
 	public ObservableList<Table> getPeople(){
 		
 		ObservableList<Table> people = FXCollections.observableArrayList();
 		people.add(new Table("Frank", "Sinatra", "ree", "ree"));
 		
 		return people;
+	}
+
+	@Override
+	public void initialize(URL location, ResourceBundle resources) {
+		// TODO Auto-generated method stub
+		iName.setCellValueFactory(new PropertyValueFactory<Table, String>("firstName"));
+		iSize.setCellValueFactory(new PropertyValueFactory<Table, String>("lastName"));
+		iPath.setCellValueFactory(new PropertyValueFactory<Table, String>("birthday"));
+		iChecksum.setCellValueFactory(new PropertyValueFactory<Table, String>("birthday"));
+		
+		//tableId.setItems(getPeople());
+	}
+
+	@Override
+	public void update(Observable o, Object arg) {
+		// TODO Auto-generated method stub
+		
 	}
 }
