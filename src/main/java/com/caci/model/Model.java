@@ -14,6 +14,10 @@ import main.java.com.caci.resources.splitter.FastSplit;
 
 public class Model extends Observable {
 
+	// file paths for splitter
+	private File splitInputFile;
+	private File splitOutputDir;
+
 	// file paths for assembler
 	private File joinSrcFileDir;
 	private File joinOutFileDir;
@@ -24,12 +28,6 @@ public class Model extends Observable {
 	// progress bar values
 	private double splitProgressBarValue;
 	private double joinProgressBarValue;
-		
-	// file paths for splitter
-	private File splitInputFile;
-	private File splitOutputDir;
-
-	private double progressBarValue;
 
 	public Model() {
 		this.splitInputFile = null;
@@ -40,6 +38,7 @@ public class Model extends Observable {
 		this.splitProgressBarValue = 0.0;
 		this.joinProgressBarValue = 0.0;
 	}
+
 
 	// update split file input path
 	public void setSplitInputPath(String inputPath) {
@@ -56,15 +55,15 @@ public class Model extends Observable {
 	public void setSplitOutputPath(String outputPath) {
 		this.splitOutputDir = new File(outputPath);
 		this.setSplitProgress(0.0);
-		
+
 		// TODO: make output better
 		String out = "1" + outputPath;
 		setChanged();
 		notifyObservers(out);
 	}
-	
+
 	// split file
-	public void splitFile(long size, boolean parts) throws Exception{
+	public void splitFile(long size, boolean parts) throws Exception {
 		Model model = this;
 		setSplitProgress(0.0);
 
@@ -92,6 +91,7 @@ public class Model extends Observable {
 		}
 
 		FastSplit.split(splitInputFile, splitOutputDir, size, parts, model);
+
 	}
 
 	public void setSplitProgress(double value) {
@@ -135,7 +135,7 @@ public class Model extends Observable {
 
 			@Override
 			public Void call() {
-				//Assembler.assemble(joinPartsList, joinOutFileDir, model);
+				Assembler.assemble(joinPartsList, joinOutFileDir, model);
 				return null;
 			}
 		};
@@ -162,7 +162,7 @@ public class Model extends Observable {
 		}
 	}
 
-	public void removeFileFromList(Table element) {
+	public void removeFileFromList(AssembleTableElement element) {
 		this.joinPartsList.remove(element);
 		this.setJoinProgress(0.0);
 		
@@ -191,3 +191,4 @@ public class Model extends Observable {
 		return splitOutputDir;
 	}
 }
+
