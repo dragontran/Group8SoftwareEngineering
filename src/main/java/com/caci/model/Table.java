@@ -1,44 +1,71 @@
 package main.java.com.caci.model;
 
+import java.io.File;
+
+import javafx.beans.property.SimpleLongProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 
 public class Table {
 	
+	private final SimpleObjectProperty<File> file; 
 	private final SimpleStringProperty rName;
-	private final SimpleStringProperty rSize;
+	private final SimpleLongProperty rSize;
 	private final SimpleStringProperty rPath;
-	private final SimpleStringProperty rChecksum;
+	//private final SimpleStringProperty rChecksum;
 	
-	public Table(String rName, String rSize, String rPath, String rChecksum){
-		this.rName = new SimpleStringProperty(rName);
-		this.rSize = new SimpleStringProperty(rSize);
-		this.rPath = new SimpleStringProperty(rPath);
-		this.rChecksum = new SimpleStringProperty(rChecksum);
+	public Table(File file){
+		this.file = new SimpleObjectProperty<File>(file);
+		this.rName = new SimpleStringProperty(file.getName());
+		this.rSize = new SimpleLongProperty(file.length());
+		this.rPath = new SimpleStringProperty(file.getAbsolutePath());
+		//this.rChecksum = new SimpleStringProperty();
 	}
-	
+
 	// GETTERS AND SETTERS
-	public String getRName(){
-		return rName.get();
+	public SimpleObjectProperty<File> getFile() {
+		return file;
 	}
-	public String getRSize(){
-		return rSize.get();
+
+	public SimpleStringProperty getrName() {
+		return rName;
 	}
-	public String getRPath(){
-		return rPath.get();
+
+	public SimpleLongProperty getrSize() {
+		return rSize;
 	}
-	public String getRChecksum(){
-		return rChecksum.get();
+
+	public SimpleStringProperty getrPath() {
+		return rPath;
 	}
-	public void setRName(String v){
-		rName.set(v);
+	
+	public void setFile(File file) {
+		this.file.set(file);
 	}
-	public void setRSize(String v){
-		rSize.set(v);
+	
+	public void setFileName(File file) {
+		rName.set(file.getName());
 	}
-	public void setRPath(String v){
-		rPath.set(v);
+	
+	public void setFileSize(File file) {
+		rSize.set(file.length());
 	}
-	public void setRChecksum(String v){
-		rChecksum.set(v);
+	
+	public void setFilePath(File file) {
+		rPath.set(file.getAbsolutePath());
+	}
+	
+	@Override
+	public boolean equals(Object o) {
+	    if (o == this) return true;
+	    if (!(o instanceof Table)) {
+	        return false;
+	    }
+	    Table element = (Table) o;
+
+	    return element.file.isEqualTo(file).get() &&
+	        element.rName.isEqualTo(rName).get() &&
+	        element.rSize.isEqualTo(rSize).get() &&
+	        element.rPath.isEqualTo(rPath).get();
 	}
 }
