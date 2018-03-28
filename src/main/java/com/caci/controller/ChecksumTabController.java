@@ -1,6 +1,7 @@
 package main.java.com.caci.controller;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.Month;
@@ -28,6 +29,8 @@ import javafx.stage.FileChooser;
 import main.java.com.caci.application.Main;
 import main.java.com.caci.model.AssembleTableElement;
 import main.java.com.caci.model.Table;
+import main.java.com.caci.resources.checksum.Checksum;
+import main.java.com.caci.resources.splitter.FastSplit;
 
 public class ChecksumTabController implements Observer{
 	
@@ -61,7 +64,12 @@ public class ChecksumTabController implements Observer{
 	@FXML
 	private Button outputBrowseBtn;
 	
+	@FXML
+	private TableColumn filePath;
+	
 	private MainController mainController;
+	
+	Checksum checksum;
 	
 	@FXML
 	void addPart(ActionEvent event) {
@@ -85,12 +93,11 @@ public class ChecksumTabController implements Observer{
 	@FXML
 	void clearAllParts(ActionEvent event) {
 		// TODO: get selected file in list	
-		Table element = filePartsTable.getSelectionModel().getSelectedItem();
-		//mainController.model().removeFileFromList(element);
+		mainController.model().clearAllChecksum();
 	}
 	
 	@FXML
-	void getSrcChecksumDirectory(ActionEvent event) {
+	void getSrcChecksumDirectory(ActionEvent event) throws IOException {
 		// open directory chooser
 		DirectoryChooser dirChooser = new DirectoryChooser();
 		dirChooser.setTitle("Select Source Directory");
@@ -133,6 +140,12 @@ public class ChecksumTabController implements Observer{
 			// populate table 
 			for (File f : dirFiles) {
 				mainController.model().addChecksumFileToList(f);
+			}
+			
+			int i;
+			for(i = 1;i<dirFiles.length;i++){
+				checksum = new Checksum(dirFiles[i]);
+				System.out.println(checksum.getCheckSum());
 			}
 		}
 	}

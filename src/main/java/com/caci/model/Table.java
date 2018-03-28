@@ -15,14 +15,20 @@ public class Table {
 	//private final SimpleLongProperty rSize;
 	private final SimpleStringProperty rPath;
 	//private final SimpleLongProperty rChecksum;
+	Checksum checksum;
 	
 	public Table(File file){
-		//Checksum checksum = new Checksum(file);
+		try {
+			checksum = new Checksum(file);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		this.file = new SimpleObjectProperty<File>(file);
 		this.rName = new SimpleStringProperty(file.getName());
 		//this.rSize = new SimpleLongProperty(file.length());
 		this.rPath = new SimpleStringProperty(file.getAbsolutePath());
-		//this.rChecksum = new SimpleStringProperty();
+		//this.rChecksum = new SimpleLongProperty(checksum.getCheckSum());
 	}
 
 	public File getFile() {
@@ -33,6 +39,9 @@ public class Table {
 		return rName.get();
 	}
 	
+	/*public long getChecksum(){
+		return rChecksum.get();
+	}*/
 	/*public long getFileSize() {
 		return rSize.get();
 	}*/
@@ -48,14 +57,13 @@ public class Table {
 	public void setFileName(File file) {
 		rName.set(file.getName());
 	}
-	
 	/*public void setFileSize(File file) {
 		rSize.set(file.length());
 	}*/
 	
-	public void setFilePath(File file) {
+	/*public void setFilePath(File file) {
 		rPath.set(file.getAbsolutePath());
-	}
+	}*/
 	
 	@Override
 	public boolean equals(Object o) {
@@ -66,8 +74,8 @@ public class Table {
 	    Table element = (Table) o;
 
 	    return element.file.isEqualTo(file).get() &&
-	        element.rName.isEqualTo(rName).get() &&
+	        element.rName.isEqualTo(rName).get(); //&&
 	        //element.rSize.isEqualTo(rSize).get(); //&&
-	        element.rPath.isEqualTo(rPath).get();
+	        //element.rPath.isEqualTo(rPath).get();
 	}
 }

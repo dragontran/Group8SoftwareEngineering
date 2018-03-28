@@ -77,6 +77,15 @@ public class Model extends Observable {
 			notifyObservers(this.checksumPartsList);
 		}
 	}
+	
+	public void clearAllChecksum(){
+		this.checksumPartsList.clear();
+		this.setJoinProgress(0.0);
+		
+		String out = "clear";
+		setChanged();
+		notifyObservers(out);
+	}
 
 	// update split file input path
 	public void setSplitInputPath(String inputPath) {
