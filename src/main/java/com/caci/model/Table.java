@@ -1,42 +1,44 @@
 package main.java.com.caci.model;
 
 import java.io.File;
+import java.io.IOException;
 
 import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
+import main.java.com.caci.resources.checksum.Checksum;
 
 public class Table {
 	
 	private final SimpleObjectProperty<File> file; 
 	private final SimpleStringProperty rName;
-	private final SimpleLongProperty rSize;
+	//private final SimpleLongProperty rSize;
 	private final SimpleStringProperty rPath;
-	//private final SimpleStringProperty rChecksum;
+	//private final SimpleLongProperty rChecksum;
 	
 	public Table(File file){
+		//Checksum checksum = new Checksum(file);
 		this.file = new SimpleObjectProperty<File>(file);
 		this.rName = new SimpleStringProperty(file.getName());
-		this.rSize = new SimpleLongProperty(file.length());
+		//this.rSize = new SimpleLongProperty(file.length());
 		this.rPath = new SimpleStringProperty(file.getAbsolutePath());
 		//this.rChecksum = new SimpleStringProperty();
 	}
 
-	// GETTERS AND SETTERS
-	public SimpleObjectProperty<File> getFile() {
-		return file;
+	public File getFile() {
+		return file.get();
 	}
-
-	public SimpleStringProperty getrName() {
-		return rName;
+	
+	public String getFileName() {
+		return rName.get();
 	}
-
-	public SimpleLongProperty getrSize() {
-		return rSize;
-	}
-
-	public SimpleStringProperty getrPath() {
-		return rPath;
+	
+	/*public long getFileSize() {
+		return rSize.get();
+	}*/
+	
+	public String getFilePath() {
+		return rPath.get();
 	}
 	
 	public void setFile(File file) {
@@ -47,9 +49,9 @@ public class Table {
 		rName.set(file.getName());
 	}
 	
-	public void setFileSize(File file) {
+	/*public void setFileSize(File file) {
 		rSize.set(file.length());
-	}
+	}*/
 	
 	public void setFilePath(File file) {
 		rPath.set(file.getAbsolutePath());
@@ -65,7 +67,7 @@ public class Table {
 
 	    return element.file.isEqualTo(file).get() &&
 	        element.rName.isEqualTo(rName).get() &&
-	        element.rSize.isEqualTo(rSize).get() &&
+	        //element.rSize.isEqualTo(rSize).get(); //&&
 	        element.rPath.isEqualTo(rPath).get();
 	}
 }

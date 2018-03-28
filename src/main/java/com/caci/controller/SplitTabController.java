@@ -3,8 +3,14 @@ package main.java.com.caci.controller;
 import java.io.File;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ProgressBar;
@@ -75,8 +81,16 @@ public class SplitTabController implements Observer {
 		DirectoryChooser dirChooser = new DirectoryChooser();
 		dirChooser.setTitle("Select Output Directory");
 
-		// set local path as default path
-		File defaultDirectory = new File(System.getProperty("user.dir"));
+		String chooserPath;
+
+		if (mainController.model().getSplitInputFile() != null && mainController.model().getSplitInputFile().exists()) {
+			// set chooser path as parent directory of file
+			chooserPath = mainController.model().getSplitInputFile().getParent();
+		} else {
+			// set local path as default path
+			chooserPath = System.getProperty("user.dir");
+		}
+		File defaultDirectory = new File(chooserPath);
 		dirChooser.setInitialDirectory(defaultDirectory);
 
 		// show chooser
@@ -106,42 +120,63 @@ public class SplitTabController implements Observer {
 
 		// TODO: error handling
 		if (file != null) {
-
 			// update split file input path in model
 			mainController.model().setSplitInputPath(file.getAbsolutePath());
 		}
 
 	}
 
+	// split files
 	@FXML
-	void splitFile(ActionEvent event) throws NumberFormatException, Exception {
-		// split files
-		// TODO display error alerts?
-		// TODO error checking make sure proper values are inserted
-		// mainController.model().splitFile();
-		long prefix = 1;
-		if (bytesRadioBtn.isSelected()) {
-			System.out.println(bytesTextField.getText() + " " + bytesSizeComboBox.getValue());
-			switch (bytesSizeComboBox.getValue()) {
-			case "kilobytes":
-				prefix = 1024;
-				;
-				break;
-			case "megabytes":
-				prefix = 1048576;
-				break;
-			case "gigabytes":
-				prefix = 1073741824;
-				break;
-			default:
-				break;
+	void splitFile(ActionEvent event) {
+		splitBtn.setDisable(true);
+		ExecutorService executorService = Executors.newSingleThreadExecutor();
+		Task<Void> t = new Task<Void>() {
+
+			@Override
+			protected Void call() throws Exception {
+				long prefix = 1;
+				if (bytesRadioBtn.isSelected()) {
+					// System.out.println(bytesTextField.getText() + " " +
+					// bytesSizeComboBox.getValue());
+					switch (bytesSizeComboBox.getValue()) {
+					case "kilobytes":
+						prefix = 1024;
+						break;
+					case "megabytes":
+						prefix = 1048576;
+						break;
+					case "gigabytes":
+						prefix = 1073741824;
+						break;
+					default:
+						break;
+					}
+
+					mainController.model().splitFile(Long.parseLong(bytesTextField.getText()) * prefix, false);
+
+				} else {
+
+					mainController.model().splitFile(Long.parseLong(partsTextField.getText()), true);
+
+				}
+				return null;
 			}
 
-			mainController.model().splitFile(Long.parseLong(bytesTextField.getText()) * prefix, false);
-		} else {
-			System.out.println(partsTextField.getText() + " parts");
-			mainController.model().splitFile(Long.parseLong(partsTextField.getText()), true);
-		}
+		};
+
+		// exception handling for split thread
+		t.setOnFailed(evt -> {
+			System.err.println("The task failed with the following exception:");
+			// t.getException().printStackTrace(System.err);
+			System.out.println(t.getException().getMessage());
+
+			errorAlert("header", "error test", (t.getException().getMessage()));
+
+			splitBtn.setDisable(false);
+
+		});
+		executorService.submit(t);
 	}
 
 	@FXML
@@ -155,30 +190,44 @@ public class SplitTabController implements Observer {
 	@Override
 	public void update(Observable o, Object arg) {
 
+		// TODO: make this better
+		// dumb way to determine which component to update
+		/* TODO: omg please this need to be better */
 		if (arg instanceof String) {
-
-			// Update text field with file path
 			String updateInput = (String) arg;
 			char flag = updateInput.charAt(0);
 			updateInput = updateInput.substring(1);
 
-			// TODO: make this better
-			// dumb way to determine which component to update
-			if (flag == '0') {
+			switch (flag) {
+			case '0':
 				srcTextField.setText(updateInput);
-			} else if (flag == '1') {
+				break;
+			case '1':
 				outTextField.setText(updateInput);
-			}
-		} else {
+				break;
+			case '5':
+				progressBar.setProgress(Double.parseDouble(updateInput));
+				if (progressBar.getProgress() == 1) {
+					splitBtn.setDisable(false);
+				}
 
-			Double progress = (Double) arg;
-			progressBar.setProgress(progress);
+				break;
+
+			}
 		}
 	}
 
 	// set main controller
 	public void injectMainController(MainController mainController) {
 		this.mainController = mainController;
+	}
+
+	public void errorAlert(String title, String header, String message) {
+		Alert alert = new Alert(AlertType.ERROR);
+		alert.setTitle(title);
+		alert.setHeaderText(header);
+		alert.setContentText(message);
+		alert.showAndWait();
 	}
 
 }

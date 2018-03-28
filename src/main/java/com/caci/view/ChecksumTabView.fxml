@@ -5,26 +5,34 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="373.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.java.com.caci.controller.ChecksumTabController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="373.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.java.com.caci.controller.ChecksumTabController">
    <children>
-      <Text layoutX="31.0" layoutY="41.0" strokeType="OUTSIDE" strokeWidth="0.0" text="File Location" AnchorPane.leftAnchor="35.0" AnchorPane.topAnchor="20.0" />
-      <TextField fx:id="srcDirTextField" AnchorPane.leftAnchor="25.0" AnchorPane.rightAnchor="110.0" AnchorPane.topAnchor="40.0" />
-      <Button fx:id="srcDirBrowseBtn" mnemonicParsing="false" onAction="#getSrcDirectory" text="Browse" AnchorPane.leftAnchor="500.0" AnchorPane.rightAnchor="25.0" AnchorPane.topAnchor="40.0" />
-      <TableView layoutX="25.0" layoutY="87.0" prefHeight="200.0" prefWidth="465.0">
+     <Text layoutX="31.0" layoutY="41.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Source Directory:" AnchorPane.leftAnchor="35.0" AnchorPane.topAnchor="20.0" />
+      <TextField fx:id="srcDirTextField" layoutX="35.0" layoutY="60.0" prefHeight="25.0" prefWidth="465.0" AnchorPane.leftAnchor="25.0" AnchorPane.rightAnchor="110.0" AnchorPane.topAnchor="40.0" />
+      <Button fx:id="srcDirBrowseBtn" layoutX="513.0" layoutY="60.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#getSrcChecksumDirectory" text="Browse" AnchorPane.leftAnchor="500.0" AnchorPane.rightAnchor="25.0" AnchorPane.topAnchor="40.0" />
+      <Text layoutX="35.0" layoutY="111.0" strokeType="OUTSIDE" strokeWidth="0.0" text="File Parts" AnchorPane.leftAnchor="35.0" AnchorPane.topAnchor="120.0" />
+      <Button fx:id="removePartBtn" layoutX="512.0" layoutY="130.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#removePart" text="Remove" AnchorPane.leftAnchor="500.0" AnchorPane.rightAnchor="25.0" AnchorPane.topAnchor="210.0" />
+      
+      
+      <TableView fx:id="filePartsTable" layoutX="35.0" layoutY="100.0" prefHeight="155.0" prefWidth="460.0" AnchorPane.leftAnchor="25.0" AnchorPane.rightAnchor="110.0" AnchorPane.topAnchor="140.0">
         <columns>
-          <TableColumn fx:id="iName" prefWidth="113.0" text="Name" />
-          <TableColumn fx:id="iSize" minWidth="9.0" prefWidth="104.0" text="Size" />
-            <TableColumn fx:id="iPath" prefWidth="112.0" text="Path" />
-            <TableColumn fx:id="iChecksum" prefWidth="135.0" text="Checksum" />
+          <TableColumn fx:id="fileName" editable="false" prefWidth="167.0" resizable="false" text="Name">
+           	<cellValueFactory><PropertyValueFactory property="fileName" />
+        		</cellValueFactory>
+          </TableColumn>
+          <TableColumn fx:id="filePath" editable="false" prefWidth="297.0" resizable="false" text="Checksum">
+          	<cellValueFactory><PropertyValueFactory property="filePath" />
+        		</cellValueFactory>
+          </TableColumn>
         </columns>
       </TableView>
-      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Status" AnchorPane.leftAnchor="35.0" AnchorPane.topAnchor="300.0" />
-      <ProgressBar layoutX="25.0" layoutY="330.0" prefHeight="30.0" prefWidth="200.0" progress="0.0" AnchorPane.leftAnchor="25.0" AnchorPane.rightAnchor="110.0" AnchorPane.topAnchor="320.0" />
-      <Button layoutX="500.0" layoutY="130.0" mnemonicParsing="false" text="Add" AnchorPane.leftAnchor="500.0" AnchorPane.rightAnchor="25.0" AnchorPane.topAnchor="130.0" />
-      <Button layoutX="500.0" layoutY="174.0" mnemonicParsing="false" text="Remove" AnchorPane.leftAnchor="500.0" AnchorPane.rightAnchor="25.0" AnchorPane.topAnchor="174.0" />
-      <Button layoutX="500.0" layoutY="243.0" mnemonicParsing="false" text="Clear All" AnchorPane.leftAnchor="500.0" AnchorPane.rightAnchor="25.0" AnchorPane.topAnchor="220.0" />
+      <Button fx:id="addPartBtn" layoutX="500.0" layoutY="140.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#addPart" text="Add" AnchorPane.leftAnchor="500.0" AnchorPane.rightAnchor="25.0" AnchorPane.topAnchor="170.0" />
+      <Button fx:id="clearAllPartsBtn" layoutX="522.0" layoutY="140.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#clearAllParts" text="Clear All" AnchorPane.leftAnchor="500.0" AnchorPane.rightAnchor="25.0" AnchorPane.topAnchor="250.0" />
+      <Text layoutX="35.0" layoutY="327.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Status" AnchorPane.leftAnchor="35.0" AnchorPane.topAnchor="300.0" />
+      <ProgressBar fx:id="progressBar" layoutX="45.0" layoutY="320.0" prefHeight="30.0" progress="0.0" AnchorPane.leftAnchor="25.0" AnchorPane.rightAnchor="110.0" AnchorPane.topAnchor="320.0" />
    </children>
 </AnchorPane>

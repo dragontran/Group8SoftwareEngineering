@@ -26,19 +26,29 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import main.java.com.caci.application.Main;
+import main.java.com.caci.model.AssembleTableElement;
 import main.java.com.caci.model.Table;
 
-public class ChecksumTabController implements Initializable, Observer{
+public class ChecksumTabController implements Observer{
 	
 	@FXML
 	private TextField srcDirTextField;
-	
+
 	@FXML
 	private Button srcDirBrowseBtn;
-	
+
 	@FXML
 	private Button removePartBtn;
-	
+
+	@FXML
+	private Button joinBtn;
+
+	@FXML
+	private TextField outputTextField;
+
+	@FXML
+	private TableView<Table> filePartsTable;
+
 	@FXML
 	private Button addPartBtn;
 
@@ -47,21 +57,30 @@ public class ChecksumTabController implements Initializable, Observer{
 
 	@FXML
 	private ProgressBar progressBar;
-	
+
 	@FXML
-	private TableView<Table> filePartsTable;
-	
-	// DEFINE TABLE
-	@FXML
-	private TableColumn<Table, String> iName;
-	@FXML
-	private TableColumn<Table, String> iSize;
-	@FXML
-	private TableColumn<Table, String> iPath;
-	@FXML
-	private TableColumn<Table, String> iChecksum;
+	private Button outputBrowseBtn;
 	
 	private MainController mainController;
+	
+	@FXML
+	void addPart(ActionEvent event) {
+		// open file chooser
+		FileChooser fileChooser = new FileChooser();
+		fileChooser.setTitle("Select a File to Add");
+
+		// set local path as default path
+		File defaultDirectory = new File(System.getProperty("user.dir"));
+		fileChooser.setInitialDirectory(defaultDirectory);
+
+		// show chooser
+		// disable main stage when chooser is open
+		File file = fileChooser.showOpenDialog(mainController.stage());
+
+		if (file != null) {
+			mainController.model().addChecksumFileToList(file);
+		}
+	}
 	
 	@FXML
 	void clearAllParts(ActionEvent event) {
@@ -71,7 +90,7 @@ public class ChecksumTabController implements Initializable, Observer{
 	}
 	
 	@FXML
-	void getSrcDirectory(ActionEvent event) {
+	void getSrcChecksumDirectory(ActionEvent event) {
 		// open directory chooser
 		DirectoryChooser dirChooser = new DirectoryChooser();
 		dirChooser.setTitle("Select Source Directory");
@@ -88,7 +107,7 @@ public class ChecksumTabController implements Initializable, Observer{
 		if (file != null) {
 
 			// update split file input path in model
-			mainController.model().setSplitInputPath(file.getAbsolutePath());
+			mainController.model().setChecksumSrcDirPath(file.getAbsolutePath());
 			
 			// get files from specified directory and sort alphabetically (i.e. crc32 then parts0 -> partsN)
 			File[] dirFiles = file.listFiles();
@@ -113,11 +132,9 @@ public class ChecksumTabController implements Initializable, Observer{
 			
 			// populate table 
 			for (File f : dirFiles) {
-				mainController.model().addFileToList(f);
+				mainController.model().addChecksumFileToList(f);
 			}
 		}
-		srcDirTextField.setText(file.getAbsolutePath());
-		
 	}
 	
 	@FXML
@@ -128,22 +145,6 @@ public class ChecksumTabController implements Initializable, Observer{
 	// set main controller
 	public void injectMainController(MainController mainController) {
 		this.mainController = mainController;
-	}
-	
-	@FXML
-	void addPart(ActionEvent event) {
-
-	}
-
-	@Override
-	public void initialize(URL location, ResourceBundle resources) {
-		// TODO Auto-generated method stub
-		iName.setCellValueFactory(new PropertyValueFactory<Table, String>("firstName"));
-		iSize.setCellValueFactory(new PropertyValueFactory<Table, String>("lastName"));
-		iPath.setCellValueFactory(new PropertyValueFactory<Table, String>("birthday"));
-		iChecksum.setCellValueFactory(new PropertyValueFactory<Table, String>("birthday"));
-		
-		//tableId.setItems(getPeople());
 	}
 
 	@Override
