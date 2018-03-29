@@ -152,7 +152,8 @@ public class ChecksumTabController implements Observer{
 	
 	@FXML
 	void removePart(ActionEvent event) {
-
+		Table element = filePartsTable.getSelectionModel().getSelectedItem();
+		mainController.model().removeChecksumFromList(element);
 	}
 	
 	// set main controller

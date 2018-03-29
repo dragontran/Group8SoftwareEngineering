@@ -24,7 +24,11 @@
            	<cellValueFactory><PropertyValueFactory property="fileName" />
         		</cellValueFactory>
           </TableColumn>
-          <TableColumn fx:id="fileChecksum" editable="false" prefWidth="297.0" resizable="false" text="Checksum">
+          <TableColumn fx:id="fileSize" editable="false" maxWidth="1000.0" prefWidth="140.0" resizable="false" text="Checksum">
+          	<cellValueFactory><PropertyValueFactory property="fileSize" />
+        		</cellValueFactory>
+          </TableColumn>
+          <TableColumn fx:id="filePath" editable="false" prefWidth="180.0" resizable="false" text="Path">
           	<cellValueFactory><PropertyValueFactory property="filePath" />
         		</cellValueFactory>
           </TableColumn>

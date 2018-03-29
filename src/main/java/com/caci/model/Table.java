@@ -12,7 +12,7 @@ public class Table {
 	
 	private final SimpleObjectProperty<File> file; 
 	private final SimpleStringProperty rName;
-	//private final SimpleLongProperty rSize;
+	private final SimpleLongProperty rSize;
 	private final SimpleStringProperty rPath;
 	//private final SimpleLongProperty rChecksum;
 	Checksum checksum;
@@ -26,7 +26,7 @@ public class Table {
 		}
 		this.file = new SimpleObjectProperty<File>(file);
 		this.rName = new SimpleStringProperty(file.getName());
-		//this.rSize = new SimpleLongProperty(file.length());
+		this.rSize = new SimpleLongProperty(checksum.getCheckSum());
 		this.rPath = new SimpleStringProperty(file.getAbsolutePath());
 		//this.rChecksum = new SimpleLongProperty(checksum.getCheckSum());
 	}
@@ -42,9 +42,9 @@ public class Table {
 	/*public long getChecksum(){
 		return rChecksum.get();
 	}*/
-	/*public long getFileSize() {
+	public long getFileSize() {
 		return rSize.get();
-	}*/
+	}
 	
 	public String getFilePath() {
 		return rPath.get();

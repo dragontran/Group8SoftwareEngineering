@@ -78,6 +78,14 @@ public class Model extends Observable {
 		}
 	}
 	
+	public void removeChecksumFromList(Table element) {
+		this.checksumPartsList.remove(element);
+		this.setJoinProgress(0.0);
+		
+		setChanged();
+		notifyObservers(element);
+	}
+	
 	public void clearAllChecksum(){
 		this.checksumPartsList.clear();
 		this.setJoinProgress(0.0);
