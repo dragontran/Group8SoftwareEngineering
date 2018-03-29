@@ -56,3 +56,6 @@ pom.xml.releaseBackup
 pom.xml.tag
 
 /bin/
+
+# Dont ignore the lib folder
+!/lib/
