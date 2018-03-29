@@ -1,6 +1,7 @@
 package main.java.com.caci.controller;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Observable;
@@ -183,11 +184,17 @@ public class AssembleTabController implements Observer {
 			// remove the element from the table
 			filePartsTable.getItems().remove(arg);
 		} else if (arg instanceof ObservableListWrapper<?>){
-			ObservableList<AssembleTableElement> list = (ObservableList<AssembleTableElement>) arg;
-			for (AssembleTableElement e : list) {
-				if (!filePartsTable.getItems().contains(e)) {
-					filePartsTable.getItems().add(e);
+			try{
+				if(((ObservableList<?>)arg).get(0) instanceof AssembleTableElement){
+				ObservableList<AssembleTableElement> list = (ObservableList<AssembleTableElement>) arg;
+				for (AssembleTableElement e : list) {
+					if (!filePartsTable.getItems().contains(e)) {
+						filePartsTable.getItems().add(e);
+					}
 				}
+			}
+			}catch(NullPointerException e){
+				e.printStackTrace();
 			}
 		} else {
 			Double progress = (Double) arg;

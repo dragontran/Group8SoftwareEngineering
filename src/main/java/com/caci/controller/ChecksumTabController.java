@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Observable;
@@ -174,7 +175,7 @@ public class ChecksumTabController implements Observer{
 			char flag = updateInput.charAt(0);
 			updateInput = updateInput.substring(1);
 
-			if (flag == '3') {
+			if (flag == '6') {
 				srcDirTextField.setText(updateInput);
 			} else if (flag == '4') {
 				//outputTextField.setText(updateInput);
@@ -183,11 +184,17 @@ public class ChecksumTabController implements Observer{
 			// remove the element from the table
 			filePartsTable.getItems().remove(arg);
 		} else if (arg instanceof ObservableListWrapper<?>){
-			ObservableList<Table> list = (ObservableList<Table>) arg;
-			for (Table e : list) {
-				if (!filePartsTable.getItems().contains(e)) {
-					filePartsTable.getItems().add(e);
-				}
+			try{
+				if(((ObservableList<?>)arg).get(0) instanceof Table){
+					ObservableList<Table> list = (ObservableList<Table>) arg;
+					for (Table e : list) {
+						if (!filePartsTable.getItems().contains(e)) {
+							filePartsTable.getItems().add(e);
+						}
+					}
+			}
+			}catch(NullPointerException e){
+				e.printStackTrace();
 			}
 		} else {
 			Double progress = (Double) arg;

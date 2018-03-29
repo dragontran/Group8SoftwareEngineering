@@ -55,7 +55,7 @@ public class Model extends Observable {
 		//this.setChecksumProgress(0.0);
 
 		// TODO: make output better
-		String out = "3" + checksumSrcDirPath;
+		String out = "6" + checksumSrcDirPath;
 		setChanged();
 		notifyObservers(out);
 	}
