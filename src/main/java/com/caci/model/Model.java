@@ -142,17 +142,10 @@ public class Model extends Observable {
 			// check if output dir is a directory
 		} else if (!this.joinOutFileDir.isDirectory()) {
 			throw new Exception("Selected output directory is not a directory!");
-			// check there is a crc32 file, and no gaps in part numbers
 		} else {
-			for (AssembleTableElement e : joinPartsList) {
-
-			}
-		}
-
-
-		// TODO: make sure there is output path, crc32 file, and no gaps in part numbers
-		Assembler.assemble(joinPartsList, joinOutFileDir, model);
-
+			// TODO: make sure there is crc32 file, and no gaps in part numbers (handled in assemble function)
+			Assembler.assemble(joinPartsList, joinOutFileDir, model);
+		}		
 	}
 
 	public void setJoinProgress(double value) {
