@@ -194,6 +194,8 @@ public class AssembleTabController implements Observer {
 				errorAlert("Error", "Invalid File Type", (t.getException().getMessage()));
 			} else if (t.getException().getMessage().equals("There must be only one .crc32 file!")) {
 				errorAlert("Error", "Multiple .crc32 Files Detected", (t.getException().getMessage()));
+			} else if (t.getException().getMessage().equals("Output file already exists in output directory and will be overwritten!")) {
+				errorAlert("Error", "Output File Already Exists", (t.getException().getMessage()));
 			} else {
 				errorAlert("Error", "Unknown Error", (t.getException().getMessage()));
 			}

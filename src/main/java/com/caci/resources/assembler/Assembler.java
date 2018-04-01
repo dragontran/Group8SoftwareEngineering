@@ -151,7 +151,7 @@ public class Assembler {
 		return baseFile;
 	}
 
-	// TODO: make sure there are no gaps in part numbers
+	// TODO: make sure all files present in crc32 file are there to assemble
 	// checks if there is a crc32 file, parts files corresponding to the crc32 file, and no extra files
 	private static boolean areValidFiles(List<AssembleTableElement> joinPartsList) throws Exception {
 		boolean hascrc32 = false;
@@ -198,15 +198,13 @@ public class Assembler {
 	}
 
 	// Creates file at specified directory with given filename
-	private static File createOutputFile(File outDir, String filename) {
+	private static File createOutputFile(File outDir, String filename) throws Exception {
 		File ofile = null;
 
 		try {
 			ofile = new File(outDir.getAbsolutePath() + File.separator + filename);
-			if (ofile.createNewFile()) {
-				System.out.printf("File Created"); //TODO: Pass Confirmation to User?
-			} else {
-				System.out.printf("File already exists"); //TODO: Warn user and allow to overwrite file?
+			if (!ofile.createNewFile()) {
+				throw new Exception("Output file already exists in output directory and will be overwritten!");
 			}
 		} catch (IOException e) {
 			System.out.printf(e.getMessage());
