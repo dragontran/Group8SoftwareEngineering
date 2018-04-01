@@ -23,113 +23,115 @@ public class Assembler {
 	private final static int CRC32 = 0;
 	private final static int ORIGINAL_FILE = 0;
 
-	public static void assemble(List<AssembleTableElement> joinPartsList, File outDir, Model model) {
+	public static void assemble(List<AssembleTableElement> joinPartsList, File outDir, Model model) throws Exception {
 		Model model1 = model;
 
-		Instant start = Instant.now();
+		if (areValidFiles(joinPartsList)) {
+			Instant start = Instant.now();
 
-		String filename = getBaseFileName(joinPartsList);
-		String newfile = filename;
+			String filename = getBaseFileName(joinPartsList);
+			String newfile = filename;
 
-		// -2 to remove .crc32 and 0 index
-		int numparts = joinPartsList.size() - 2;
+			// -2 to remove .crc32 and 0 index
+			int numparts = joinPartsList.size() - 2;
 
-		File ofile = createOutputFile(outDir,filename);
+			File ofile = createOutputFile(outDir,filename);
 
-		FileOutputStream fos;
-		FileInputStream fis;
-		byte[] fileBytes;
-		int bytesRead = 0;
+			FileOutputStream fos;
+			FileInputStream fis;
+			byte[] fileBytes;
+			int bytesRead = 0;
 
-		// create a list containing each file part
-		ArrayList<File> partFilesArrayList = new ArrayList<File>();
-		for (AssembleTableElement e : joinPartsList){
-			partFilesArrayList.add(e.getFile());
-		}
-		File[] partFiles = partFilesArrayList.toArray(new File[partFilesArrayList.size()]);
-
-		// sort with crc32 first then by file part number
-		Arrays.sort(partFiles, new Comparator<File>() {
-
-			@Override
-			public int compare(File o1, File o2) {
-				if (o1.getName().contains(".crc32")) {
-					return -1;
-				} else if (o2.getName().contains(".crc32")) {
-					return 1;
-				}
-				String file1Part = (o1.getName()).replaceAll("\\D", "");
-				String file2Part = (o2.getName()).replaceAll("\\D", "");
-				Integer file1PartNo = Integer.parseInt(file1Part);
-				Integer file2PartNo = Integer.parseInt(file2Part);
-				return file1PartNo.compareTo(file2PartNo);
+			// create a list containing each file part
+			ArrayList<File> partFilesArrayList = new ArrayList<File>();
+			for (AssembleTableElement e : joinPartsList){
+				partFilesArrayList.add(e.getFile());
 			}
+			File[] partFiles = partFilesArrayList.toArray(new File[partFilesArrayList.size()]);
 
-		});
+			// sort with crc32 first then by file part number
+			Arrays.sort(partFiles, new Comparator<File>() {
 
-		List<File> list = new ArrayList<File>(Arrays.asList(partFiles));
-
-		// Create list of checksums for each file part
-		ArrayList<Long> checksums = getChecksumList(list,filename);
-
-		System.out.println("Combining files: "+filename+".part0 to "+filename+".part"+numparts);
-
-		try {
-			fos = new FileOutputStream(ofile,true);
-
-			int i = 0;
-			for (File file : list) {
-				fis = new FileInputStream(file);
-				fileBytes = new byte[(int) file.length()];
-				bytesRead = fis.read(fileBytes, 0,(int)  file.length());
-				assert(bytesRead == fileBytes.length);
-				assert(bytesRead == (int) file.length());
-				fos.write(fileBytes);
-				fos.flush();
-				fis.close();
-
-				// Ensure checksums match
-				Checksum checksum = new Checksum(file);
-				if (checksum.getCheckSum() != checksums.get(i+1)){
-					System.out.println("Part " + i + " checksum does not match saved checksum from split");
-					System.out.println("Part " + i + " current checksum: " + checksum.getCheckSum());
-					System.out.println("Part " + i + " saved checksum: " + checksums.get(i+1));
-					// probably exit
+				@Override
+				public int compare(File o1, File o2) {
+					if (o1.getName().contains(".crc32")) {
+						return -1;
+					} else if (o2.getName().contains(".crc32")) {
+						return 1;
+					}
+					String file1Part = (o1.getName()).replaceAll("\\D", "");
+					String file2Part = (o2.getName()).replaceAll("\\D", "");
+					Integer file1PartNo = Integer.parseInt(file1Part);
+					Integer file2PartNo = Integer.parseInt(file2Part);
+					return file1PartNo.compareTo(file2PartNo);
 				}
 
-				fileBytes = null;
-				fis = null;
-				i++;
+			});
 
-				// numparts +1 to account for 0 index
-				model1.setJoinProgress((double) i/(numparts+1));
+			List<File> list = new ArrayList<File>(Arrays.asList(partFiles));
+
+			// Create list of checksums for each file part
+			ArrayList<Long> checksums = getChecksumList(list,filename);
+
+			System.out.println("Combining files: "+filename+".part0 to "+filename+".part"+numparts);
+
+			try {
+				fos = new FileOutputStream(ofile,true);
+
+				int i = 0;
+				for (File file : list) {
+					fis = new FileInputStream(file);
+					fileBytes = new byte[(int) file.length()];
+					bytesRead = fis.read(fileBytes, 0,(int)  file.length());
+					assert(bytesRead == fileBytes.length);
+					assert(bytesRead == (int) file.length());
+					fos.write(fileBytes);
+					fos.flush();
+					fis.close();
+
+					// Ensure checksums match
+					Checksum checksum = new Checksum(file);
+					if (checksum.getCheckSum() != checksums.get(i+1)){
+						System.out.println("Part " + i + " checksum does not match saved checksum from split");
+						System.out.println("Part " + i + " current checksum: " + checksum.getCheckSum());
+						System.out.println("Part " + i + " saved checksum: " + checksums.get(i+1));
+						// probably exit
+					}
+
+					fileBytes = null;
+					fis = null;
+					i++;
+
+					// numparts +1 to account for 0 index
+					model1.setJoinProgress((double) i/(numparts+1));
+				}
+
+				Instant end = Instant.now();
+				Checksum checksum = new Checksum(ofile);
+				System.out.println(newfile + " checksum: " + checksum.getCheckSum());
+
+				if (checksum.getCheckSum() == checksums.get(ORIGINAL_FILE)){
+					System.out.println("Assembled checksum matches checksum before being split");
+					System.out.println("Files combined successfully");
+				} else {
+					System.out.println("Assembled checksum DOES NOT MATCH checksum before being split");
+					System.out.println("Files NOT combined successfully");
+				}
+				System.out.println("Combined file saved as: " + newfile);
+				System.out.println("Combined file saved to directory: " + outDir.getAbsolutePath());
+
+				Duration diff = Duration.between(start, end);
+				System.out.println("Time elapsed: " + diff.toMillis() + " ms");
+
+				model1.setJoinProgress(1);
+
+				fos.close();
+				fos = null;
+			} catch (FileNotFoundException e){
+				System.out.println(filename + " part not found :(");
+			} catch (IOException e){
+				System.out.println("IOException");
 			}
-
-			Instant end = Instant.now();
-			Checksum checksum = new Checksum(ofile);
-			System.out.println(newfile + " checksum: " + checksum.getCheckSum());
-
-			if (checksum.getCheckSum() == checksums.get(ORIGINAL_FILE)){
-				System.out.println("Assembled checksum matches checksum before being split");
-				System.out.println("Files combined successfully");
-			} else {
-				System.out.println("Assembled checksum DOES NOT MATCH checksum before being split");
-				System.out.println("Files NOT combined successfully");
-			}
-			System.out.println("Combined file saved as: " + newfile);
-			System.out.println("Combined file saved to directory: " + outDir.getAbsolutePath());
-
-			Duration diff = Duration.between(start, end);
-			System.out.println("Time elapsed: " + diff.toMillis() + " ms");
-
-			model1.setJoinProgress(1);
-
-			fos.close();
-			fos = null;
-		} catch (FileNotFoundException e){
-			System.out.println(filename + " part not found :(");
-		} catch (IOException e){
-			System.out.println("IOException");
 		}
 	}
 
@@ -147,6 +149,29 @@ public class Assembler {
 		}
 
 		return baseFile;
+	}
+
+	// TODO: make sure there are no gaps in part numbers
+	// checks if there is a crc32 file, parts files corresponding to the crc32 file, and no extra files
+	private static boolean areValidFiles(List<AssembleTableElement> joinPartsList) throws Exception {
+		boolean hascrc32 = false;
+		File crc32 = null;
+		for (AssembleTableElement e: joinPartsList) {
+			// only use .crc32 or .part files
+			if (!e.getFileName().contains(".part") && !e.getFileName().contains(".crc32")) {
+				throw new Exception("Assembled files must be a .part or .crc32 file!");
+			}
+			if (e.getFileName().contains(".crc32")) {
+				// multiple crc32 files
+				if (!hascrc32) {
+					hascrc32 = true;
+					crc32 = e.getFile();
+				} else {
+					throw new Exception("There must be only one .crc32 file!");
+				}
+			}
+		}
+		return true;
 	}
 
 	// Gets arraylist of checksums from the csv for the specified filename
