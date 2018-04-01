@@ -118,14 +118,13 @@ public class AssembleTabController implements Observer {
 		// disable main stage when chooser is open
 		File file = dirChooser.showDialog(mainController.stage());
 
-		// TODO: error handling
 		if (file != null) {
 			// update join source directory path in model
 			mainController.model().setJoinSrcDirPath(file.getAbsolutePath());
 
 			// get files from specified directory and sort alphabetically (i.e. crc32 then parts0 -> partsN)
 			File[] dirFiles = file.listFiles();
-			// sort with crc32 first then by file part number
+			// sort with crc32 first, then by file part number, finally by extra files
 			Arrays.sort(dirFiles, new Comparator<File>() {
 
 				@Override
@@ -155,7 +154,7 @@ public class AssembleTabController implements Observer {
 				}
 
 			});
-			
+
 			// populate table 
 			for (File f : dirFiles) {
 				mainController.model().addFileToList(f);
@@ -182,19 +181,23 @@ public class AssembleTabController implements Observer {
 			System.err.println("The task failed with the following exception:");
 			System.out.println(t.getException().getMessage());
 
-			//TODO: Include relevant headers for errors
+			//TODO: Include relevant headers for errors from assemble function
 			if (t.getException().getMessage().equals("Output directory has not been selected!")) {
-				errorAlert("Error", "No output directory", (t.getException().getMessage()));
+				errorAlert("Error", "No Output Directory", (t.getException().getMessage()));
 			} else if (t.getException().getMessage().equals("Selected output directory does not exist!")) {
-				errorAlert("Error", "Directory doesn't exist", (t.getException().getMessage()));
+				errorAlert("Error", "Directory Doesn't Exist", (t.getException().getMessage()));
 			} else if (t.getException().getMessage().equals("Selected output directory is not a directory!")) {
-				errorAlert("Error", "Not a directory", (t.getException().getMessage()));
+				errorAlert("Error", "Not A Directory", (t.getException().getMessage()));
 			} else if (t.getException().getMessage().equals("List of file parts to assemble is empty!")) {
 				errorAlert("Error", "Empty Parts List", (t.getException().getMessage()));
+			} else if (t.getException().getMessage().equals("Assembled files must be a .part or .crc32 file!")) {
+				errorAlert("Error", "Invalid File Type", (t.getException().getMessage()));
+			} else if (t.getException().getMessage().equals("There must be only one .crc32 file!")) {
+				errorAlert("Error", "Multiple .crc32 Files Detected", (t.getException().getMessage()));
 			} else {
 				errorAlert("Error", "Unknown Error", (t.getException().getMessage()));
 			}
-			
+
 
 		});
 		executorService.submit(t);
@@ -202,7 +205,6 @@ public class AssembleTabController implements Observer {
 
 	@FXML
 	void removePart(ActionEvent event) {
-		// TODO: get selected file in list	
 		AssembleTableElement element = filePartsTable.getSelectionModel().getSelectedItem();
 		mainController.model().removeFileFromList(element);
 	}
