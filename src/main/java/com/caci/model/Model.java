@@ -126,20 +126,32 @@ public class Model extends Observable {
 	}
 
 	// join file
-	public void assembleFile() {
+	public void assembleFile() throws Exception {
 		Model model = this;
 		setJoinProgress(0.0);
-		
-		// TODO: make sure there is output path, crc32 file, and no gaps in part numbers
-		Task<Void> task = new Task<Void>() {
 
-			@Override
-			public Void call() {
-				Assembler.assemble(joinPartsList, joinOutFileDir, model);
-				return null;
+		// check if join table is empty
+		if (this.joinPartsList.isEmpty()) {
+			throw new Exception("List of file parts to assemble is empty!");
+			// check for output path
+		} else if (this.joinOutFileDir == null) {
+			throw new Exception("Output directory has not been selected!");
+			// check if output directory exists
+		} else if (!this.joinOutFileDir.exists()) {
+			throw new Exception("Selected output directory does not exist!");
+			// check if output dir is a directory
+		} else if (!this.joinOutFileDir.isDirectory()) {
+			throw new Exception("Selected output directory is not a directory!");
+			// check there is a crc32 file, and no gaps in part numbers
+		} else {
+			for (AssembleTableElement e : joinPartsList) {
+
 			}
-		};
-		new Thread(task).start();
+		}
+
+
+		// TODO: make sure there is output path, crc32 file, and no gaps in part numbers
+		Assembler.assemble(joinPartsList, joinOutFileDir, model);
 
 	}
 
@@ -151,21 +163,24 @@ public class Model extends Observable {
 	}
 
 	public void addFileToList(File file) {
-		// add if not already in list
-		AssembleTableElement element = new AssembleTableElement(file);
-		if (!this.joinPartsList.contains(element)) {
-			this.joinPartsList.add(element);
-			this.setJoinProgress(0.0);
-			
-			setChanged();
-			notifyObservers(this.joinPartsList);
+		// Do not add directories to the list
+		if (!file.isDirectory()) {
+			// Add if not already in list
+			AssembleTableElement element = new AssembleTableElement(file);
+			if (!this.joinPartsList.contains(element)) {
+				this.joinPartsList.add(element);
+				this.setJoinProgress(0.0);
+
+				setChanged();
+				notifyObservers(this.joinPartsList);
+			}
 		}
 	}
 
 	public void removeFileFromList(AssembleTableElement element) {
 		this.joinPartsList.remove(element);
 		this.setJoinProgress(0.0);
-		
+
 		setChanged();
 		notifyObservers(element);
 	}
@@ -173,12 +188,12 @@ public class Model extends Observable {
 	public void clearPartsList() {
 		this.joinPartsList.clear();
 		this.setJoinProgress(0.0);
-		
+
 		String out = "clear";
 		setChanged();
 		notifyObservers(out);
 	}
-	
+
 	public double getSplitProgressBarValue() {
 		return splitProgressBarValue;
 	}

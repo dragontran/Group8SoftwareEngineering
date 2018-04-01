@@ -182,8 +182,19 @@ public class AssembleTabController implements Observer {
 			System.err.println("The task failed with the following exception:");
 			System.out.println(t.getException().getMessage());
 
-			//TODO: not use header and error test?
-			errorAlert("header", "error test", (t.getException().getMessage()));
+			//TODO: Include relevant headers for errors
+			if (t.getException().getMessage().equals("Output directory has not been selected!")) {
+				errorAlert("Error", "No output directory", (t.getException().getMessage()));
+			} else if (t.getException().getMessage().equals("Selected output directory does not exist!")) {
+				errorAlert("Error", "Directory doesn't exist", (t.getException().getMessage()));
+			} else if (t.getException().getMessage().equals("Selected output directory is not a directory!")) {
+				errorAlert("Error", "Not a directory", (t.getException().getMessage()));
+			} else if (t.getException().getMessage().equals("List of file parts to assemble is empty!")) {
+				errorAlert("Error", "Empty Parts List", (t.getException().getMessage()));
+			} else {
+				errorAlert("Error", "Unknown Error", (t.getException().getMessage()));
+			}
+			
 
 		});
 		executorService.submit(t);
