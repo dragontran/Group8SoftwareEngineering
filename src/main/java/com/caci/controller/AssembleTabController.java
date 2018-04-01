@@ -5,16 +5,21 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import com.sun.javafx.collections.ObservableListWrapper;
 
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Alert.AlertType;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 
@@ -125,19 +130,32 @@ public class AssembleTabController implements Observer {
 
 				@Override
 				public int compare(File o1, File o2) {
+					// put crc32 first
 					if (o1.getName().contains(".crc32")) {
 						return -1;
 					} else if (o2.getName().contains(".crc32")) {
 						return 1;
 					}
-					String file1Part = (o1.getName()).replaceAll("\\D", "");
-					String file2Part = (o2.getName()).replaceAll("\\D", "");
-					Integer file1PartNo = Integer.parseInt(file1Part);
-					Integer file2PartNo = Integer.parseInt(file2Part);
-					return file1PartNo.compareTo(file2PartNo);
+					// compare by part number
+					if (o1.getName().contains(".part") && o2.getName().contains(".part")) {
+						String file1Part = (o1.getName()).replaceAll("\\D", "");
+						String file2Part = (o2.getName()).replaceAll("\\D", "");
+						Integer file1PartNo = Integer.parseInt(file1Part);
+						Integer file2PartNo = Integer.parseInt(file2Part);
+						return file1PartNo.compareTo(file2PartNo);
+					} else {
+						// put part files before extra files
+						if (o1.getName().contains(".part")) {
+							return -1;
+						} else if (o2.getName().contains(".part")) {
+							return 1;
+						}
+						return o1.compareTo(o2);
+					}
 				}
 
 			});
+			
 			// populate table 
 			for (File f : dirFiles) {
 				mainController.model().addFileToList(f);
@@ -145,9 +163,30 @@ public class AssembleTabController implements Observer {
 		}
 	}
 
+	// join files
 	@FXML
 	void joinFileParts(ActionEvent event) {
-		mainController.model().assembleFile();
+		ExecutorService executorService = Executors.newSingleThreadExecutor();
+		Task<Void> t = new Task<Void>() {
+
+			@Override
+			protected Void call() throws Exception {
+				mainController.model().assembleFile();
+				return null;
+			}
+
+		};
+
+		// exception handling for join thread
+		t.setOnFailed(evt -> {
+			System.err.println("The task failed with the following exception:");
+			System.out.println(t.getException().getMessage());
+
+			//TODO: not use header and error test?
+			errorAlert("header", "error test", (t.getException().getMessage()));
+
+		});
+		executorService.submit(t);
 	}
 
 	@FXML
@@ -168,7 +207,7 @@ public class AssembleTabController implements Observer {
 			if (arg.equals("clear")) {
 				filePartsTable.getItems().clear();
 			}
-			
+
 			// Update text field with file path
 			String updateInput = (String) arg;
 			char flag = updateInput.charAt(0);
@@ -183,16 +222,26 @@ public class AssembleTabController implements Observer {
 			// remove the element from the table
 			filePartsTable.getItems().remove(arg);
 		} else if (arg instanceof ObservableListWrapper<?>){
-			ObservableList<AssembleTableElement> list = (ObservableList<AssembleTableElement>) arg;
-			for (AssembleTableElement e : list) {
-				if (!filePartsTable.getItems().contains(e)) {
-					filePartsTable.getItems().add(e);
+			if (!((ObservableList<?>)arg).isEmpty() && ((ObservableList<?>)arg).get(0) instanceof AssembleTableElement) {
+				ObservableList<AssembleTableElement> list = (ObservableList<AssembleTableElement>) arg;
+				for (AssembleTableElement e : list) {
+					if (!filePartsTable.getItems().contains(e)) {
+						filePartsTable.getItems().add(e);
+					}
 				}
 			}
 		} else {
 			Double progress = (Double) arg;
 			progressBar.setProgress(progress);
 		}
+	}
+
+	public void errorAlert(String title, String header, String message) {
+		Alert alert = new Alert(AlertType.ERROR);
+		alert.setTitle(title);
+		alert.setHeaderText(header);
+		alert.setContentText(message);
+		alert.showAndWait();
 	}
 
 }
