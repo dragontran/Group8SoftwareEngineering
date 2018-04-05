@@ -88,7 +88,8 @@ public class Model extends Observable {
 	
 	public void clearAllChecksum(){
 		this.checksumPartsList.clear();
-		this.setJoinProgress(0.0);
+		this.setChecksumSrcDirPath("");
+		//this.setJoinProgress(0.0);
 		
 		String out = "clear";
 		setChanged();

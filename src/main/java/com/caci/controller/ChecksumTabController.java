@@ -146,7 +146,7 @@ public class ChecksumTabController implements Observer{
 			int i;
 			for(i = 1;i<dirFiles.length;i++){
 				checksum = new Checksum(dirFiles[i]);
-				System.out.println(checksum.getCheckSum());
+				//System.out.println(checksum.getCheckSum());
 			}
 		}
 	}
@@ -154,7 +154,10 @@ public class ChecksumTabController implements Observer{
 	@FXML
 	void removePart(ActionEvent event) {
 		Table element = filePartsTable.getSelectionModel().getSelectedItem();
-		mainController.model().removeChecksumFromList(element);
+		
+		if(element != null){
+			mainController.model().removeChecksumFromList(element);
+		}
 	}
 	
 	// set main controller
