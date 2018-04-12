@@ -72,7 +72,7 @@ public class FastSplit {
 
 			} else {
 				if (inputSplitSize > fileSize) {
-					throw new SizeLimitExceededException();
+					throw new SizeLimitExceededException("File size is smaller than split size.");
 				}
 
 				splitSize = inputSplitSize;
@@ -90,11 +90,11 @@ public class FastSplit {
 				File filePartsFolder = new File(folderPartsPath);
 
 				if (!filePartsFolder.mkdir()) {
-					throw new FileAlreadyExistsException(folderPartsPath);
+					throw new FileAlreadyExistsException("Parts folder already exists.");
 				}
 
 			} else {
-				throw new FileNotFoundException("Could not find directory");
+				throw new FileNotFoundException("Could not find output directory.");
 			}
 
 			// 256 megabyte memory buffer for reading source file
