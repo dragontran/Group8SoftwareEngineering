@@ -1,14 +1,10 @@
 package main.java.com.caci.model;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.nio.file.FileAlreadyExistsException;
 import java.util.List;
 import java.util.Observable;
 
 import javafx.collections.FXCollections;
-import javafx.concurrent.Task;
 import main.java.com.caci.resources.assembler.Assembler;
 import main.java.com.caci.resources.splitter.FastSplit;
 
@@ -19,7 +15,6 @@ public class Model extends Observable {
 	private File splitOutputDir;
 
 	// file paths for assembler
-	private File joinSrcFileDir;
 	private File joinOutFileDir;
 
 	// file list for assembler
@@ -32,7 +27,6 @@ public class Model extends Observable {
 	public Model() {
 		this.splitInputFile = null;
 		this.splitOutputDir = null;
-		this.joinSrcFileDir = null;
 		this.joinOutFileDir = null;
 		this.joinPartsList = FXCollections.observableArrayList();
 		this.splitProgressBarValue = 0.0;
@@ -105,10 +99,8 @@ public class Model extends Observable {
 
 	// update join src file dir path
 	public void setJoinSrcDirPath(String joinSrcDirPath) {
-		this.joinSrcFileDir = new File(joinSrcDirPath);
 		this.setJoinProgress(0.0);
 
-		// TODO: make output better
 		String out = "3" + joinSrcDirPath;
 		setChanged();
 		notifyObservers(out);
@@ -119,28 +111,31 @@ public class Model extends Observable {
 		this.joinOutFileDir = new File(outputPath);
 		this.setJoinProgress(0.0);
 
-		// TODO: make output better
 		String out = "4" + outputPath;
 		setChanged();
 		notifyObservers(out);
 	}
 
 	// join file
-	public void assembleFile() {
+	public void assembleFile() throws Exception {
 		Model model = this;
 		setJoinProgress(0.0);
-		
-		// TODO: make sure there is output path, crc32 file, and no gaps in part numbers
-		Task<Void> task = new Task<Void>() {
 
-			@Override
-			public Void call() {
-				Assembler.assemble(joinPartsList, joinOutFileDir, model);
-				return null;
-			}
-		};
-		new Thread(task).start();
-
+		// check if join table is empty
+		if (this.joinPartsList.isEmpty()) {
+			throw new Exception("List of file parts to assemble is empty!");
+			// check for output path
+		} else if (this.joinOutFileDir == null) {
+			throw new Exception("Output directory has not been selected!");
+			// check if output directory exists
+		} else if (!this.joinOutFileDir.exists()) {
+			throw new Exception("Selected output directory does not exist!");
+			// check if output dir is a directory
+		} else if (!this.joinOutFileDir.isDirectory()) {
+			throw new Exception("Selected output directory is not a directory!");
+		} else {
+			Assembler.assemble(joinPartsList, joinOutFileDir, model);
+		}		
 	}
 
 	public void setJoinProgress(double value) {
@@ -151,34 +146,38 @@ public class Model extends Observable {
 	}
 
 	public void addFileToList(File file) {
-		// add if not already in list
-		AssembleTableElement element = new AssembleTableElement(file);
-		if (!this.joinPartsList.contains(element)) {
-			this.joinPartsList.add(element);
-			this.setJoinProgress(0.0);
-			
-			setChanged();
-			notifyObservers(this.joinPartsList);
+		// Do not add directories to the list
+		if (!file.isDirectory()) {
+			// Add if not already in list
+			AssembleTableElement element = new AssembleTableElement(file);
+			if (!this.joinPartsList.contains(element)) {
+				this.joinPartsList.add(element);
+				this.setJoinProgress(0.0);
+
+				setChanged();
+				notifyObservers(this.joinPartsList);
+			}
 		}
 	}
 
 	public void removeFileFromList(AssembleTableElement element) {
 		this.joinPartsList.remove(element);
 		this.setJoinProgress(0.0);
-		
+
 		setChanged();
 		notifyObservers(element);
 	}
 
 	public void clearPartsList() {
 		this.joinPartsList.clear();
+		this.setJoinSrcDirPath("");
 		this.setJoinProgress(0.0);
-		
+
 		String out = "clear";
 		setChanged();
 		notifyObservers(out);
 	}
-	
+
 	public double getSplitProgressBarValue() {
 		return splitProgressBarValue;
 	}

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.cell.*?>
 <?import java.lang.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
@@ -12,7 +13,6 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Text?>
-
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="373.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.java.com.caci.controller.AssembleTabController">
    <children>
@@ -30,11 +30,7 @@
            	<cellValueFactory><PropertyValueFactory property="fileName" />
         		</cellValueFactory>
           </TableColumn>
-          <TableColumn fx:id="fileSize" editable="false" maxWidth="1000.0" prefWidth="140.0" resizable="false" text="Size">
-          	<cellValueFactory><PropertyValueFactory property="fileSize" />
-        		</cellValueFactory>
-          </TableColumn>
-          <TableColumn fx:id="filePath" editable="false" prefWidth="180.0" resizable="false" text="Path">
+          <TableColumn fx:id="filePath" editable="false" prefWidth="324.0" resizable="false" text="Path">
           	<cellValueFactory><PropertyValueFactory property="filePath" />
         		</cellValueFactory>
           </TableColumn>
