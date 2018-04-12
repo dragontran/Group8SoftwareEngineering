@@ -92,10 +92,7 @@ public class Assembler {
 					// Ensure checksums match
 					Checksum checksum = new Checksum(file);
 					if (checksum.getCheckSum() != checksums.get(i+1)){
-						System.out.println("Part " + i + " checksum does not match saved checksum from split");
-						System.out.println("Part " + i + " current checksum: " + checksum.getCheckSum());
-						System.out.println("Part " + i + " saved checksum: " + checksums.get(i+1));
-						// probably exit
+						throw new Exception("Part " + i + " file is invalid! Try redownloading it!");
 					}
 
 					fileBytes = null;
@@ -108,29 +105,25 @@ public class Assembler {
 
 				Instant end = Instant.now();
 				Checksum checksum = new Checksum(ofile);
-				System.out.println(newfile + " checksum: " + checksum.getCheckSum());
+				
+				fos.close();
+				fos = null;
 
+				System.out.println(newfile + " checksum: " + checksum.getCheckSum());
 				if (checksum.getCheckSum() == checksums.get(ORIGINAL_FILE)){
-					System.out.println("Assembled checksum matches checksum before being split");
-					System.out.println("Files combined successfully");
+					model1.setJoinProgress(1);
 				} else {
-					System.out.println("Assembled checksum DOES NOT MATCH checksum before being split");
-					System.out.println("Files NOT combined successfully");
+					throw new Exception("Assembled checksum DOES NOT MATCH checksum before being split! Ensure all file parts are included! If the error still persists try redownloading the part files!");
 				}
 				System.out.println("Combined file saved as: " + newfile);
 				System.out.println("Combined file saved to directory: " + outDir.getAbsolutePath());
 
 				Duration diff = Duration.between(start, end);
 				System.out.println("Time elapsed: " + diff.toMillis() + " ms");
-
-				model1.setJoinProgress(1);
-
-				fos.close();
-				fos = null;
 			} catch (FileNotFoundException e){
-				System.out.println(filename + " part not found :(");
+				throw new Exception("One of the " + filename + " part files is missing!");
 			} catch (IOException e){
-				System.out.println("IOException");
+				throw new Exception("IOException combining part files!");
 			}
 		}
 	}
@@ -151,11 +144,24 @@ public class Assembler {
 		return baseFile;
 	}
 
+	private static String getBaseFileName(File file) {
+		String baseFile = "";
+		String fname = file.getName();
+		if (fname.contains(".part")) {
+			baseFile = fname.substring(0,fname.lastIndexOf(".part"));
+		} else if (fname.contains(".crc32")) {
+			baseFile = fname.substring(0,fname.lastIndexOf(".crc32"));
+		}
+
+		return baseFile;
+	}
+
 	// TODO: make sure all files present in crc32 file are there to assemble
 	// checks if there is a crc32 file, parts files corresponding to the crc32 file, and no extra files
 	private static boolean areValidFiles(List<AssembleTableElement> joinPartsList) throws Exception {
 		boolean hascrc32 = false;
 		File crc32 = null;
+		String baseFile = "";
 		for (AssembleTableElement e: joinPartsList) {
 			// only use .crc32 or .part files
 			if (!e.getFileName().contains(".part") && !e.getFileName().contains(".crc32")) {
@@ -171,11 +177,23 @@ public class Assembler {
 				}
 			}
 		}
+		// no crc32 file
+		if (!hascrc32) {
+			throw new Exception("You must include a .crc32 file!");
+		}
+		// get base file from crc32
+		baseFile = getBaseFileName(crc32);
+		for (AssembleTableElement e: joinPartsList) {
+			// not the same as a base file as indicated by the crc32 file included
+			if (!e.getFileName().contains(baseFile)) {
+				throw new Exception("File does not have the same base file as the crc32 file!");
+			}
+		}
 		return true;
 	}
 
 	// Gets arraylist of checksums from the csv for the specified filename
-	private static ArrayList<Long> getChecksumList(List<File> list, String filename) {
+	private static ArrayList<Long> getChecksumList(List<File> list, String filename) throws Exception {
 		ArrayList<Long> checksums = new ArrayList<Long>();
 		try {
 			FileReader fr = new FileReader(list.get(CRC32));
@@ -190,9 +208,9 @@ public class Assembler {
 			br.close();
 			fr.close();
 		} catch (FileNotFoundException e){
-			System.out.println(filename + ".crc32" + " not found :(");
+			throw new Exception(filename + ".crc32 not found!");
 		} catch (IOException e){
-			System.out.println("IOException :(");
+			throw new Exception("IOException reading .crc32 file!");
 		}
 		return checksums;
 	}
@@ -207,7 +225,7 @@ public class Assembler {
 				throw new Exception("Output file already exists in output directory and will be overwritten!");
 			}
 		} catch (IOException e) {
-			System.out.printf(e.getMessage());
+			throw new Exception("IOException creating output file!");
 		}
 
 		return ofile;

@@ -77,7 +77,8 @@ public class AssembleTabController implements Observer {
 			mainController.model().addFileToList(file);
 		}
 	}
-
+	
+	// clear the list of file parts in the join tab
 	@FXML
 	void clearAllParts(ActionEvent event) {
 		mainController.model().clearPartsList();
@@ -97,7 +98,7 @@ public class AssembleTabController implements Observer {
 		// disable main stage when chooser is open
 		File file = dirChooser.showDialog(mainController.stage());
 
-		// TODO: error handling
+		// ensure a directory was selected
 		if (file != null) {
 			// update join output directory path in model
 			mainController.model().setJoinOutDirPath(file.getAbsolutePath());
@@ -118,6 +119,7 @@ public class AssembleTabController implements Observer {
 		// disable main stage when chooser is open
 		File file = dirChooser.showDialog(mainController.stage());
 
+		// ensure a directory was selected
 		if (file != null) {
 			// update join source directory path in model
 			mainController.model().setJoinSrcDirPath(file.getAbsolutePath());
@@ -168,6 +170,7 @@ public class AssembleTabController implements Observer {
 		ExecutorService executorService = Executors.newSingleThreadExecutor();
 		Task<Void> t = new Task<Void>() {
 
+			// assemble file
 			@Override
 			protected Void call() throws Exception {
 				mainController.model().assembleFile();
@@ -178,10 +181,6 @@ public class AssembleTabController implements Observer {
 
 		// exception handling for join thread
 		t.setOnFailed(evt -> {
-			System.err.println("The task failed with the following exception:");
-			System.out.println(t.getException().getMessage());
-
-			//TODO: Include relevant headers for errors from assemble function
 			if (t.getException().getMessage().equals("Output directory has not been selected!")) {
 				errorAlert("Error", "No Output Directory", (t.getException().getMessage()));
 			} else if (t.getException().getMessage().equals("Selected output directory does not exist!")) {
@@ -196,10 +195,27 @@ public class AssembleTabController implements Observer {
 				errorAlert("Error", "Multiple .crc32 Files Detected", (t.getException().getMessage()));
 			} else if (t.getException().getMessage().equals("Output file already exists in output directory and will be overwritten!")) {
 				errorAlert("Error", "Output File Already Exists", (t.getException().getMessage()));
+			} else if (t.getException().getMessage().contains(" file is invalid! Try redownloading it!")) {
+				errorAlert("Error", "Part Checksum Does Not Match Split Checksum", (t.getException().getMessage()));
+			} else if (t.getException().getMessage().equals("Assembled checksum DOES NOT MATCH checksum before being split! Ensure all file parts are included! If the error still persists try redownloading the .part and .crc32 files!")) {
+				errorAlert("Error", "Files NOT combined successfully", (t.getException().getMessage()));
+			} else if (t.getException().getMessage().equals("File does not have the same base file as the crc32 file!")) {
+				errorAlert("Error", "File Does Not Match Base File", (t.getException().getMessage()));
+			} else if (t.getException().getMessage().equals("You must include a .crc32 file!")) {
+				errorAlert("Error", "No .crc32 File Included", (t.getException().getMessage()));
+			} else if (t.getException().getMessage().equals("IOException reading .crc32 file!")) {
+				errorAlert("Error", "IOException", (t.getException().getMessage()));
+			} else if (t.getException().getMessage().contains(".crc32 not found!")) {
+				errorAlert("Error", "File Not Found Exception", (t.getException().getMessage()));
+			} else if (t.getException().getMessage().equals("IOException creating output file!")) {
+				errorAlert("Error", "IOException", (t.getException().getMessage()));
+			} else if (t.getException().getMessage().contains(" part files is missing!")) {
+				errorAlert("Error", "File Not Found Exception", (t.getException().getMessage()));
+			} else if (t.getException().getMessage().equals("IOException combining part files!")) {
+				errorAlert("Error", "IOException", (t.getException().getMessage()));
 			} else {
 				errorAlert("Error", "Unknown Error", (t.getException().getMessage()));
 			}
-
 
 		});
 		executorService.submit(t);
@@ -208,7 +224,9 @@ public class AssembleTabController implements Observer {
 	@FXML
 	void removePart(ActionEvent event) {
 		AssembleTableElement element = filePartsTable.getSelectionModel().getSelectedItem();
-		mainController.model().removeFileFromList(element);
+		if (element != null) {
+			mainController.model().removeFileFromList(element);
+		}
 	}
 
 	// set main controller
@@ -219,6 +237,7 @@ public class AssembleTabController implements Observer {
 	@Override
 	public void update(Observable o, Object arg) {
 		if (arg instanceof String) {
+			// clear the parts table in the join tab
 			if (arg.equals("clear")) {
 				filePartsTable.getItems().clear();
 			}
@@ -228,8 +247,10 @@ public class AssembleTabController implements Observer {
 			char flag = updateInput.charAt(0);
 			updateInput = updateInput.substring(1);
 
+			// source directory
 			if (flag == '3') {
 				srcDirTextField.setText(updateInput);
+			// output directory
 			} else if (flag == '4') {
 				outputTextField.setText(updateInput);
 			}
@@ -237,8 +258,10 @@ public class AssembleTabController implements Observer {
 			// remove the element from the table
 			filePartsTable.getItems().remove(arg);
 		} else if (arg instanceof ObservableListWrapper<?>){
+			// ensure it is not empty and an assemble table element
 			if (!((ObservableList<?>)arg).isEmpty() && ((ObservableList<?>)arg).get(0) instanceof AssembleTableElement) {
 				ObservableList<AssembleTableElement> list = (ObservableList<AssembleTableElement>) arg;
+				// add each element to the table
 				for (AssembleTableElement e : list) {
 					if (!filePartsTable.getItems().contains(e)) {
 						filePartsTable.getItems().add(e);
@@ -246,8 +269,15 @@ public class AssembleTabController implements Observer {
 				}
 			}
 		} else {
+			// update the progress bar
 			Double progress = (Double) arg;
+			progressBar.setStyle("");
 			progressBar.setProgress(progress);
+			// set to green if complete 
+			// errors handled before this point preventing being set to green if unsuccessful join
+			if (progress == 1) {
+				progressBar.setStyle("-fx-accent: green;");
+			}
 		}
 	}
 
