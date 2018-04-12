@@ -1,15 +1,13 @@
 package main.java.com.caci.model;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.nio.file.FileAlreadyExistsException;
 import java.util.List;
 import java.util.Observable;
 
 import javafx.collections.FXCollections;
 import javafx.concurrent.Task;
 import main.java.com.caci.resources.assembler.Assembler;
+import main.java.com.caci.resources.exceptions.SplitException;
 import main.java.com.caci.resources.splitter.FastSplit;
 
 public class Model extends Observable {
@@ -39,7 +37,6 @@ public class Model extends Observable {
 		this.joinProgressBarValue = 0.0;
 	}
 
-
 	// update split file input path
 	public void setSplitInputPath(String inputPath) {
 		this.splitInputFile = new File(inputPath);
@@ -67,30 +64,32 @@ public class Model extends Observable {
 		Model model = this;
 		setSplitProgress(0.0);
 
+		/* quick error checking */
 		// check for input path
 		if (this.splitInputFile == null) {
-			throw new Exception("Input file has not been selected!");
+			throw new SplitException("Input file has not been selected");
 			// check for output path
 		} else if (this.splitOutputDir == null) {
-			throw new Exception("Output directory has not been selected!");
+			throw new SplitException("Output directory has not been selected!");
 			// check if input file exists
 		} else if (!this.splitInputFile.exists()) {
-			throw new Exception("Selected input file does not exist!");
+			throw new SplitException("Selected input file does not exist!");
 			// check if output directory exists
 		} else if (!this.splitOutputDir.exists()) {
-			throw new Exception("Selected output directory does not exist!");
+			throw new SplitException("Selected output directory does not exist!");
 			// check if input file is a file
 		} else if (!this.splitInputFile.isFile()) {
-			throw new Exception("Selected input file is not a file");
+			throw new SplitException("Selected input file is not a file");
 			// check if output dir is a directory
 		} else if (!this.splitOutputDir.isDirectory()) {
-			throw new Exception("Selected output directory is not a directory");
+			throw new SplitException("Selected output directory is not a directory");
 			// check if file can be read
 		} else if (!this.splitInputFile.canRead()) {
-			throw new Exception("Selected input file cannot be read");
+			throw new SplitException("Selected input file cannot be read");
 		}
 
-		FastSplit.split(splitInputFile, splitOutputDir, size, parts, model);
+		throw new Exception("test uncaught exception");
+		// FastSplit.split(splitInputFile, splitOutputDir, size, parts, model);
 
 	}
 
@@ -129,7 +128,7 @@ public class Model extends Observable {
 	public void assembleFile() {
 		Model model = this;
 		setJoinProgress(0.0);
-		
+
 		// TODO: make sure there is output path, crc32 file, and no gaps in part numbers
 		Task<Void> task = new Task<Void>() {
 
@@ -156,7 +155,7 @@ public class Model extends Observable {
 		if (!this.joinPartsList.contains(element)) {
 			this.joinPartsList.add(element);
 			this.setJoinProgress(0.0);
-			
+
 			setChanged();
 			notifyObservers(this.joinPartsList);
 		}
@@ -165,7 +164,7 @@ public class Model extends Observable {
 	public void removeFileFromList(AssembleTableElement element) {
 		this.joinPartsList.remove(element);
 		this.setJoinProgress(0.0);
-		
+
 		setChanged();
 		notifyObservers(element);
 	}
@@ -173,12 +172,12 @@ public class Model extends Observable {
 	public void clearPartsList() {
 		this.joinPartsList.clear();
 		this.setJoinProgress(0.0);
-		
+
 		String out = "clear";
 		setChanged();
 		notifyObservers(out);
 	}
-	
+
 	public double getSplitProgressBarValue() {
 		return splitProgressBarValue;
 	}
