@@ -195,12 +195,12 @@ public class AssembleTabController implements Observer {
 				errorAlert("Error", "Multiple .crc32 Files Detected", (t.getException().getMessage()));
 			} else if (t.getException().getMessage().equals("Output file already exists in output directory and will be overwritten!")) {
 				errorAlert("Error", "Output File Already Exists", (t.getException().getMessage()));
-			} else if (t.getException().getMessage().contains(" file is invalid! Try redownloading it!")) {
+			} else if (t.getException().getMessage().contains(" file is invalid! The checksum does not match the checksum stored in the .crc32 file! Try redownloading it!")) {
 				errorAlert("Error", "Part Checksum Does Not Match Split Checksum", (t.getException().getMessage()));
 			} else if (t.getException().getMessage().equals("Assembled checksum DOES NOT MATCH checksum before being split! Ensure all file parts are included! If the error still persists try redownloading the .part and .crc32 files!")) {
-				errorAlert("Error", "Files NOT combined successfully", (t.getException().getMessage()));
+				errorAlert("Error", "Files NOT Combined Successfully", (t.getException().getMessage()));
 			} else if (t.getException().getMessage().equals("File does not have the same base file as the crc32 file!")) {
-				errorAlert("Error", "File Does Not Match Base File", (t.getException().getMessage()));
+				errorAlert("Error", "Extra Files Included", (t.getException().getMessage()));
 			} else if (t.getException().getMessage().equals("You must include a .crc32 file!")) {
 				errorAlert("Error", "No .crc32 File Included", (t.getException().getMessage()));
 			} else if (t.getException().getMessage().equals("IOException reading .crc32 file!")) {
@@ -281,6 +281,7 @@ public class AssembleTabController implements Observer {
 		}
 	}
 
+	// creates an error alert with the specified title, header, and message
 	public void errorAlert(String title, String header, String message) {
 		Alert alert = new Alert(AlertType.ERROR);
 		alert.setTitle(title);

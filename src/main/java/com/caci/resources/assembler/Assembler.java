@@ -27,8 +27,7 @@ public class Assembler {
 		Model model1 = model;
 
 		if (areValidFiles(joinPartsList)) {
-			Instant start = Instant.now();
-
+			// get base file name
 			String filename = getBaseFileName(joinPartsList);
 			String newfile = filename;
 
@@ -73,8 +72,6 @@ public class Assembler {
 			// Create list of checksums for each file part
 			ArrayList<Long> checksums = getChecksumList(list,filename);
 
-			System.out.println("Combining files: "+filename+".part0 to "+filename+".part"+numparts);
-
 			try {
 				fos = new FileOutputStream(ofile,true);
 
@@ -92,34 +89,34 @@ public class Assembler {
 					// Ensure checksums match
 					Checksum checksum = new Checksum(file);
 					if (checksum.getCheckSum() != checksums.get(i+1)){
-						throw new Exception("Part " + i + " file is invalid! Try redownloading it!");
+						fos.close();
+						fos = null;
+						throw new Exception("Part " + i + " file is invalid! The checksum does not match the checksum stored in the .crc32 file! Try redownloading it!");
 					}
-
+					
+					// prepare for next loop iteration
 					fileBytes = null;
 					fis = null;
 					i++;
-
-					// numparts +1 to account for 0 index
+					
+					// update progress (numparts +1 to account for 0 indexing)
 					model1.setJoinProgress((double) i/(numparts+1));
 				}
 
-				Instant end = Instant.now();
+				// generate a checksum for the output file
 				Checksum checksum = new Checksum(ofile);
 				
-				fos.close();
-				fos = null;
-
-				System.out.println(newfile + " checksum: " + checksum.getCheckSum());
+				// ensure checksums match
 				if (checksum.getCheckSum() == checksums.get(ORIGINAL_FILE)){
 					model1.setJoinProgress(1);
 				} else {
+					fos.close();
+					fos = null;
 					throw new Exception("Assembled checksum DOES NOT MATCH checksum before being split! Ensure all file parts are included! If the error still persists try redownloading the part files!");
 				}
-				System.out.println("Combined file saved as: " + newfile);
-				System.out.println("Combined file saved to directory: " + outDir.getAbsolutePath());
-
-				Duration diff = Duration.between(start, end);
-				System.out.println("Time elapsed: " + diff.toMillis() + " ms");
+				
+				fos.close();
+				fos = null;
 			} catch (FileNotFoundException e){
 				throw new Exception("One of the " + filename + " part files is missing!");
 			} catch (IOException e){
@@ -156,7 +153,6 @@ public class Assembler {
 		return baseFile;
 	}
 
-	// TODO: make sure all files present in crc32 file are there to assemble
 	// checks if there is a crc32 file, parts files corresponding to the crc32 file, and no extra files
 	private static boolean areValidFiles(List<AssembleTableElement> joinPartsList) throws Exception {
 		boolean hascrc32 = false;
@@ -183,6 +179,8 @@ public class Assembler {
 		}
 		// get base file from crc32
 		baseFile = getBaseFileName(crc32);
+		
+		// ensure there are no additional files
 		for (AssembleTableElement e: joinPartsList) {
 			// not the same as a base file as indicated by the crc32 file included
 			if (!e.getFileName().contains(baseFile)) {
