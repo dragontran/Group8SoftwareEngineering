@@ -7,8 +7,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
-import java.time.Duration;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -29,7 +27,6 @@ public class Assembler {
 		if (areValidFiles(joinPartsList)) {
 			// get base file name
 			String filename = getBaseFileName(joinPartsList);
-			String newfile = filename;
 
 			// -2 to remove .crc32 and 0 index
 			int numparts = joinPartsList.size() - 2;
