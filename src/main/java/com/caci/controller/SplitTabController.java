@@ -167,11 +167,11 @@ public class SplitTabController implements Observer {
 
 		// exception handling for split thread
 		t.setOnFailed(evt -> {
-			System.err.println("The task failed with the following exception:");
+			// System.err.println("The task failed with the following exception:");
 			// t.getException().printStackTrace(System.err);
-			System.out.println(t.getException().getMessage());
+			// System.out.println(t.getException().getMessage());
 
-			errorAlert("header", "error test", (t.getException().getMessage()));
+			 errorAlert("header", "error test", (t.getException().getMessage()));
 
 			splitBtn.setDisable(false);
 

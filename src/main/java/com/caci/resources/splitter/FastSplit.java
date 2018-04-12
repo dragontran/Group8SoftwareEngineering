@@ -18,24 +18,14 @@ import javax.naming.SizeLimitExceededException;
 import main.java.com.caci.model.Model;
 import main.java.com.caci.resources.checksum.Checksum;
 
-// TODO: adapt / generalize to split class
-
 /**
  * Source code to split a file in to chunks using java nio.
- *
  */
+
 // reference
 // http://todayguesswhat.blogspot.com/2014/05/java-split-large-file-sample-code-high.html
 
 public class FastSplit {
-	// File channels do get closed ... maybe
-	// public static void main(String[] args) throws IOException {
-	//
-	// System.out.println("Hey");
-	// split("C:\\Users\\Dragon\\Desktop\\test\\game.iso");
-	// // calculateChecksums("hey", "C:\\Users\\Dragon\\Desktop\\test\\");
-	//
-	// }
 
 	private static void closeChannel(FileChannel channel) {
 		if (channel != null) {
@@ -164,11 +154,6 @@ public class FastSplit {
 						// maximum bytes that should be read from current byte buffer
 						int bytesToWrite = (int) Math.min(buffer.remaining(), chunkBytesFree);
 
-						// System.out.println(String.format(
-						// "Byte buffer has %d remaining bytes; chunk has %d bytes free; writing up to
-						// %d bytes to chunk %d",
-						// buffer.remaining(), chunkBytesFree, bytesToWrite, outputChunkNumber));
-
 						// set limit in buffer up to where bytes can be read
 						buffer.limit(bytesWrittenFromBuffer + bytesToWrite);
 
@@ -179,16 +164,8 @@ public class FastSplit {
 						bytesWrittenFromBuffer += bytesWritten;
 						totalBytesWritten += bytesWritten;
 
-						// TODO test;
+						// set progress bar
 						model.setSplitProgress(((double) totalBytesWritten / (double) (sourceChannel.size() * 1.1)));
-						// System.out.println( totalBytesWritten + " " + sourceChannel.size() + " " +
-						// ((double)totalBytesWritten / (double)sourceChannel.size()));
-
-						// System.out.println(String.format(
-						// "Wrote %d to chunk; %d bytes written to chunk so far; %d bytes written from
-						// buffer so far; %d bytes written in total",
-						// bytesWritten, outputChunkBytesWritten, bytesWrittenFromBuffer,
-						// totalBytesWritten));
 
 						// reset limit
 						buffer.limit(bytesRead);
@@ -207,84 +184,102 @@ public class FastSplit {
 							outputChannel = null;
 						}
 					}
-
+					// clear buffer
 					buffer.clear();
 				}
 
 			} finally {
+				// close output channel
 				closeChannel(outputChannel);
 			}
 
 		} finally {
+			// close file channel
 			closeChannel(sourceChannel);
 		}
 
+		// calculate checksums
 		calculateChecksums(splitInputFile, folderPartsPath, model);
-		/* TODO: make this not jank */
-		// quick and dirty way of showing checksum progress...
+
 		model.setSplitProgress(1);
 
-		// System.out.println("done");
 	}
 
-	// TODO: make this better :\ cant use fancy byte[] or files with nio
-	// TODO: Fix checksum bug (exclude calculation for checksum file
 	// TODO: implement quotes to prevent comma delimited breakage
 	public static void calculateChecksums(File splitInputFile, String splitPartsDir, Model model) throws IOException {
 
 		File dir = new File(splitPartsDir);
 		Checksum test;
 		FileWriter fileWriter = null;
-		try {
 
+		try {
+			// get checksum file name
 			String checksumFileName = splitInputFile.getName() + ".crc32";
 
 			ArrayList<String> fileChecksumList = new ArrayList<String>();
-
-			// TODO: error handling stuff
+			
+			// get split file name
 			String fileName = splitInputFile.getName();
 
+			// calculate checksum for file
 			String fileChecksum = String.format("%s,%d\n", fileName, (new Checksum(splitInputFile)).getCheckSum());
 
+			// add to list
 			fileChecksumList.add(fileChecksum);
 
+			// get files parts in parts folder
 			File[] directoryListing = dir.listFiles();
 
+			// overloaded sort to sort by part numbers
 			Arrays.sort(directoryListing, new Comparator<File>() {
 
 				@Override
 				public int compare(File o1, File o2) {
+					// parse part number
 					String file1Part = (o1.getName()).replaceAll("\\D", "");
 					String file2Part = (o2.getName()).replaceAll("\\D", "");
+					
+					// convert to int
 					Integer file1PartNo = Integer.parseInt(file1Part);
 					Integer file2PartNo = Integer.parseInt(file2Part);
+					
+					// compare
 					return file1PartNo.compareTo(file2PartNo);
 				}
-
 			});
-
+			
+			
 			if (directoryListing != null) {
+				
+				// progress bar value (now at 90%)
 				double progress = .1 / directoryListing.length;
+				
+				// iterate through to file parts list 
 				for (File child : directoryListing) {
-
+					
+					// calculate checksum
 					test = new Checksum(child);
-
+					
+					// add file name and checksum to output list
 					fileChecksumList.add(child.getName() + "," + test.getCheckSum() + "\n");
 
+					// update progress bar
 					model.setSplitProgress(model.getSplitProgressBarValue() + progress);
 
 				}
 			}
 
+			// create checksum file
 			fileWriter = new FileWriter(dir.getAbsolutePath() + File.separator + checksumFileName);
 
 			for (String output : fileChecksumList) {
 
+				// write output
 				fileWriter.write(output);
 			}
 
 		} finally {
-
+			// close file
 			fileWriter.close();
 
 		}
