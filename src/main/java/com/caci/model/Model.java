@@ -1,14 +1,10 @@
 package main.java.com.caci.model;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.nio.file.FileAlreadyExistsException;
 import java.util.List;
 import java.util.Observable;
 
 import javafx.collections.FXCollections;
-import javafx.concurrent.Task;
 import main.java.com.caci.resources.assembler.Assembler;
 import main.java.com.caci.resources.splitter.FastSplit;
 
@@ -19,7 +15,6 @@ public class Model extends Observable {
 	private File splitOutputDir;
 
 	// file paths for assembler
-	private File joinSrcFileDir;
 	private File joinOutFileDir;
 
 	// file list for assembler
@@ -32,7 +27,6 @@ public class Model extends Observable {
 	public Model() {
 		this.splitInputFile = null;
 		this.splitOutputDir = null;
-		this.joinSrcFileDir = null;
 		this.joinOutFileDir = null;
 		this.joinPartsList = FXCollections.observableArrayList();
 		this.splitProgressBarValue = 0.0;
@@ -105,10 +99,8 @@ public class Model extends Observable {
 
 	// update join src file dir path
 	public void setJoinSrcDirPath(String joinSrcDirPath) {
-		this.joinSrcFileDir = new File(joinSrcDirPath);
 		this.setJoinProgress(0.0);
 
-		// TODO: make output better
 		String out = "3" + joinSrcDirPath;
 		setChanged();
 		notifyObservers(out);
@@ -119,7 +111,6 @@ public class Model extends Observable {
 		this.joinOutFileDir = new File(outputPath);
 		this.setJoinProgress(0.0);
 
-		// TODO: make output better
 		String out = "4" + outputPath;
 		setChanged();
 		notifyObservers(out);
