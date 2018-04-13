@@ -1,8 +1,6 @@
 package main.java.com.caci.controller;
 
 import java.io.File;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.concurrent.ExecutorService;
@@ -11,21 +9,16 @@ import java.util.concurrent.Executors;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.RadioButton;
-import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Priority;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import main.java.com.caci.resources.exceptions.SplitException;
+import main.java.com.caci.view.AlertDialog;
 
 public class SplitTabController implements Observer {
 
@@ -143,9 +136,10 @@ public class SplitTabController implements Observer {
 			@Override
 			protected Void call() throws Exception {
 				long prefix = 1;
+				
+				// parse size input
+				
 				if (bytesRadioBtn.isSelected()) {
-					// System.out.println(bytesTextField.getText() + " " +
-					// bytesSizeComboBox.getValue());
 					switch (bytesSizeComboBox.getValue()) {
 					case "kilobytes":
 						prefix = 1024;
@@ -175,13 +169,14 @@ public class SplitTabController implements Observer {
 		// exception handling for split thread
 		t.setOnFailed(evt -> {
 
+			// catch exceptions
 			if (t.getException().getClass() == SplitException.class) {
-				errorAlert((t.getException().getMessage()));
-			} else if(t.getException().getClass() == NumberFormatException.class) {
-				errorAlert("Invalid part number specified");
-			}
-			else {
-				stackTraceAlert(t.getException());
+				// print error in alert dialog
+				AlertDialog.errorAlert((t.getException().getMessage()));
+			} else {
+				// catch unspecified exception
+				// print stack trace in alert dialog
+				AlertDialog.stackTraceAlert(t.getException());
 			}
 
 			splitBtn.setDisable(false);
@@ -223,7 +218,6 @@ public class SplitTabController implements Observer {
 				}
 
 				break;
-
 			}
 		}
 	}
@@ -231,48 +225,6 @@ public class SplitTabController implements Observer {
 	// set main controller
 	public void injectMainController(MainController mainController) {
 		this.mainController = mainController;
-	}
-
-	public void errorAlert(String message) {
-		Alert alert = new Alert(AlertType.ERROR);
-		alert.setTitle("Error");
-		alert.setHeaderText("An error has occurred");
-		alert.setContentText(message);
-		alert.showAndWait();
-	}
-
-	public void stackTraceAlert(Throwable throwable) {
-		Alert alert = new Alert(AlertType.ERROR);
-		alert.setTitle("Error");
-		alert.setHeaderText("An unexpected error has occurred");
-		alert.setContentText(throwable.getMessage());
-
-		// Create expandable Exception.
-		StringWriter sw = new StringWriter();
-		PrintWriter pw = new PrintWriter(sw);
-		throwable.printStackTrace(pw);
-		String exceptionText = sw.toString();
-
-		Label label = new Label("The exception stacktrace was:");
-
-		TextArea textArea = new TextArea(exceptionText);
-		textArea.setEditable(false);
-		textArea.setWrapText(true);
-
-		textArea.setMaxWidth(Double.MAX_VALUE);
-		textArea.setMaxHeight(Double.MAX_VALUE);
-		GridPane.setVgrow(textArea, Priority.ALWAYS);
-		GridPane.setHgrow(textArea, Priority.ALWAYS);
-
-		GridPane expContent = new GridPane();
-		expContent.setMaxWidth(Double.MAX_VALUE);
-		expContent.add(label, 0, 0);
-		expContent.add(textArea, 0, 1);
-
-		// Set expandable Exception into the dialog pane.
-		alert.getDialogPane().setExpandableContent(expContent);
-
-		alert.showAndWait();
 	}
 
 }

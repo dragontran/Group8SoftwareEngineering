@@ -2,21 +2,17 @@ package main.java.com.caci.resources.splitter;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
-import java.nio.file.FileAlreadyExistsException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
-
-import javax.naming.SizeLimitExceededException;
-
 import main.java.com.caci.model.Model;
 import main.java.com.caci.resources.checksum.Checksum;
+import main.java.com.caci.resources.exceptions.SplitException;
 
 /**
  * Source code to split a file in to chunks using java nio.
@@ -38,7 +34,7 @@ public class FastSplit {
 	}
 
 	public static void split(File splitInputFile, File splitOutputDir, long inputSplitSize, boolean parts, Model m)
-			throws IOException, FileNotFoundException, FileAlreadyExistsException, SizeLimitExceededException {
+			throws IOException, SplitException {
 		Model model = m;
 
 		// input file name
@@ -72,7 +68,9 @@ public class FastSplit {
 
 			} else {
 				if (inputSplitSize > fileSize) {
-					throw new SizeLimitExceededException("File size is smaller than split size.");
+					// throw new SizeLimitExceededException("File size is smaller than split
+					// size.");
+					throw new SplitException("File size is smaller than split size.");
 				}
 
 				splitSize = inputSplitSize;
@@ -90,11 +88,13 @@ public class FastSplit {
 				File filePartsFolder = new File(folderPartsPath);
 
 				if (!filePartsFolder.mkdir()) {
-					throw new FileAlreadyExistsException("Parts folder already exists.");
+					// throw new FileAlreadyExistsException("Parts folder already exists.");
+					throw new SplitException("Parts folder already exists.");
 				}
 
 			} else {
-				throw new FileNotFoundException("Could not find output directory.");
+				// throw new FileNotFoundException("Could not find output directory.");
+				throw new SplitException("Could not find output directory.");
 			}
 
 			// 256 megabyte memory buffer for reading source file
@@ -205,7 +205,6 @@ public class FastSplit {
 
 	}
 
-	// TODO: implement quotes to prevent comma delimited breakage
 	public static void calculateChecksums(File splitInputFile, String splitPartsDir, Model model) throws IOException {
 
 		File dir = new File(splitPartsDir);
@@ -217,7 +216,7 @@ public class FastSplit {
 			String checksumFileName = splitInputFile.getName() + ".crc32";
 
 			ArrayList<String> fileChecksumList = new ArrayList<String>();
-			
+
 			// get split file name
 			String fileName = splitInputFile.getName();
 
@@ -238,28 +237,27 @@ public class FastSplit {
 					// parse part number
 					String file1Part = (o1.getName()).replaceAll("\\D", "");
 					String file2Part = (o2.getName()).replaceAll("\\D", "");
-					
+
 					// convert to int
 					Integer file1PartNo = Integer.parseInt(file1Part);
 					Integer file2PartNo = Integer.parseInt(file2Part);
-					
+
 					// compare
 					return file1PartNo.compareTo(file2PartNo);
 				}
 			});
-			
-			
+
 			if (directoryListing != null) {
-				
+
 				// progress bar value (now at 90%)
 				double progress = .1 / directoryListing.length;
-				
-				// iterate through to file parts list 
+
+				// iterate through to file parts list
 				for (File child : directoryListing) {
-					
+
 					// calculate checksum
 					test = new Checksum(child);
-					
+
 					// add file name and checksum to output list
 					fileChecksumList.add(child.getName() + "," + test.getCheckSum() + "\n");
 
