@@ -16,7 +16,24 @@ public class AlertDialog {
 		alert.setTitle("Error");
 		alert.setHeaderText("An error has occurred");
 		alert.setContentText(message);
+
+
 		alert.showAndWait();
+	}
+
+	static public void successAlert(Stage stage) {
+
+		Alert alert = new Alert(AlertType.INFORMATION);
+
+		alert.setTitle("Success");
+		alert.setHeaderText(null);
+		alert.setContentText("File split successfully");
+
+		Window window = stage.getScene().getWindow();
+		alert.initOwner(window);
+
+		alert.showAndWait();
+
 	}
 
 	static public void stackTraceAlert(Throwable throwable) {

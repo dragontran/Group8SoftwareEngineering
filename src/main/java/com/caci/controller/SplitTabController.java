@@ -136,9 +136,9 @@ public class SplitTabController implements Observer {
 			@Override
 			protected Void call() throws Exception {
 				long prefix = 1;
-				
+
 				// parse size input
-				
+
 				if (bytesRadioBtn.isSelected()) {
 					switch (bytesSizeComboBox.getValue()) {
 					case "kilobytes":
@@ -183,6 +183,11 @@ public class SplitTabController implements Observer {
 
 		});
 		executorService.submit(t);
+
+		t.setOnSucceeded(evt -> {
+			AlertDialog.successAlert(mainController.stage());
+			mainController.model().setSplitProgress(0.0);
+		});
 	}
 
 	@FXML
@@ -216,7 +221,6 @@ public class SplitTabController implements Observer {
 				if (progressBar.getProgress() == 1) {
 					splitBtn.setDisable(false);
 				}
-
 				break;
 			}
 		}
