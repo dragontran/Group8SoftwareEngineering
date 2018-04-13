@@ -220,6 +220,8 @@ public class SplitTabController implements Observer {
 				progressBar.setProgress(Double.parseDouble(updateInput));
 				if (progressBar.getProgress() == 1) {
 					splitBtn.setDisable(false);
+					progressBar.setStyle("-fx-accent: green;");
+
 				}
 				break;
 			}
