@@ -88,8 +88,7 @@ public class Model extends Observable {
 			throw new SplitException("Selected input file cannot be read");
 		}
 
-		throw new Exception("test uncaught exception");
-		// FastSplit.split(splitInputFile, splitOutputDir, size, parts, model);
+		 FastSplit.split(splitInputFile, splitOutputDir, size, parts, model);
 
 	}
 
