@@ -2,21 +2,24 @@ package main.java.com.caci.view;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-
 import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
+import javafx.stage.Stage;
+import javafx.stage.Window;
 
 public class AlertDialog {
-	static public void errorAlert(String message) {
+	static public void errorAlert(String message, Stage stage) {
 		Alert alert = new Alert(AlertType.ERROR);
 		alert.setTitle("Error");
 		alert.setHeaderText("An error has occurred");
 		alert.setContentText(message);
 
+		Window window = stage.getScene().getWindow();
+		alert.initOwner(window);
 
 		alert.showAndWait();
 	}
@@ -36,7 +39,7 @@ public class AlertDialog {
 
 	}
 
-	static public void stackTraceAlert(Throwable throwable) {
+	static public void stackTraceAlert(Throwable throwable, Stage stage) {
 		Alert alert = new Alert(AlertType.ERROR);
 		alert.setTitle("Error");
 		alert.setHeaderText("An unexpected error has occurred");
@@ -66,6 +69,9 @@ public class AlertDialog {
 
 		// Set expandable Exception into the dialog pane.
 		alert.getDialogPane().setExpandableContent(expContent);
+
+		Window window = stage.getScene().getWindow();
+		alert.initOwner(window);
 
 		alert.showAndWait();
 	}

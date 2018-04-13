@@ -172,11 +172,11 @@ public class SplitTabController implements Observer {
 			// catch exceptions
 			if (t.getException().getClass() == SplitException.class) {
 				// print error in alert dialog
-				AlertDialog.errorAlert((t.getException().getMessage()));
+				AlertDialog.errorAlert((t.getException().getMessage()), mainController.stage());
 			} else {
 				// catch unspecified exception
 				// print stack trace in alert dialog
-				AlertDialog.stackTraceAlert(t.getException());
+				AlertDialog.stackTraceAlert(t.getException(), mainController.stage());
 			}
 
 			splitBtn.setDisable(false);
