@@ -9,8 +9,6 @@ import java.util.concurrent.Executors;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ProgressBar;
@@ -19,6 +17,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
+import main.java.com.caci.resources.exceptions.SplitException;
+import main.java.com.caci.view.AlertDialog;
 
 public class SplitTabController implements Observer {
 
@@ -136,9 +136,10 @@ public class SplitTabController implements Observer {
 			@Override
 			protected Void call() throws Exception {
 				long prefix = 1;
+
+				// parse size input
+
 				if (bytesRadioBtn.isSelected()) {
-					// System.out.println(bytesTextField.getText() + " " +
-					// bytesSizeComboBox.getValue());
 					switch (bytesSizeComboBox.getValue()) {
 					case "kilobytes":
 						prefix = 1024;
@@ -167,16 +168,26 @@ public class SplitTabController implements Observer {
 
 		// exception handling for split thread
 		t.setOnFailed(evt -> {
-			System.err.println("The task failed with the following exception:");
-			// t.getException().printStackTrace(System.err);
-			System.out.println(t.getException().getMessage());
 
-			errorAlert("header", "error test", (t.getException().getMessage()));
+			// catch exceptions
+			if (t.getException().getClass() == SplitException.class) {
+				// print error in alert dialog
+				AlertDialog.errorAlert((t.getException().getMessage()), mainController.stage());
+			} else {
+				// catch unspecified exception
+				// print stack trace in alert dialog
+				AlertDialog.stackTraceAlert(t.getException(), mainController.stage());
+			}
 
 			splitBtn.setDisable(false);
 
 		});
 		executorService.submit(t);
+
+		t.setOnSucceeded(evt -> {
+			AlertDialog.successAlert(mainController.stage());
+			mainController.model().setSplitProgress(0.0);
+		});
 	}
 
 	@FXML
@@ -210,9 +221,7 @@ public class SplitTabController implements Observer {
 				if (progressBar.getProgress() == 1) {
 					splitBtn.setDisable(false);
 				}
-
 				break;
-
 			}
 		}
 	}
@@ -220,14 +229,6 @@ public class SplitTabController implements Observer {
 	// set main controller
 	public void injectMainController(MainController mainController) {
 		this.mainController = mainController;
-	}
-
-	public void errorAlert(String title, String header, String message) {
-		Alert alert = new Alert(AlertType.ERROR);
-		alert.setTitle(title);
-		alert.setHeaderText(header);
-		alert.setContentText(message);
-		alert.showAndWait();
 	}
 
 }
