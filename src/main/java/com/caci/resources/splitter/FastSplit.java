@@ -2,38 +2,26 @@ package main.java.com.caci.resources.splitter;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
-import java.nio.file.FileAlreadyExistsException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import main.java.com.caci.model.Model;
 import main.java.com.caci.resources.checksum.Checksum;
-
-// TODO: adapt / generalize to split class
+import main.java.com.caci.resources.exceptions.SplitException;
 
 /**
  * Source code to split a file in to chunks using java nio.
- *
  */
+
 // reference
 // http://todayguesswhat.blogspot.com/2014/05/java-split-large-file-sample-code-high.html
 
 public class FastSplit {
-	// File channels do get closed ... maybe
-	// public static void main(String[] args) throws IOException {
-	//
-	// System.out.println("Hey");
-	// split("C:\\Users\\Dragon\\Desktop\\test\\game.iso");
-	// // calculateChecksums("hey", "C:\\Users\\Dragon\\Desktop\\test\\");
-	//
-	// }
 
 	private static void closeChannel(FileChannel channel) {
 		if (channel != null) {
@@ -45,9 +33,9 @@ public class FastSplit {
 		}
 	}
 
-	public static void split(File splitInputFile, File splitOutputDir, long inputSplitSize, boolean parts, Model model)
-			throws IOException, FileNotFoundException, FileAlreadyExistsException {
-		Model model1 = model;
+	public static void split(File splitInputFile, File splitOutputDir, long inputSplitSize, boolean parts, Model m)
+			throws IOException, SplitException {
+		Model model = m;
 
 		// input file name
 		File source = splitInputFile;
@@ -60,41 +48,53 @@ public class FastSplit {
 
 		String folderPartsPath;
 
-		/* TODO: maybe create a new directory? */
-		// check if output path exists and is a directory
-		if (output.exists() && output.isDirectory()) {
-
-			// file name without file extention
-			String fileName = source.getName().replaceFirst("[.][^.]+$", "");
-			// new directory path
-			folderPartsPath = output.getAbsolutePath() + File.separator + fileName + " parts";
-			System.out.println(folderPartsPath);
-
-			File filePartsFolder = new File(folderPartsPath);
-
-			if (!filePartsFolder.mkdir()) {
-				throw new FileAlreadyExistsException(folderPartsPath);
-			}
-		} else {
-			System.out.println("folder doesn't exist bro");
-			throw new FileNotFoundException("Could not find directory");
-		}
-
 		try {
+
 			// file channel for source file byte stream
 			sourceChannel = new FileInputStream(source).getChannel();
 
 			// file parts
 			long splitSize = 0;
+
 			// calculate number of chunks
 			double numberOfChunks = 0.0;
 
+			long fileSize = sourceChannel.size();
+
 			if (parts) {
+
 				numberOfChunks = inputSplitSize;
-				splitSize = (long) Math.ceil(sourceChannel.size() / numberOfChunks);
+				splitSize = (long) Math.ceil(fileSize / numberOfChunks);
+
 			} else {
+				if (inputSplitSize > fileSize) {
+					// throw new SizeLimitExceededException("File size is smaller than split
+					// size.");
+					throw new SplitException("File size is smaller than split size.");
+				}
+
 				splitSize = inputSplitSize;
-				numberOfChunks = Math.ceil(sourceChannel.size() / (double) splitSize);
+				numberOfChunks = Math.ceil(fileSize / (double) splitSize);
+			}
+
+			// check if output path exists and is a directory
+			if (output.exists() && output.isDirectory()) {
+
+				// file name without file extention
+				String fileName = source.getName().replaceFirst("[.][^.]+$", "");
+				// new directory path
+				folderPartsPath = output.getAbsolutePath() + File.separator + fileName + " parts";
+
+				File filePartsFolder = new File(folderPartsPath);
+
+				if (!filePartsFolder.mkdir()) {
+					// throw new FileAlreadyExistsException("Parts folder already exists.");
+					throw new SplitException("Parts folder already exists.");
+				}
+
+			} else {
+				// throw new FileNotFoundException("Could not find output directory.");
+				throw new SplitException("Could not find output directory.");
 			}
 
 			// 256 megabyte memory buffer for reading source file
@@ -154,11 +154,6 @@ public class FastSplit {
 						// maximum bytes that should be read from current byte buffer
 						int bytesToWrite = (int) Math.min(buffer.remaining(), chunkBytesFree);
 
-						// System.out.println(String.format(
-						// "Byte buffer has %d remaining bytes; chunk has %d bytes free; writing up to
-						// %d bytes to chunk %d",
-						// buffer.remaining(), chunkBytesFree, bytesToWrite, outputChunkNumber));
-
 						// set limit in buffer up to where bytes can be read
 						buffer.limit(bytesWrittenFromBuffer + bytesToWrite);
 
@@ -169,16 +164,8 @@ public class FastSplit {
 						bytesWrittenFromBuffer += bytesWritten;
 						totalBytesWritten += bytesWritten;
 
-						// TODO test;
-						model1.setSplitProgress(((double) totalBytesWritten / (double) sourceChannel.size()));
-						// System.out.println( totalBytesWritten + " " + sourceChannel.size() + " " +
-						// ((double)totalBytesWritten / (double)sourceChannel.size()));
-
-						// System.out.println(String.format(
-						// "Wrote %d to chunk; %d bytes written to chunk so far; %d bytes written from
-						// buffer so far; %d bytes written in total",
-						// bytesWritten, outputChunkBytesWritten, bytesWrittenFromBuffer,
-						// totalBytesWritten));
+						// set progress bar
+						model.setSplitProgress(((double) totalBytesWritten / (double) (sourceChannel.size() * 1.1)));
 
 						// reset limit
 						buffer.limit(bytesRead);
@@ -197,56 +184,102 @@ public class FastSplit {
 							outputChannel = null;
 						}
 					}
-
+					// clear buffer
 					buffer.clear();
 				}
 
 			} finally {
+				// close output channel
 				closeChannel(outputChannel);
 			}
 
 		} finally {
+			// close file channel
 			closeChannel(sourceChannel);
 		}
 
-		calculateChecksums(splitInputFile, folderPartsPath);
+		// calculate checksums
+		calculateChecksums(splitInputFile, folderPartsPath, model);
 
-		System.out.println("done");
+		model.setSplitProgress(1);
+
 	}
 
-	// TODO: make this better :\ cant use fancy byte[] or files with nio
-	// TODO: Fix checksum bug (exclude calculation for checksum file
-	// TODO: implement quotes to prevent comma delimited breakage
-	public static void calculateChecksums(File splitInputFile, String splitPartsDir) throws IOException {
+	public static void calculateChecksums(File splitInputFile, String splitPartsDir, Model model) throws IOException {
 
 		File dir = new File(splitPartsDir);
 		Checksum test;
-		PrintWriter f0 = null;
+		FileWriter fileWriter = null;
+
 		try {
+			// get checksum file name
+			String checksumFileName = splitInputFile.getName() + ".crc32";
 
-			String checksumFileName = splitInputFile.getName().replaceFirst("[.][^.]+$", "") + ".crc32";
+			ArrayList<String> fileChecksumList = new ArrayList<String>();
 
-			f0 = new PrintWriter(new FileWriter(dir.getAbsolutePath() + File.separator + checksumFileName));
+			// get split file name
+			String fileName = splitInputFile.getName();
 
-			// TODO: error handling stuff
-			f0.println(splitInputFile.getName() + "," + (new Checksum(splitInputFile)).getCheckSum());
+			// calculate checksum for file
+			String fileChecksum = String.format("%s,%d\n", fileName, (new Checksum(splitInputFile)).getCheckSum());
 
+			// add to list
+			fileChecksumList.add(fileChecksum);
+
+			// get files parts in parts folder
 			File[] directoryListing = dir.listFiles();
 
+			// overloaded sort to sort by part numbers
+			Arrays.sort(directoryListing, new Comparator<File>() {
+
+				@Override
+				public int compare(File o1, File o2) {
+					// parse part number
+					String file1Part = (o1.getName()).replaceAll("\\D", "");
+					String file2Part = (o2.getName()).replaceAll("\\D", "");
+
+					// convert to int
+					Integer file1PartNo = Integer.parseInt(file1Part);
+					Integer file2PartNo = Integer.parseInt(file2Part);
+
+					// compare
+					return file1PartNo.compareTo(file2PartNo);
+				}
+			});
+
 			if (directoryListing != null) {
+
+				// progress bar value (now at 90%)
+				double progress = .1 / directoryListing.length;
+
+				// iterate through to file parts list
 				for (File child : directoryListing) {
 
+					// calculate checksum
 					test = new Checksum(child);
 
-					f0.println(child.getName() + "," + test.getCheckSum());
+					// add file name and checksum to output list
+					fileChecksumList.add(child.getName() + "," + test.getCheckSum() + "\n");
 
-					System.out.println(test.getCheckSum());
+					// update progress bar
+					model.setSplitProgress(model.getSplitProgressBarValue() + progress);
+
 				}
-				f0.close();
+			}
+
+			// create checksum file
+			fileWriter = new FileWriter(dir.getAbsolutePath() + File.separator + checksumFileName);
+
+			for (String output : fileChecksumList) {
+
+				// write output
+				fileWriter.write(output);
 			}
 
 		} finally {
-			f0.close();
+			// close file
+			fileWriter.close();
+
 		}
 	}
 }
