@@ -173,6 +173,8 @@ public class SplitTabController implements Observer {
 			if (t.getException().getClass() == SplitException.class) {
 				// print error in alert dialog
 				AlertDialog.errorAlert((t.getException().getMessage()), mainController.stage());
+			} else if (t.getException().getClass() == NumberFormatException.class) {
+				AlertDialog.errorAlert(("Invalid parts specified"), mainController.stage());
 			} else {
 				// catch unspecified exception
 				// print stack trace in alert dialog
