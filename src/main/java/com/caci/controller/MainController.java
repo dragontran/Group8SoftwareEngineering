@@ -15,6 +15,8 @@ public class MainController {
 	private AssembleTabController assembleTabController;
 	@FXML
 	private HelpTabController helpTabController;
+	@FXML
+	private ChecksumTabController checksumTabController;
 
 	private Model model;
 	
@@ -26,6 +28,7 @@ public class MainController {
 		model.addObserver(splitTabController);
 		 model.addObserver(assembleTabController);
 		// model.addObserver(helpTabController);
+		 model.addObserver(checksumTabController);
 	}
 	
 	public void setStage(Stage stage) {
@@ -47,5 +50,6 @@ public class MainController {
 		splitTabController.injectMainController(this);
 		 assembleTabController.injectMainController(this);
 		// helpTabController.injectMainController(this);
+		 checksumTabController.injectMainController(this);
 	}
 }

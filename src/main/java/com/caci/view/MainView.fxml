@@ -14,6 +14,9 @@
         <Tab fx:id="assembleTab" text="Join">
           <fx:include fx:id="assembleTab" source="AssembleTabView.fxml" />
         </Tab>
+        <Tab text="Checksum">
+          <fx:include fx:id="checksumTab" source="ChecksumTabView.fxml" />
+        </Tab>
         <Tab text="Help">
           <fx:include fx:id="helpTab" source="HelpTabView.fxml" />
         </Tab>
