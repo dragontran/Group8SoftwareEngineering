@@ -224,6 +224,7 @@ public class Model extends Observable {
 		this.joinPartsList.remove(element);
 		this.setJoinProgress(0.0);
 		
+
 		setChanged();
 		notifyObservers(element);
 	}
@@ -236,8 +237,8 @@ public class Model extends Observable {
 		String out = "clear";
 		setChanged();
 		notifyObservers(out);
-	}
-	
+	}	
+
 	public double getSplitProgressBarValue() {
 		return splitProgressBarValue;
 	}
