@@ -21,16 +21,20 @@ public class Assembler {
 	private final static int CRC32 = 0;
 	private final static int ORIGINAL_FILE = 0;
 
+	private static String filename = "";
+
 	public static void assemble(List<AssembleTableElement> joinPartsList, File outDir, Model model) throws Exception {
 		Model model1 = model;
 
+		filename = "";
+
 		if (areValidFiles(joinPartsList)) {
-			// get base file name
-			String filename = getBaseFileName(joinPartsList);
 
 			// -2 to remove .crc32 and 0 index
 			int numparts = joinPartsList.size() - 2;
 
+			// create the output file given the output directory and name of the base file
+			// file name assigned in areValidFiles function
 			File ofile = createOutputFile(outDir,filename);
 
 			FileOutputStream fos;
@@ -90,19 +94,19 @@ public class Assembler {
 						fos = null;
 						throw new Exception("Part " + i + " file is invalid! The checksum does not match the checksum stored in the .crc32 file! Try redownloading it!");
 					}
-					
+
 					// prepare for next loop iteration
 					fileBytes = null;
 					fis = null;
 					i++;
-					
+
 					// update progress (numparts +1 to account for 0 indexing)
 					model1.setJoinProgress((double) i/(numparts+1));
 				}
 
 				// generate a checksum for the output file
 				Checksum checksum = new Checksum(ofile);
-				
+
 				// ensure checksums match
 				if (checksum.getCheckSum() == checksums.get(ORIGINAL_FILE)){
 					model1.setJoinProgress(1);
@@ -111,7 +115,7 @@ public class Assembler {
 					fos = null;
 					throw new Exception("Assembled checksum DOES NOT MATCH checksum before being split! Ensure all file parts are included! If the error still persists try redownloading the part files!");
 				}
-				
+
 				fos.close();
 				fos = null;
 			} catch (FileNotFoundException e){
@@ -122,29 +126,14 @@ public class Assembler {
 		}
 	}
 
-	private static String getBaseFileName(List<AssembleTableElement> joinPartsList) {
-		String baseFile = "";
-		for (AssembleTableElement e : joinPartsList) {
-			String fname = e.getFileName();
-			if (fname.contains(".part")) {
-				baseFile = fname.substring(0,fname.lastIndexOf(".part"));
-				break;
-			} else if (fname.contains(".crc32")) {
-				baseFile = fname.substring(0,fname.lastIndexOf(".crc32"));
-				break;
-			}
-		}
-
-		return baseFile;
-	}
-
+	// gets the base file name from the provided file (returns the empty string if the file was not a .crc32 or a part file)
 	private static String getBaseFileName(File file) {
 		String baseFile = "";
 		String fname = file.getName();
-		if (fname.contains(".part")) {
-			baseFile = fname.substring(0,fname.lastIndexOf(".part"));
-		} else if (fname.contains(".crc32")) {
+		if (fname.contains(".crc32")) {
 			baseFile = fname.substring(0,fname.lastIndexOf(".crc32"));
+		} else if (fname.contains(".part")) {
+			baseFile = fname.substring(0,fname.lastIndexOf(".part"));
 		}
 
 		return baseFile;
@@ -154,7 +143,6 @@ public class Assembler {
 	private static boolean areValidFiles(List<AssembleTableElement> joinPartsList) throws Exception {
 		boolean hascrc32 = false;
 		File crc32 = null;
-		String baseFile = "";
 		for (AssembleTableElement e: joinPartsList) {
 			// only use .crc32 or .part files
 			if (!e.getFileName().contains(".part") && !e.getFileName().contains(".crc32")) {
@@ -174,16 +162,63 @@ public class Assembler {
 		if (!hascrc32) {
 			throw new Exception("You must include a .crc32 file!");
 		}
-		// get base file from crc32
-		baseFile = getBaseFileName(crc32);
-		
+		// get base file name from crc32 file
+		filename = getBaseFileName(crc32);
+
 		// ensure there are no additional files
 		for (AssembleTableElement e: joinPartsList) {
 			// not the same as a base file as indicated by the crc32 file included
-			if (!e.getFileName().contains(baseFile)) {
+			if (!e.getFileName().contains(filename)) {
 				throw new Exception("File does not have the same base file as the crc32 file!");
 			}
 		}
+
+		// get all part files from the crc32 file
+		ArrayList<String> partFiles = new ArrayList<String>();
+		try {
+			FileReader fr = new FileReader(crc32);
+			BufferedReader br = new BufferedReader(fr);
+			String line;
+
+			while ((line = br.readLine()) != null){
+				// don't add the original file, only part files
+				if (line.contains(".part")) {
+					partFiles.add(line.substring(0, line.indexOf(',')));
+				}
+			}
+			br.close();
+			fr.close();
+		} catch (FileNotFoundException e){
+			throw new Exception(filename + ".crc32 not found!");
+		} catch (IOException e){
+			throw new Exception("IOException reading .crc32 file!");
+		}
+
+		// go through the parts list and remove all files present from partFiles array
+		for (AssembleTableElement e : joinPartsList) {
+			// only check part files (not crc32)
+			if (e.getFileName().contains(".part")) {
+				if (partFiles.contains(e.getFileName())) {
+					partFiles.remove(e.getFileName());
+				} 
+			}
+		}
+		
+		// missing part file (size should be 0 if everything is present because everything would have been removed)
+		if (partFiles.size() != 0) {
+			// multiple missing files
+			if (partFiles.size() > 1) {
+				StringBuilder missingFiles = new StringBuilder();
+				for (String missingFile : partFiles) {
+					missingFiles.append(missingFile);
+					missingFiles.append(", ");
+				}
+				throw new Exception("The parts list is missing the following files: " + missingFiles.toString().substring(0,missingFiles.length()-2) + "!");
+			} else {
+				throw new Exception("The parts list is missing the following file: " + partFiles.get(0) + "!");
+			}
+		}
+
 		return true;
 	}
 
