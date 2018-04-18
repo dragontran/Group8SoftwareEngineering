@@ -121,25 +121,25 @@ public class Model extends Observable {
 		/* quick error checking */
 		// check for input path
 		if (this.splitInputFile == null) {
-			throw new Exception("Input file has not been selected!");
+			throw new SplitException("Input file has not been selected");
 			// check for output path
 		} else if (this.splitOutputDir == null) {
-			throw new Exception("Output directory has not been selected!");
+			throw new SplitException("Output directory has not been selected!");
 			// check if input file exists
 		} else if (!this.splitInputFile.exists()) {
-			throw new Exception("Selected input file does not exist!");
+			throw new SplitException("Selected input file does not exist!");
 			// check if output directory exists
 		} else if (!this.splitOutputDir.exists()) {
-			throw new Exception("Selected output directory does not exist!");
+			throw new SplitException("Selected output directory does not exist!");
 			// check if input file is a file
 		} else if (!this.splitInputFile.isFile()) {
-			throw new Exception("Selected input file is not a file");
+			throw new SplitException("Selected input file is not a file");
 			// check if output dir is a directory
 		} else if (!this.splitOutputDir.isDirectory()) {
-			throw new Exception("Selected output directory is not a directory");
+			throw new SplitException("Selected output directory is not a directory");
 			// check if file can be read
 		} else if (!this.splitInputFile.canRead()) {
-			throw new Exception("Selected input file cannot be read");
+			throw new SplitException("Selected input file cannot be read");
 		}
 
 		FastSplit.split(splitInputFile, splitOutputDir, size, parts, model);
