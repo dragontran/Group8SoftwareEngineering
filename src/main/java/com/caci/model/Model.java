@@ -1,15 +1,12 @@
 package main.java.com.caci.model;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.nio.file.FileAlreadyExistsException;
 import java.util.List;
 import java.util.Observable;
 
 import javafx.collections.FXCollections;
-import javafx.concurrent.Task;
 import main.java.com.caci.resources.assembler.Assembler;
+import main.java.com.caci.resources.exceptions.SplitException;
 import main.java.com.caci.resources.splitter.FastSplit;
 
 public class Model extends Observable {
