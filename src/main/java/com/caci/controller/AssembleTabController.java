@@ -24,6 +24,9 @@ import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 
 import main.java.com.caci.model.AssembleTableElement;
+import main.java.com.caci.resources.exceptions.SplitException;
+import main.java.com.caci.view.AlertDialog;
+
 
 public class AssembleTabController implements Observer {
 
@@ -77,7 +80,7 @@ public class AssembleTabController implements Observer {
 			mainController.model().addFileToList(file);
 		}
 	}
-	
+
 	// clear the list of file parts in the join tab
 	@FXML
 	void clearAllParts(ActionEvent event) {
@@ -182,47 +185,51 @@ public class AssembleTabController implements Observer {
 		// exception handling for join thread
 		t.setOnFailed(evt -> {
 			if (t.getException().getMessage().equals("Output directory has not been selected!")) {
-				errorAlert("Error", "No Output Directory", (t.getException().getMessage()));
+				AlertDialog.errorAlert("No Output Directory", (t.getException().getMessage()),mainController.stage());
 			} else if (t.getException().getMessage().equals("Selected output directory does not exist!")) {
-				errorAlert("Error", "Directory Doesn't Exist", (t.getException().getMessage()));
+				AlertDialog.errorAlert("Directory Doesn't Exist", (t.getException().getMessage()),mainController.stage());
 			} else if (t.getException().getMessage().equals("Selected output directory is not a directory!")) {
-				errorAlert("Error", "Not A Directory", (t.getException().getMessage()));
+				AlertDialog.errorAlert("Not A Directory", (t.getException().getMessage()),mainController.stage());
 			} else if (t.getException().getMessage().equals("List of file parts to assemble is empty!")) {
-				errorAlert("Error", "Empty Parts List", (t.getException().getMessage()));
+				AlertDialog.errorAlert("Empty Parts List", (t.getException().getMessage()),mainController.stage());
 			} else if (t.getException().getMessage().equals("Assembled files must be a .part or .crc32 file!")) {
-				errorAlert("Error", "Invalid File Type", (t.getException().getMessage()));
+				AlertDialog.errorAlert("Invalid File Type", (t.getException().getMessage()),mainController.stage());
 			} else if (t.getException().getMessage().equals("There must be only one .crc32 file!")) {
-				errorAlert("Error", "Multiple .crc32 Files Detected", (t.getException().getMessage()));
+				AlertDialog.errorAlert("Multiple .crc32 Files Detected", (t.getException().getMessage()),mainController.stage());
 			} else if (t.getException().getMessage().equals("Output file already exists in output directory and will be overwritten!")) {
-				errorAlert("Error", "Output File Already Exists", (t.getException().getMessage()));
+				AlertDialog.errorAlert("Output File Already Exists", (t.getException().getMessage()),mainController.stage());
 			} else if (t.getException().getMessage().contains(" file is invalid! The checksum does not match the checksum stored in the .crc32 file! Try redownloading it!")) {
-				errorAlert("Error", "Part Checksum Does Not Match Split Checksum", (t.getException().getMessage()));
+				AlertDialog.errorAlert("Part Checksum Does Not Match Split Checksum", (t.getException().getMessage()),mainController.stage());
 			} else if (t.getException().getMessage().equals("Assembled checksum DOES NOT MATCH checksum before being split! Ensure all file parts are included! If the error still persists try redownloading the .part and .crc32 files!")) {
-				errorAlert("Error", "Files NOT Combined Successfully", (t.getException().getMessage()));
+				AlertDialog.errorAlert("Files NOT Combined Successfully", (t.getException().getMessage()),mainController.stage());
 			} else if (t.getException().getMessage().equals("File does not have the same base file as the crc32 file!")) {
-				errorAlert("Error", "Extra Files Included", (t.getException().getMessage()));
+				AlertDialog.errorAlert("Extra Files Included", (t.getException().getMessage()),mainController.stage());
 			} else if (t.getException().getMessage().equals("You must include a .crc32 file!")) {
-				errorAlert("Error", "No .crc32 File Included", (t.getException().getMessage()));
+				AlertDialog.errorAlert("No .crc32 File Included", (t.getException().getMessage()),mainController.stage());
 			} else if (t.getException().getMessage().equals("IOException reading .crc32 file!")) {
-				errorAlert("Error", "IOException", (t.getException().getMessage()));
+				AlertDialog.errorAlert("IOException", (t.getException().getMessage()),mainController.stage());
 			} else if (t.getException().getMessage().contains(".crc32 not found!")) {
-				errorAlert("Error", "File Not Found Exception", (t.getException().getMessage()));
+				AlertDialog.errorAlert("File Not Found Exception", (t.getException().getMessage()),mainController.stage());
 			} else if (t.getException().getMessage().equals("IOException creating output file!")) {
-				errorAlert("Error", "IOException", (t.getException().getMessage()));
+				AlertDialog.errorAlert("IOException", (t.getException().getMessage()),mainController.stage());
 			} else if (t.getException().getMessage().contains(" part files is missing!")) {
-				errorAlert("Error", "File Not Found Exception", (t.getException().getMessage()));
+				AlertDialog.errorAlert("File Not Found Exception", (t.getException().getMessage()),mainController.stage());
 			} else if (t.getException().getMessage().equals("IOException combining part files!")) {
-				errorAlert("Error", "IOException", (t.getException().getMessage()));
+				AlertDialog.errorAlert("IOException", (t.getException().getMessage()),mainController.stage());
 			} else if (t.getException().getMessage().contains("The parts list is missing the following files: ")) {
-				errorAlert("Error", "Required Files Missing", (t.getException().getMessage()));
+				AlertDialog.errorAlert("Required Files Missing", (t.getException().getMessage()),mainController.stage());
 			} else if (t.getException().getMessage().contains("The parts list is missing the following file: ")) {
-				errorAlert("Error", "Required File Missing", (t.getException().getMessage()));
+				AlertDialog.errorAlert("Required File Missing", (t.getException().getMessage()),mainController.stage());
 			} else {
-				errorAlert("Error", "Unknown Error", (t.getException().getMessage()));
+				AlertDialog.errorAlert("Unknown Error", (t.getException().getMessage()),mainController.stage());
 			}
-
 		});
 		executorService.submit(t);
+		
+		t.setOnSucceeded(evt -> {
+			AlertDialog.successAlert("Files combined successfully",mainController.stage());
+			mainController.model().setJoinProgress(0.0);
+		});
 	}
 
 	@FXML
@@ -254,7 +261,7 @@ public class AssembleTabController implements Observer {
 			// source directory
 			if (flag == '3') {
 				srcDirTextField.setText(updateInput);
-			// output directory
+				// output directory
 			} else if (flag == '4') {
 				outputTextField.setText(updateInput);
 			}
@@ -284,14 +291,4 @@ public class AssembleTabController implements Observer {
 			}
 		}
 	}
-
-	// creates an error alert with the specified title, header, and message
-	public void errorAlert(String title, String header, String message) {
-		Alert alert = new Alert(AlertType.ERROR);
-		alert.setTitle(title);
-		alert.setHeaderText(header);
-		alert.setContentText(message);
-		alert.showAndWait();
-	}
-
 }
