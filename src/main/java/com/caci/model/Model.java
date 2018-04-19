@@ -20,8 +20,6 @@ public class Model extends Observable {
 	// file paths for assembler
 	private File joinOutFileDir;
 
-	// file paths for checksum
-
 	// file list for assembler
 	private List<AssembleTableElement> joinPartsList;
 
