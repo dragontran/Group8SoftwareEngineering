@@ -21,7 +21,6 @@ public class Model extends Observable {
 	private File joinOutFileDir;
 
 	// file paths for checksum
-	private File checksumSrcFileDir;
 
 	// file list for assembler
 	private List<AssembleTableElement> joinPartsList;
@@ -37,7 +36,6 @@ public class Model extends Observable {
 		this.splitInputFile = null;
 		this.splitOutputDir = null;
 		this.joinOutFileDir = null;
-		this.checksumSrcFileDir = null;
 		this.checksumPartsList = FXCollections.observableArrayList();
 		this.joinPartsList = FXCollections.observableArrayList();
 		this.splitProgressBarValue = 0.0;
@@ -46,9 +44,6 @@ public class Model extends Observable {
 
 	// update checksum input directory path
 	public void setChecksumSrcDirPath(String checksumSrcDirPath) {
-		this.checksumSrcFileDir = new File(checksumSrcDirPath);
-
-		// TODO: make output better
 		String out = "6" + checksumSrcDirPath;
 		setChanged();
 		notifyObservers(out);
