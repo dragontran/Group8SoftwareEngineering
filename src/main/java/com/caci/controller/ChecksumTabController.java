@@ -34,7 +34,7 @@ import main.java.com.caci.resources.checksum.Checksum;
 import main.java.com.caci.resources.splitter.FastSplit;
 
 public class ChecksumTabController implements Observer{
-	
+
 	@FXML
 	private TextField srcDirTextField;
 
@@ -61,14 +61,14 @@ public class ChecksumTabController implements Observer{
 
 	@FXML
 	private Button outputBrowseBtn;
-	
+
 	@FXML
 	private TableColumn filePath;
-	
+
 	private MainController mainController;
-	
+
 	Checksum checksum;
-	
+
 	@FXML
 	void addPart(ActionEvent event) {
 		// open file chooser
@@ -87,13 +87,13 @@ public class ChecksumTabController implements Observer{
 			mainController.model().addChecksumFileToList(file);
 		}
 	}
-	
+
 	@FXML
 	void clearAllParts(ActionEvent event) {
 		// TODO: get selected file in list	
 		mainController.model().clearAllChecksum();
 	}
-	
+
 	@FXML
 	void getSrcChecksumDirectory(ActionEvent event) throws IOException {
 		// open directory chooser
@@ -103,7 +103,7 @@ public class ChecksumTabController implements Observer{
 		// set local path as default path
 		File defaultDirectory = new File(System.getProperty("user.dir"));
 		dirChooser.setInitialDirectory(defaultDirectory);
-		
+
 		// show chooser
 		// disable main stage when chooser is open
 		File file = dirChooser.showDialog(mainController.stage());
@@ -112,7 +112,7 @@ public class ChecksumTabController implements Observer{
 
 			// update split file input path in model
 			mainController.model().setChecksumSrcDirPath(file.getAbsolutePath());
-			
+
 			// get files from specified directory and sort alphabetically (i.e. crc32 then parts0 -> partsN)
 			File[] dirFiles = file.listFiles();
 			// sort with crc32 first then by file part number
@@ -133,27 +133,27 @@ public class ChecksumTabController implements Observer{
 				}
 
 			});
-			
+
 			// populate table 
 			for (File f : dirFiles) {
 				mainController.model().addChecksumFileToList(f);
 			}
-			
+
 			for(int i = 1;i<dirFiles.length;i++){
 				checksum = new Checksum(dirFiles[i]);
 			}
 		}
 	}
-	
+
 	@FXML
 	void removePart(ActionEvent event) {
 		Table element = filePartsTable.getSelectionModel().getSelectedItem();
-		
+
 		if(element != null){
 			mainController.model().removeChecksumFromList(element);
 		}
 	}
-	
+
 	// set main controller
 	public void injectMainController(MainController mainController) {
 		this.mainController = mainController;
@@ -165,7 +165,7 @@ public class ChecksumTabController implements Observer{
 			if (arg.equals("clear_checksum")) {
 				filePartsTable.getItems().clear();
 			}
-			
+
 			// Update text field with file path
 			String updateInput = (String) arg;
 			char flag = updateInput.charAt(0);
@@ -178,17 +178,13 @@ public class ChecksumTabController implements Observer{
 			// remove the element from the table
 			filePartsTable.getItems().remove(arg);
 		} else if (arg instanceof ObservableListWrapper<?>){
-			try{
-				if(!((ObservableList<?>)arg).isEmpty() && ((ObservableList<?>)arg).get(0) instanceof Table){
-					ObservableList<Table> list = (ObservableList<Table>) arg;
-					for (Table e : list) {
-						if (!filePartsTable.getItems().contains(e)) {
-							filePartsTable.getItems().add(e);
-						}
+			if(!((ObservableList<?>)arg).isEmpty() && ((ObservableList<?>)arg).get(0) instanceof Table){
+				ObservableList<Table> list = (ObservableList<Table>) arg;
+				for (Table e : list) {
+					if (!filePartsTable.getItems().contains(e)) {
+						filePartsTable.getItems().add(e);
 					}
-			}
-			}catch(NullPointerException e){
-				e.printStackTrace();
+				}
 			}
 		}
 	}
