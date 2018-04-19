@@ -115,21 +115,33 @@ public class ChecksumTabController implements Observer{
 
 			// get files from specified directory and sort alphabetically (i.e. crc32 then parts0 -> partsN)
 			File[] dirFiles = file.listFiles();
-			// sort with crc32 first then by file part number
+			// sort with crc32 first, then by file part number, finally by extra files
 			Arrays.sort(dirFiles, new Comparator<File>() {
 
 				@Override
 				public int compare(File o1, File o2) {
+					// put crc32 first
 					if (o1.getName().contains(".crc32")) {
 						return -1;
 					} else if (o2.getName().contains(".crc32")) {
 						return 1;
 					}
-					String file1Part = (o1.getName()).replaceAll("\\D", "");
-					String file2Part = (o2.getName()).replaceAll("\\D", "");
-					Integer file1PartNo = Integer.parseInt(file1Part);
-					Integer file2PartNo = Integer.parseInt(file2Part);
-					return file1PartNo.compareTo(file2PartNo);
+					// compare by part number
+					if (o1.getName().contains(".part") && o2.getName().contains(".part")) {
+						String file1Part = (o1.getName()).replaceAll("\\D", "");
+						String file2Part = (o2.getName()).replaceAll("\\D", "");
+						Integer file1PartNo = Integer.parseInt(file1Part);
+						Integer file2PartNo = Integer.parseInt(file2Part);
+						return file1PartNo.compareTo(file2PartNo);
+					} else {
+						// put part files before extra files
+						if (o1.getName().contains(".part")) {
+							return -1;
+						} else if (o2.getName().contains(".part")) {
+							return 1;
+						}
+						return o1.compareTo(o2);
+					}
 				}
 
 			});
