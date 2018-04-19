@@ -2,7 +2,6 @@ package main.java.com.caci.model;
 
 import java.io.File;
 
-import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 
