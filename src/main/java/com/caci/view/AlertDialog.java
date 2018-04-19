@@ -23,14 +23,26 @@ public class AlertDialog {
 
 		alert.showAndWait();
 	}
+	
+	static public void errorAlert(String header, String message, Stage stage) {
+		Alert alert = new Alert(AlertType.ERROR);
+		alert.setTitle("Error");
+		alert.setHeaderText(header);
+		alert.setContentText(message);
 
-	static public void successAlert(Stage stage) {
+		Window window = stage.getScene().getWindow();
+		alert.initOwner(window);
+
+		alert.showAndWait();
+	}
+
+	static public void successAlert(String message, Stage stage) {
 
 		Alert alert = new Alert(AlertType.INFORMATION);
 
 		alert.setTitle("Success");
 		alert.setHeaderText(null);
-		alert.setContentText("File split successfully");
+		alert.setContentText(message);
 
 		Window window = stage.getScene().getWindow();
 		alert.initOwner(window);
@@ -38,7 +50,7 @@ public class AlertDialog {
 		alert.showAndWait();
 
 	}
-
+	
 	static public void stackTraceAlert(Throwable throwable, Stage stage) {
 		Alert alert = new Alert(AlertType.ERROR);
 		alert.setTitle("Error");
