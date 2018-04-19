@@ -187,7 +187,7 @@ public class SplitTabController implements Observer {
 		executorService.submit(t);
 
 		t.setOnSucceeded(evt -> {
-			AlertDialog.successAlert(mainController.stage());
+			AlertDialog.successAlert("File split successfully",mainController.stage());
 			mainController.model().setSplitProgress(0.0);
 		});
 	}
