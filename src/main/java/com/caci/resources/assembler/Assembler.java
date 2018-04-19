@@ -25,11 +25,16 @@ public class Assembler {
 
 	private static String filename = "";
 
+	// assembles the files in the joinPartsList into a single file, based on the base filename of the provided files, and saves
+	// the new file into the outDir (output directory).
+	// several checks are performed to ensure the files provided are valid before and during the join, if an error occurs an 
+	// exception is thrown and the join stops
 	public static void assemble(List<AssembleTableElement> joinPartsList, File outDir, Model model) throws AssembleException {
 		Model model1 = model;
 
 		filename = "";
 
+		// ensure files are valid before attempting to join
 		if (areValidFiles(joinPartsList)) {
 
 			// -2 to remove .crc32 and 0 index
@@ -78,6 +83,9 @@ public class Assembler {
 			try {
 				fos = new FileOutputStream(ofile,true);
 
+				// go through each file in the list, read the bytes of the file
+				// and append to the output file, ensuring the file checksum matches
+				// the checksum stored in the crc32 file
 				int i = 0;
 				for (File file : list) {
 					fis = new FileInputStream(file);
@@ -115,7 +123,7 @@ public class Assembler {
 				} else {
 					fos.close();
 					fos = null;
-					throw new AssembleException("Assembled checksum DOES NOT MATCH checksum before being split! Ensure all file parts are included! If the error still persists try redownloading the part files!");
+					throw new AssembleException("Assembled checksum DOES NOT MATCH checksum before being split! If the error still persists try redownloading the part files and the crc32 file!");
 				}
 
 				fos.close();
@@ -225,7 +233,7 @@ public class Assembler {
 		return true;
 	}
 
-	// Gets arraylist of checksums from the csv for the specified filename
+	// Gets array list of checksums from the csv for the specified filename
 	private static ArrayList<Long> getChecksumList(List<File> list, String filename) throws AssembleException {
 		ArrayList<Long> checksums = new ArrayList<Long>();
 		try {

@@ -180,7 +180,7 @@ public class AssembleTabController implements Observer {
 
 		};
 
-		// exception handling for join thread
+		// exception handling for join thread, creates an error alert based on the exception that occurred
 		t.setOnFailed(evt -> {
 			if (t.getException().getClass() == AssembleException.class) {
 				if (t.getException().getMessage().equals("Output directory has not been selected!")) {
@@ -199,7 +199,7 @@ public class AssembleTabController implements Observer {
 					AlertDialog.errorAlert("Output File Already Exists", (t.getException().getMessage()),mainController.stage());
 				} else if (t.getException().getMessage().contains(" file is invalid! The checksum does not match the checksum stored in the .crc32 file! Try redownloading it!")) {
 					AlertDialog.errorAlert("Part Checksum Does Not Match Split Checksum", (t.getException().getMessage()),mainController.stage());
-				} else if (t.getException().getMessage().equals("Assembled checksum DOES NOT MATCH checksum before being split! Ensure all file parts are included! If the error still persists try redownloading the .part and .crc32 files!")) {
+				} else if (t.getException().getMessage().equals("Assembled checksum DOES NOT MATCH checksum before being split! If the error still persists try redownloading the part files and the crc32 file!")) {
 					AlertDialog.errorAlert("Files NOT Combined Successfully", (t.getException().getMessage()),mainController.stage());
 				} else if (t.getException().getMessage().equals("File does not have the same base file as the crc32 file!")) {
 					AlertDialog.errorAlert("Extra Files Included", (t.getException().getMessage()),mainController.stage());
@@ -230,12 +230,14 @@ public class AssembleTabController implements Observer {
 		});
 		executorService.submit(t);
 		
+		// creates a success alert if there were no exceptions that occured
 		t.setOnSucceeded(evt -> {
 			AlertDialog.successAlert("Files combined successfully",mainController.stage());
 			mainController.model().setJoinProgress(0.0);
 		});		
 	}
 
+	// removes the selected item from the table
 	@FXML
 	void removePart(ActionEvent event) {
 		AssembleTableElement element = filePartsTable.getSelectionModel().getSelectedItem();
