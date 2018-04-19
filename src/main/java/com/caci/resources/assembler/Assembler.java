@@ -204,7 +204,7 @@ public class Assembler {
 			}
 		}
 		
-		// missing part file (size should be 0 if everything is present because everything would have been removed)
+		// indicates missing part file(s) (size should be 0 if everything is present because everything would have been removed)
 		if (partFiles.size() != 0) {
 			// multiple missing files
 			if (partFiles.size() > 1) {
@@ -214,6 +214,7 @@ public class Assembler {
 					missingFiles.append(", ");
 				}
 				throw new Exception("The parts list is missing the following files: " + missingFiles.toString().substring(0,missingFiles.length()-2) + "!");
+			// one file missing
 			} else {
 				throw new Exception("The parts list is missing the following file: " + partFiles.get(0) + "!");
 			}

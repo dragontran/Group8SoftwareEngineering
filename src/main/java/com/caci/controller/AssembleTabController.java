@@ -216,7 +216,7 @@ public class AssembleTabController implements Observer {
 			} else if (t.getException().getMessage().contains("The parts list is missing the following files: ")) {
 				errorAlert("Error", "Required Files Missing", (t.getException().getMessage()));
 			} else if (t.getException().getMessage().contains("The parts list is missing the following file: ")) {
-				errorAlert("Error", "Required Files Missing", (t.getException().getMessage()));
+				errorAlert("Error", "Required File Missing", (t.getException().getMessage()));
 			} else {
 				errorAlert("Error", "Unknown Error", (t.getException().getMessage()));
 			}
