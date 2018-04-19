@@ -86,7 +86,7 @@ public class Model extends Observable {
 		this.setChecksumSrcDirPath("");
 		//this.setJoinProgress(0.0);
 		
-		String out = "clear";
+		String out = "clear_checksum";
 		setChanged();
 		notifyObservers(out);
 	}
@@ -234,7 +234,7 @@ public class Model extends Observable {
 		this.setJoinSrcDirPath("");
 		this.setJoinProgress(0.0);
 
-		String out = "clear";
+		String out = "clear_parts";
 		setChanged();
 		notifyObservers(out);
 	}	

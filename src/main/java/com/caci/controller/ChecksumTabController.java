@@ -166,7 +166,7 @@ public class ChecksumTabController implements Observer{
 	public void update(Observable o, Object arg) {
 		// TODO Auto-generated method stub
 		if (arg instanceof String) {
-			if (arg.equals("clear")) {
+			if (arg.equals("clear_checksum")) {
 				filePartsTable.getItems().clear();
 			}
 			

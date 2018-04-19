@@ -242,7 +242,7 @@ public class AssembleTabController implements Observer {
 	public void update(Observable o, Object arg) {
 		if (arg instanceof String) {
 			// clear the parts table in the join tab
-			if (arg.equals("clear")) {
+			if (arg.equals("clear_parts")) {
 				filePartsTable.getItems().clear();
 			}
 
