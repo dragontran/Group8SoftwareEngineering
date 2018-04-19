@@ -108,7 +108,6 @@ public class ChecksumTabController implements Observer{
 		// disable main stage when chooser is open
 		File file = dirChooser.showDialog(mainController.stage());
 
-		// TODO: error handling
 		if (file != null) {
 
 			// update split file input path in model
@@ -140,10 +139,8 @@ public class ChecksumTabController implements Observer{
 				mainController.model().addChecksumFileToList(f);
 			}
 			
-			int i;
-			for(i = 1;i<dirFiles.length;i++){
+			for(int i = 1;i<dirFiles.length;i++){
 				checksum = new Checksum(dirFiles[i]);
-				//System.out.println(checksum.getCheckSum());
 			}
 		}
 	}
@@ -164,7 +161,6 @@ public class ChecksumTabController implements Observer{
 
 	@Override
 	public void update(Observable o, Object arg) {
-		// TODO Auto-generated method stub
 		if (arg instanceof String) {
 			if (arg.equals("clear_checksum")) {
 				filePartsTable.getItems().clear();
@@ -177,9 +173,7 @@ public class ChecksumTabController implements Observer{
 
 			if (flag == '6') {
 				srcDirTextField.setText(updateInput);
-			} else if (flag == '4') {
-				//outputTextField.setText(updateInput);
-			}
+			} 
 		} else if (arg instanceof Table) {
 			// remove the element from the table
 			filePartsTable.getItems().remove(arg);
