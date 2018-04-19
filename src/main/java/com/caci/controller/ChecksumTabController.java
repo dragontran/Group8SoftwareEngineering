@@ -179,7 +179,7 @@ public class ChecksumTabController implements Observer{
 			filePartsTable.getItems().remove(arg);
 		} else if (arg instanceof ObservableListWrapper<?>){
 			try{
-				if(((ObservableList<?>)arg).get(0) instanceof Table){
+				if(!((ObservableList<?>)arg).isEmpty() && ((ObservableList<?>)arg).get(0) instanceof Table){
 					ObservableList<Table> list = (ObservableList<Table>) arg;
 					for (Table e : list) {
 						if (!filePartsTable.getItems().contains(e)) {
