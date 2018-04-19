@@ -17,20 +17,19 @@ public class Model extends Observable {
 
 	// file paths for assembler
 	private File joinOutFileDir;
-	
+
 	// file paths for checksum
 	private File checksumSrcFileDir;
 
 	// file list for assembler
 	private List<AssembleTableElement> joinPartsList;
-	
+
 	// file list for checksum
 	private List<Table> checksumPartsList;
 
 	// progress bar values
 	private double splitProgressBarValue;
 	private double joinProgressBarValue;
-	private double checksumProgressBarValue;
 
 	public Model() {
 		this.splitInputFile = null;
@@ -41,51 +40,43 @@ public class Model extends Observable {
 		this.joinPartsList = FXCollections.observableArrayList();
 		this.splitProgressBarValue = 0.0;
 		this.joinProgressBarValue = 0.0;
-		this.checksumProgressBarValue = 0.0;
 	}
 
 	// update checksum input directory path
 	public void setChecksumSrcDirPath(String checksumSrcDirPath) {
 		this.checksumSrcFileDir = new File(checksumSrcDirPath);
-		//this.setChecksumProgress(0.0);
 
 		// TODO: make output better
 		String out = "6" + checksumSrcDirPath;
 		setChanged();
 		notifyObservers(out);
 	}
-	public void setChecksumProgress(double value) {
-		this.checksumProgressBarValue = value;
 
-		setChanged();
-		notifyObservers(this.checksumProgressBarValue);
-	}
-	
 	public void addChecksumFileToList(File file) {
-		// add if not already in list
-		Table element = new Table(file);
-		if (!this.checksumPartsList.contains(element)) {
-			this.checksumPartsList.add(element);
-			//this.setChecksumProgress(0.0);
-			
-			setChanged();
-			notifyObservers(this.checksumPartsList);
+		// do not add directories to the list
+		if (!file.isDirectory()) {
+			// add if not already in list
+			Table element = new Table(file);
+			if (!this.checksumPartsList.contains(element)) {
+				this.checksumPartsList.add(element);
+
+				setChanged();
+				notifyObservers(this.checksumPartsList);
+			}
 		}
 	}
-	
+
 	public void removeChecksumFromList(Table element) {
 		this.checksumPartsList.remove(element);
-		this.setJoinProgress(0.0);
-		
+
 		setChanged();
 		notifyObservers(element);
 	}
-	
+
 	public void clearAllChecksum(){
 		this.checksumPartsList.clear();
 		this.setChecksumSrcDirPath("");
-		//this.setJoinProgress(0.0);
-		
+
 		String out = "clear_checksum";
 		setChanged();
 		notifyObservers(out);
@@ -157,9 +148,6 @@ public class Model extends Observable {
 
 	// update join src file dir path
 	public void setJoinSrcDirPath(String joinSrcDirPath) {
-		//this.setJoinProgress(0.0);
-
-		// TODO: make output better
 		String out = "3" + joinSrcDirPath;
 		setChanged();
 		notifyObservers(out);
@@ -170,7 +158,7 @@ public class Model extends Observable {
 		this.joinOutFileDir = new File(outputPath);
 		this.setJoinProgress(0.0);
 
-		
+
 		String out = "4" + outputPath;
 		setChanged();
 		notifyObservers(out);
@@ -201,8 +189,10 @@ public class Model extends Observable {
 	public void setJoinProgress(double value) {
 		this.joinProgressBarValue = value;
 
+		String joinProgressOutput = "2" + Double.toString(this.joinProgressBarValue);
+		
 		setChanged();
-		notifyObservers(this.joinProgressBarValue);
+		notifyObservers(joinProgressOutput);
 	}
 
 	public void addFileToList(File file) {
@@ -223,7 +213,7 @@ public class Model extends Observable {
 	public void removeFileFromList(AssembleTableElement element) {
 		this.joinPartsList.remove(element);
 		this.setJoinProgress(0.0);
-		
+
 
 		setChanged();
 		notifyObservers(element);
@@ -249,5 +239,9 @@ public class Model extends Observable {
 
 	public File getSplitOutputDir() {
 		return splitOutputDir;
+	}
+	
+	public List<Table> getChecksumPartsList() {
+		return checksumPartsList;
 	}
 }

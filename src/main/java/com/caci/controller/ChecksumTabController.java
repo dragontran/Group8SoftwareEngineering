@@ -151,8 +151,8 @@ public class ChecksumTabController implements Observer{
 				mainController.model().addChecksumFileToList(f);
 			}
 
-			for(int i = 1;i<dirFiles.length;i++){
-				checksum = new Checksum(dirFiles[i]);
+			for(Table element : mainController.model().getChecksumPartsList()){
+				checksum = new Checksum(element.getFile());
 			}
 		}
 	}
