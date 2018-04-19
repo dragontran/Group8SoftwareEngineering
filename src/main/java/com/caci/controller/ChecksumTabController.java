@@ -60,9 +60,6 @@ public class ChecksumTabController implements Observer{
 	private Button clearAllPartsBtn;
 
 	@FXML
-	private ProgressBar progressBar;
-
-	@FXML
 	private Button outputBrowseBtn;
 	
 	@FXML
@@ -199,10 +196,6 @@ public class ChecksumTabController implements Observer{
 			}catch(NullPointerException e){
 				e.printStackTrace();
 			}
-		} else {
-			Double progress = (Double) arg;
-			progressBar.setProgress(progress);
 		}
-		
 	}
 }
