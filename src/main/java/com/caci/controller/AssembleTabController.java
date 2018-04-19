@@ -25,6 +25,7 @@ import javafx.stage.FileChooser;
 
 import main.java.com.caci.model.AssembleTableElement;
 import main.java.com.caci.resources.exceptions.SplitException;
+import main.java.com.caci.resources.exceptions.AssembleException;
 import main.java.com.caci.view.AlertDialog;
 
 
@@ -184,44 +185,50 @@ public class AssembleTabController implements Observer {
 
 		// exception handling for join thread
 		t.setOnFailed(evt -> {
-			if (t.getException().getMessage().equals("Output directory has not been selected!")) {
-				AlertDialog.errorAlert("No Output Directory", (t.getException().getMessage()),mainController.stage());
-			} else if (t.getException().getMessage().equals("Selected output directory does not exist!")) {
-				AlertDialog.errorAlert("Directory Doesn't Exist", (t.getException().getMessage()),mainController.stage());
-			} else if (t.getException().getMessage().equals("Selected output directory is not a directory!")) {
-				AlertDialog.errorAlert("Not A Directory", (t.getException().getMessage()),mainController.stage());
-			} else if (t.getException().getMessage().equals("List of file parts to assemble is empty!")) {
-				AlertDialog.errorAlert("Empty Parts List", (t.getException().getMessage()),mainController.stage());
-			} else if (t.getException().getMessage().equals("Assembled files must be a .part or .crc32 file!")) {
-				AlertDialog.errorAlert("Invalid File Type", (t.getException().getMessage()),mainController.stage());
-			} else if (t.getException().getMessage().equals("There must be only one .crc32 file!")) {
-				AlertDialog.errorAlert("Multiple .crc32 Files Detected", (t.getException().getMessage()),mainController.stage());
-			} else if (t.getException().getMessage().equals("Output file already exists in output directory and will be overwritten!")) {
-				AlertDialog.errorAlert("Output File Already Exists", (t.getException().getMessage()),mainController.stage());
-			} else if (t.getException().getMessage().contains(" file is invalid! The checksum does not match the checksum stored in the .crc32 file! Try redownloading it!")) {
-				AlertDialog.errorAlert("Part Checksum Does Not Match Split Checksum", (t.getException().getMessage()),mainController.stage());
-			} else if (t.getException().getMessage().equals("Assembled checksum DOES NOT MATCH checksum before being split! Ensure all file parts are included! If the error still persists try redownloading the .part and .crc32 files!")) {
-				AlertDialog.errorAlert("Files NOT Combined Successfully", (t.getException().getMessage()),mainController.stage());
-			} else if (t.getException().getMessage().equals("File does not have the same base file as the crc32 file!")) {
-				AlertDialog.errorAlert("Extra Files Included", (t.getException().getMessage()),mainController.stage());
-			} else if (t.getException().getMessage().equals("You must include a .crc32 file!")) {
-				AlertDialog.errorAlert("No .crc32 File Included", (t.getException().getMessage()),mainController.stage());
-			} else if (t.getException().getMessage().equals("IOException reading .crc32 file!")) {
-				AlertDialog.errorAlert("IOException", (t.getException().getMessage()),mainController.stage());
-			} else if (t.getException().getMessage().contains(".crc32 not found!")) {
-				AlertDialog.errorAlert("File Not Found Exception", (t.getException().getMessage()),mainController.stage());
-			} else if (t.getException().getMessage().equals("IOException creating output file!")) {
-				AlertDialog.errorAlert("IOException", (t.getException().getMessage()),mainController.stage());
-			} else if (t.getException().getMessage().contains(" part files is missing!")) {
-				AlertDialog.errorAlert("File Not Found Exception", (t.getException().getMessage()),mainController.stage());
-			} else if (t.getException().getMessage().equals("IOException combining part files!")) {
-				AlertDialog.errorAlert("IOException", (t.getException().getMessage()),mainController.stage());
-			} else if (t.getException().getMessage().contains("The parts list is missing the following files: ")) {
-				AlertDialog.errorAlert("Required Files Missing", (t.getException().getMessage()),mainController.stage());
-			} else if (t.getException().getMessage().contains("The parts list is missing the following file: ")) {
-				AlertDialog.errorAlert("Required File Missing", (t.getException().getMessage()),mainController.stage());
+			if (t.getException().getClass() == AssembleException.class) {
+				if (t.getException().getMessage().equals("Output directory has not been selected!")) {
+					AlertDialog.errorAlert("No Output Directory", (t.getException().getMessage()),mainController.stage());
+				} else if (t.getException().getMessage().equals("Selected output directory does not exist!")) {
+					AlertDialog.errorAlert("Directory Doesn't Exist", (t.getException().getMessage()),mainController.stage());
+				} else if (t.getException().getMessage().equals("Selected output directory is not a directory!")) {
+					AlertDialog.errorAlert("Not A Directory", (t.getException().getMessage()),mainController.stage());
+				} else if (t.getException().getMessage().equals("List of file parts to assemble is empty!")) {
+					AlertDialog.errorAlert("Empty Parts List", (t.getException().getMessage()),mainController.stage());
+				} else if (t.getException().getMessage().equals("Assembled files must be a .part or .crc32 file!")) {
+					AlertDialog.errorAlert("Invalid File Type", (t.getException().getMessage()),mainController.stage());
+				} else if (t.getException().getMessage().equals("There must be only one .crc32 file!")) {
+					AlertDialog.errorAlert("Multiple .crc32 Files Detected", (t.getException().getMessage()),mainController.stage());
+				} else if (t.getException().getMessage().equals("Output file already exists in output directory and will be overwritten!")) {
+					AlertDialog.errorAlert("Output File Already Exists", (t.getException().getMessage()),mainController.stage());
+				} else if (t.getException().getMessage().contains(" file is invalid! The checksum does not match the checksum stored in the .crc32 file! Try redownloading it!")) {
+					AlertDialog.errorAlert("Part Checksum Does Not Match Split Checksum", (t.getException().getMessage()),mainController.stage());
+				} else if (t.getException().getMessage().equals("Assembled checksum DOES NOT MATCH checksum before being split! Ensure all file parts are included! If the error still persists try redownloading the .part and .crc32 files!")) {
+					AlertDialog.errorAlert("Files NOT Combined Successfully", (t.getException().getMessage()),mainController.stage());
+				} else if (t.getException().getMessage().equals("File does not have the same base file as the crc32 file!")) {
+					AlertDialog.errorAlert("Extra Files Included", (t.getException().getMessage()),mainController.stage());
+				} else if (t.getException().getMessage().equals("You must include a .crc32 file!")) {
+					AlertDialog.errorAlert("No .crc32 File Included", (t.getException().getMessage()),mainController.stage());
+				} else if (t.getException().getMessage().equals("IOException reading .crc32 file!")) {
+					AlertDialog.errorAlert("IOException", (t.getException().getMessage()),mainController.stage());
+				} else if (t.getException().getMessage().contains(".crc32 not found!")) {
+					AlertDialog.errorAlert("File Not Found Exception", (t.getException().getMessage()),mainController.stage());
+				} else if (t.getException().getMessage().equals("IOException creating output file!")) {
+					AlertDialog.errorAlert("IOException", (t.getException().getMessage()),mainController.stage());
+				} else if (t.getException().getMessage().contains(" part files is missing!")) {
+					AlertDialog.errorAlert("File Not Found Exception", (t.getException().getMessage()),mainController.stage());
+				} else if (t.getException().getMessage().equals("IOException combining part files!")) {
+					AlertDialog.errorAlert("IOException", (t.getException().getMessage()),mainController.stage());
+				} else if (t.getException().getMessage().contains("The parts list is missing the following files: ")) {
+					AlertDialog.errorAlert("Required Files Missing", (t.getException().getMessage()),mainController.stage());
+				} else if (t.getException().getMessage().contains("The parts list is missing the following file: ")) {
+					AlertDialog.errorAlert("Required File Missing", (t.getException().getMessage()),mainController.stage());
+				} else {
+					AlertDialog.errorAlert("Unknown Error", (t.getException().getMessage()),mainController.stage());
+				}
 			} else {
-				AlertDialog.errorAlert("Unknown Error", (t.getException().getMessage()),mainController.stage());
+				// catch unspecified exception
+				// print stack trace in alert dialog
+				AlertDialog.stackTraceAlert(t.getException(), mainController.stage());
 			}
 		});
 		executorService.submit(t);

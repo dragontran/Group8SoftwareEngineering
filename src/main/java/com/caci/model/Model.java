@@ -5,7 +5,9 @@ import java.util.List;
 import java.util.Observable;
 
 import javafx.collections.FXCollections;
+
 import main.java.com.caci.resources.assembler.Assembler;
+import main.java.com.caci.resources.exceptions.AssembleException;
 import main.java.com.caci.resources.exceptions.SplitException;
 import main.java.com.caci.resources.splitter.FastSplit;
 
@@ -171,16 +173,16 @@ public class Model extends Observable {
 
 		// check if join table is empty
 		if (this.joinPartsList.isEmpty()) {
-			throw new Exception("List of file parts to assemble is empty!");
+			throw new AssembleException("List of file parts to assemble is empty!");
 			// check for output path
 		} else if (this.joinOutFileDir == null) {
-			throw new Exception("Output directory has not been selected!");
+			throw new AssembleException("Output directory has not been selected!");
 			// check if output directory exists
 		} else if (!this.joinOutFileDir.exists()) {
-			throw new Exception("Selected output directory does not exist!");
+			throw new AssembleException("Selected output directory does not exist!");
 			// check if output dir is a directory
 		} else if (!this.joinOutFileDir.isDirectory()) {
-			throw new Exception("Selected output directory is not a directory!");
+			throw new AssembleException("Selected output directory is not a directory!");
 		} else {
 			Assembler.assemble(joinPartsList, joinOutFileDir, model);
 		}	
