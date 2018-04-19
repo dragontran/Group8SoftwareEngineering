@@ -6,6 +6,7 @@ import java.util.Observable;
 
 import javafx.collections.FXCollections;
 import main.java.com.caci.resources.assembler.Assembler;
+import main.java.com.caci.resources.exceptions.SplitException;
 import main.java.com.caci.resources.splitter.FastSplit;
 
 public class Model extends Observable {
@@ -16,23 +17,79 @@ public class Model extends Observable {
 
 	// file paths for assembler
 	private File joinOutFileDir;
+	
+	// file paths for checksum
+	private File checksumSrcFileDir;
 
 	// file list for assembler
 	private List<AssembleTableElement> joinPartsList;
+	
+	// file list for checksum
+	private List<Table> checksumPartsList;
 
 	// progress bar values
 	private double splitProgressBarValue;
 	private double joinProgressBarValue;
+	private double checksumProgressBarValue;
 
 	public Model() {
 		this.splitInputFile = null;
 		this.splitOutputDir = null;
 		this.joinOutFileDir = null;
+		this.checksumSrcFileDir = null;
+		this.checksumPartsList = FXCollections.observableArrayList();
 		this.joinPartsList = FXCollections.observableArrayList();
 		this.splitProgressBarValue = 0.0;
 		this.joinProgressBarValue = 0.0;
+		this.checksumProgressBarValue = 0.0;
 	}
 
+	// update checksum input directory path
+	public void setChecksumSrcDirPath(String checksumSrcDirPath) {
+		this.checksumSrcFileDir = new File(checksumSrcDirPath);
+		//this.setChecksumProgress(0.0);
+
+		// TODO: make output better
+		String out = "6" + checksumSrcDirPath;
+		setChanged();
+		notifyObservers(out);
+	}
+	public void setChecksumProgress(double value) {
+		this.checksumProgressBarValue = value;
+
+		setChanged();
+		notifyObservers(this.checksumProgressBarValue);
+	}
+	
+	public void addChecksumFileToList(File file) {
+		// add if not already in list
+		Table element = new Table(file);
+		if (!this.checksumPartsList.contains(element)) {
+			this.checksumPartsList.add(element);
+			//this.setChecksumProgress(0.0);
+			
+			setChanged();
+			notifyObservers(this.checksumPartsList);
+		}
+	}
+	
+	public void removeChecksumFromList(Table element) {
+		this.checksumPartsList.remove(element);
+		this.setJoinProgress(0.0);
+		
+		setChanged();
+		notifyObservers(element);
+	}
+	
+	public void clearAllChecksum(){
+		this.checksumPartsList.clear();
+		this.setChecksumSrcDirPath("");
+		//this.setJoinProgress(0.0);
+		
+		String out = "clear";
+		setChanged();
+		notifyObservers(out);
+	}
 
 	// update split file input path
 	public void setSplitInputPath(String inputPath) {
@@ -61,27 +118,28 @@ public class Model extends Observable {
 		Model model = this;
 		setSplitProgress(0.0);
 
+		/* quick error checking */
 		// check for input path
 		if (this.splitInputFile == null) {
-			throw new Exception("Input file has not been selected!");
+			throw new SplitException("Input file has not been selected");
 			// check for output path
 		} else if (this.splitOutputDir == null) {
-			throw new Exception("Output directory has not been selected!");
+			throw new SplitException("Output directory has not been selected!");
 			// check if input file exists
 		} else if (!this.splitInputFile.exists()) {
-			throw new Exception("Selected input file does not exist!");
+			throw new SplitException("Selected input file does not exist!");
 			// check if output directory exists
 		} else if (!this.splitOutputDir.exists()) {
-			throw new Exception("Selected output directory does not exist!");
+			throw new SplitException("Selected output directory does not exist!");
 			// check if input file is a file
 		} else if (!this.splitInputFile.isFile()) {
-			throw new Exception("Selected input file is not a file");
+			throw new SplitException("Selected input file is not a file");
 			// check if output dir is a directory
 		} else if (!this.splitOutputDir.isDirectory()) {
-			throw new Exception("Selected output directory is not a directory");
+			throw new SplitException("Selected output directory is not a directory");
 			// check if file can be read
 		} else if (!this.splitInputFile.canRead()) {
-			throw new Exception("Selected input file cannot be read");
+			throw new SplitException("Selected input file cannot be read");
 		}
 
 		FastSplit.split(splitInputFile, splitOutputDir, size, parts, model);
@@ -99,8 +157,9 @@ public class Model extends Observable {
 
 	// update join src file dir path
 	public void setJoinSrcDirPath(String joinSrcDirPath) {
-		this.setJoinProgress(0.0);
+		//this.setJoinProgress(0.0);
 
+		// TODO: make output better
 		String out = "3" + joinSrcDirPath;
 		setChanged();
 		notifyObservers(out);
@@ -111,13 +170,14 @@ public class Model extends Observable {
 		this.joinOutFileDir = new File(outputPath);
 		this.setJoinProgress(0.0);
 
+		
 		String out = "4" + outputPath;
 		setChanged();
 		notifyObservers(out);
 	}
 
 	// join file
-	public void assembleFile() throws Exception {
+	public void assembleFile() throws Exception{
 		Model model = this;
 		setJoinProgress(0.0);
 
@@ -135,7 +195,7 @@ public class Model extends Observable {
 			throw new Exception("Selected output directory is not a directory!");
 		} else {
 			Assembler.assemble(joinPartsList, joinOutFileDir, model);
-		}		
+		}	
 	}
 
 	public void setJoinProgress(double value) {
@@ -163,6 +223,7 @@ public class Model extends Observable {
 	public void removeFileFromList(AssembleTableElement element) {
 		this.joinPartsList.remove(element);
 		this.setJoinProgress(0.0);
+		
 
 		setChanged();
 		notifyObservers(element);
@@ -176,7 +237,7 @@ public class Model extends Observable {
 		String out = "clear";
 		setChanged();
 		notifyObservers(out);
-	}
+	}	
 
 	public double getSplitProgressBarValue() {
 		return splitProgressBarValue;
