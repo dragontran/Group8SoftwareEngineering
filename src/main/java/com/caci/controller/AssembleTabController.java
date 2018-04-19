@@ -229,7 +229,7 @@ public class AssembleTabController implements Observer {
 		t.setOnSucceeded(evt -> {
 			AlertDialog.successAlert("Files combined successfully",mainController.stage());
 			mainController.model().setJoinProgress(0.0);
-		});
+		});		
 	}
 
 	@FXML
@@ -258,12 +258,25 @@ public class AssembleTabController implements Observer {
 			char flag = updateInput.charAt(0);
 			updateInput = updateInput.substring(1);
 
+			switch (flag) {
+			// progress bar
+			case '2':	
+				progressBar.setStyle("");
+				progressBar.setProgress(Double.parseDouble(updateInput));
+				// set to green if complete 
+				// errors handled before this point preventing being set to green if unsuccessful join
+				if (progressBar.getProgress() == 1) {
+					progressBar.setStyle("-fx-accent: green;");
+				}
+				break;
 			// source directory
-			if (flag == '3') {
+			case '3':
 				srcDirTextField.setText(updateInput);
-				// output directory
-			} else if (flag == '4') {
+				break;
+			// output directory
+			case '4':
 				outputTextField.setText(updateInput);
+				break;
 			}
 		} else if (arg instanceof AssembleTableElement) {
 			// remove the element from the table
@@ -278,16 +291,6 @@ public class AssembleTabController implements Observer {
 						filePartsTable.getItems().add(e);
 					}
 				}
-			}
-		} else {
-			// update the progress bar
-			Double progress = (Double) arg;
-			progressBar.setStyle("");
-			progressBar.setProgress(progress);
-			// set to green if complete 
-			// errors handled before this point preventing being set to green if unsuccessful join
-			if (progress == 1) {
-				progressBar.setStyle("-fx-accent: green;");
 			}
 		}
 	}
