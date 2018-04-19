@@ -2,36 +2,23 @@ package main.java.com.caci.controller;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
-import java.time.LocalDate;
-import java.time.Month;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Observable;
 import java.util.Observer;
-import java.util.ResourceBundle;
 
 import com.sun.javafx.collections.ObservableListWrapper;
 
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
-import javafx.scene.control.ProgressBar;
-import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
-import main.java.com.caci.application.Main;
-import main.java.com.caci.model.AssembleTableElement;
 import main.java.com.caci.model.Table;
 import main.java.com.caci.resources.checksum.Checksum;
-import main.java.com.caci.resources.splitter.FastSplit;
 
 public class ChecksumTabController implements Observer{
 
@@ -62,9 +49,6 @@ public class ChecksumTabController implements Observer{
 	@FXML
 	private Button outputBrowseBtn;
 
-	@FXML
-	private TableColumn filePath;
-
 	private MainController mainController;
 
 	Checksum checksum;
@@ -90,7 +74,6 @@ public class ChecksumTabController implements Observer{
 
 	@FXML
 	void clearAllParts(ActionEvent event) {
-		// TODO: get selected file in list	
 		mainController.model().clearAllChecksum();
 	}
 
