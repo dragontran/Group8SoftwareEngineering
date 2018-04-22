@@ -20,7 +20,7 @@ public class Main extends Application {
 		// set stage & options	
 		primaryStage.setScene(scene);
 		primaryStage.setResizable(false);
-		primaryStage.setTitle("I hate this");
+		primaryStage.setTitle("File Split");
 		
 		// set model
 		MainController mainController = (MainController) fxmlLoader.getController();
