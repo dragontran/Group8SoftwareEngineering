@@ -1,25 +1,14 @@
 package main.java.com.caci.controller;
 
-import java.io.File;
-import java.util.Observable;
-import java.util.Observer;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
-import javafx.concurrent.Task;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
-import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.stage.DirectoryChooser;
-import javafx.stage.FileChooser;
 
 public class HelpTabController {
 
-    private String imageDirectory = "/src/main/java/com/caci/images/";
+    private String imageDirectory = "/main/java/com/caci/images/";
 
     @FXML
     private TextArea titleArea;
