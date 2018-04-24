@@ -12,7 +12,7 @@ public class Main extends Application {
 	@Override
 	public void start(Stage primaryStage) throws IOException {
 		// load main tab pane view
-		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("../view/MainView.fxml"));
+		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/main/java/com/caci/view/MainView.fxml"));
 		
 		// create new scene with view
 		Scene scene = new Scene(fxmlLoader.load());
